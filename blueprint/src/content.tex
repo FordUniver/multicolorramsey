@@ -8,7 +8,7 @@
 
 \begin{definition}
     \label{def:edge-colouring}
-    \lean{EdgeColoring}
+    \lean{SimpleGraph.EdgeColoring}
     \leanok
 \end{definition}
 
@@ -20,13 +20,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % prerequisite lemmata for the geometric lemma
-
-
-\begin{definition}
-    \label{def:inner_product}
-    \lean{dotProduct}
-    \leanok
-\end{definition}
 
 
 \begin{lemma}\label{lem:moments}
@@ -60,6 +53,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % the geometric lemma
 
+\begin{definition}
+    \label{def:p}
+    \uses{def:colour-neighborhood}
+    Let $r, n\in\N$. Given sets $X,Y \subset V(K_n)$ and a colour $i \in [r]$, define
+    $$p_i(X,Y) = \min\bigg\{ \frac{|N_i(x) \cap Y|}{|Y|} : x \in X \bigg\},$$
+\end{definition}
+
 \begin{lemma}
     \label{lem:geometric}
     Let $r, n\in\N$. Set $\beta = 3^{-4r}$ and $C = 4r^{3/2}$.
@@ -70,20 +70,11 @@
 
 \begin{proof}
     \uses{def:p, lem:special-function, lem:moments}
-    \lean{p}
-    \leanok
 \end{proof}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % the key lemma
-
-\begin{definition}
-    \label{def:p}
-    \uses{def:colour-neighborhood}
-    Let $r, n\in\N$. Given sets $X,Y \subset V(K_n)$ and a colour $i \in [r]$, define
-    $$p_i(X,Y) = \min\bigg\{ \frac{|N_i(x) \cap Y|}{|Y|} : x \in X \bigg\},$$
-\end{definition}
 
 \begin{lemma}
     \label{lem:key-lemma}
