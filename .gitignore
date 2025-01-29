@@ -2,6 +2,9 @@
 /venv
 __pycache__
 
+blueprint/web
+blueprint/lean_decls
+
 *.acn
 *.acr
 *.alg
@@ -33,6 +36,7 @@ __pycache__
 *.nlo
 *.nls
 *.out
+*.paux
 *.pdf
 *.pyg
 *.run.xml
