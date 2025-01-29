@@ -8,7 +8,7 @@
 
 \begin{definition}
     \label{def:edge-colouring}
-    \lean{SimpleGraph.EdgeColoring}
+    \lean{SimpleGraph/EdgeColoring}
     \leanok
 \end{definition}
 
@@ -18,15 +18,18 @@
     Given an edge colouring, We write $N_i(u)$ to denote the neighbourhood of vertex $u$ in colour $i$. 
 \end{definition}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % prerequisite lemmata for the geometric lemma
 
 
-\begin{lemma}\label{lem:moments}
+\begin{lemma}
+    \label{lem:moments}
+    \lean{moments}
     Let $U$ and\/ $U'$ be i.i.d.~random variables taking values in a finite set~$X$, and let\/ $\sigma_1,\ldots,\sigma_r \colon X \to \R^n$ be arbitrary functions. Then
     $$\Ex\Big[ \big\langle \sigma_1(U),\sigma_1(U') \big\rangle^{\ell_1} \cdots \big\langle \sigma_r(U),\sigma_r(U') \big\rangle^{\ell_r} \Big] \ge 0.$$
     for every $(\ell_1,\dots,\ell_r) \in \Z^r$ with $\ell_1,\dots,\ell_r \ge 0$.
-    \end{lemma}
+\end{lemma}
 
 \begin{definition}\label{def:f}
     Let $r \in \N$.
