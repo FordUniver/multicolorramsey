@@ -16,7 +16,7 @@
 \section{Preliminaries}
 
 %---------------------------------------------------------------------------------------------------
-\section{Graphs and colourings}
+\subsection{Graphs and colourings}
 
 \begin{definition}
   \label{def:edge-colouring}
@@ -44,7 +44,7 @@
 %---------------------------------------------------------------------------------------------------
 \subsection{Multinomial coefficients}
 
-\begin{lemma}[Lemma A.1 in~\cite{Balister2024}]  
+\begin{lemma}[Lemma A.1 in Balister et al.]  
   \label{lem:multibounds}
   For each $k,t,r \in \N$ with $3 \le t \le k$, we have
   $$\binom{rk-t}{k,\dots,k,k-t} \le e^{-(r-1)t^2/3rk} r^{rk-t}.$$
@@ -119,7 +119,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The Geometric Lemma}
 
-\begin{lemma}[Moments Lemma (Lemma 3.2 in~\cite{Balister2024})]
+\begin{lemma}[Moments Lemma (Lemma 3.2 in Balister et al.)]
   \label{lem:moments}
   \lean{moments}
   Let $U$ and\/ $U'$ be i.i.d.~random variables taking values in a finite set~$X$, and let\/ $\sigma_1,\ldots,\sigma_r \colon X \to \R^n$ be arbitrary functions. Then
@@ -132,7 +132,7 @@
 \end{proof}
 
 
-\begin{lemma}[Special-function lemma (Part 1 of Lemma 3.3 in~\cite{Balister2024})]
+\begin{lemma}[Special-function lemma (Part 1 of Lemma 3.3 in Balister et al.)]
   \label{lem:special-function-e}
   \uses{def:f}
   \lean{specialFunctionE}
@@ -144,7 +144,7 @@
 \end{proof}
 
 
-\begin{lemma}[Special-function lemma (Part 2 of Lemma 3.3 in~\cite{Balister2024})]
+\begin{lemma}[Special-function lemma (Part 2 of Lemma 3.3 in Balister et al.)]
   \label{lem:special-function-ec}
   \uses{def:f}
   \lean{specialFunctionEc}
@@ -159,7 +159,7 @@
 
 
 
-\begin{lemma}[Geometric lemma (Lemma 3.1 in~\cite{Balister2024})]
+\begin{lemma}[Geometric lemma (Lemma 3.1 in Balister et al.)]
   \label{lem:geometric}
   Let $r, n\in\N$. Set $\beta = 3^{-4r}$ and $C = 4r^{3/2}$.
 
@@ -246,7 +246,7 @@
 \section{The Book Theorem}
 
 
-\begin{lemma}[Key lemma (Lemma 2.2 in~\cite{Balister2024})]
+\begin{lemma}[Key lemma (Lemma 2.2 in Balister et al.)]
   \label{lem:key-lemma}
   \uses{def:p}
 
@@ -298,10 +298,10 @@
 \end{proof}
 
 
-\begin{algorithm}[The Multicolour Book Algorithm in~\cite{Balister2024}]\label{alg:book}
+\begin{algorithm}[The Multicolour Book Algorithm in Balister et al.]\label{alg:book}
   %Let $\chi$ be an $r$-colouring of $E(K_n)$, let $X$ and $Y_1,\ldots, Y_r$ be disjoint sets of vertices of $K_n$, and 
   Set $T_1 = \cdots = T_r = \emptyset$, and repeat the following steps until either $X = \emptyset$ or $\max\big\{ |T_i| : i \in [r] \big\} = t$. 
-  \begin{enumerate}[label=\arabic*., ref=\arabic*] 
+  \begin{enumerate}
   \item\label{Alg:Step1} Applying the key lemma: let the vertex $x \in X$, the colour $\ell \in [r]$, the sets $X' \subset X$ and $Y'_1,\ldots,Y'_r$, and $\lambda \ge -1$ be given by Lemma~\ref{key:lemma}, applied with
   \begin{equation}\label{def:alpha}
   \alpha_i = \frac{p_i(X,Y_i) - p_0 + \delta}{t}
@@ -318,7 +318,7 @@
   \end{enumerate}  
 \end{algorithm} 
 
-\begin{lemma}[Lemma 4.1 in~\cite{Balister2024}]\label{lem:pi:lower:bound}
+\begin{lemma}[Lemma 4.1 in Balister et al.]\label{lem:pi:lower:bound}
   \uses{alg:book}
   For each $i \in [r]$ and $s \in \N$, 
   \begin{equation}\label{eq:pi:lower:bound}
@@ -339,7 +339,7 @@
 
 Before continuing, let's note a couple of important consequences of Lemma~\ref{lem:pi:lower:bound}. First, it implies that neither $p_i(s)$ nor $\alpha_i(s)$ can get too small. 
 
-\begin{lemma}[Lemma 4.2 in~\cite{Balister2024}]\label{lem:pi:min} 
+\begin{lemma}[Lemma 4.2 in Balister et al.]\label{lem:pi:min} 
   \uses{alg:book}
   If\/ $t \ge 2$, then 
   $$p_i(s) \, \ge \, p_0 - \frac{3\delta}{4} \qquad \text{and} \qquad \alpha_i(s) \, \ge \, \frac{\delta}{4t}$$
@@ -353,7 +353,7 @@ Before continuing, let's note a couple of important consequences of Lemma~\ref{l
   
 It also implies the following bound on the number of density-boost steps. 
 
-\begin{lemma}[Lemma 4.3 in~\cite{Balister2024}]\label{lem:Bi:max}
+\begin{lemma}[Lemma 4.3 in Balister et al.]\label{lem:Bi:max}
   \uses{alg:book}
   If\/ $t \ge \lambda_0$ and\/ $\delta \le 1/4$, then
   $$|\cB_i(s)| \le \frac{4 \log(1/\delta)}{\lambda_0} \cdot t$$
@@ -369,7 +369,7 @@ It also implies the following bound on the number of density-boost steps.
 
 Lemmas~\ref{lem:pi:min} and~\ref{lem:Bi:max} together provide a lower bound on the size of the set $Y_i(s)$. 
 
-\begin{lemma}[Lemma 4.4 in~\cite{Balister2024}]\label{lem:Y:lower:bound}
+\begin{lemma}[Lemma 4.4 in Balister et al.]\label{lem:Y:lower:bound}
   \uses{alg:book}
   If\/ $t \ge 2$, then
   $$|Y_i(s)| \ge \bigg( p_0 - \frac{3\delta}{4} \bigg)^{t + |\cB_i(s)|} |Y_i(0)|$$
@@ -386,7 +386,7 @@ Lemmas~\ref{lem:pi:min} and~\ref{lem:Bi:max} together provide a lower bound on t
 
 Finally, we need to bound the size of the set $X(s)$. To do so, set $\eps = (\beta / r) e^{- C \sqrt{\lambda_0 + 1}}$, and define $\cB(s) = \cB_1(s) \cup \cdots \cup \cB_r(s)$ to be the set of all density-boost steps. 
 
-\begin{lemma}[Lemma 4.5 in~\cite{Balister2024}]\label{lem:X:lower:bound}
+\begin{lemma}[Lemma 4.5 in Balister et al.]\label{lem:X:lower:bound}
   \uses{alg:book}
   For each $s \in \N$, 
   \begin{equation}\label{eq:X:lower:bound}
@@ -404,7 +404,7 @@ Finally, we need to bound the size of the set $X(s)$. To do so, set $\eps = (\be
 
 We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lower:bound}. 
 
-\begin{lemma}[Lemma 4.6 in~\cite{Balister2024}]\label{lem:sum:of:lambdas}
+\begin{lemma}[Lemma 4.6 in Balister et al.]\label{lem:sum:of:lambdas}
   \uses{alg:book}
   If\/ $t \ge \lambda_0 / \delta > 0$ and\/ $\delta \le 1/4$, then
   $$\sum_{j \in \cB(s)} \sqrt{\lambda(j)} \le \frac{7r \log(1/\delta)}{\sqrt{\lambda_0}} \cdot t$$
@@ -481,7 +481,7 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
 \section{Deducing the Bound on the Ramsey Number}
 
 
-\begin{lemma}[Lemma 5.2 in~\cite{Balister2024}]\label{lem:ESz:steps}
+\begin{lemma}[Lemma 5.2 in Balister et al.]\label{lem:ESz:steps}
   Given\/ $n,r \in \N$ and\/ $\eps > 0$, and an $r$-colouring of $E(K_n)$, the following holds. There exist disjoint sets of vertices\/ $S_1,\dots,S_r$ and\/ $W$ such that, for every $i \in [r]$, 
   $$|W| \ge \bigg( \frac{1+\eps}{r} \bigg)^{\sum_{j = 1}^r |S_j|} n \qquad \text{and} \qquad |N_i(w) \cap W| \ge \bigg( \frac{1}{r} - \eps \bigg) |W| - 1$$ 
   for every $w \in W$, and $(S_i,W)$ is a monochromatic book in colour~$i$.
@@ -499,7 +499,7 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
   Since $(S_i,W)$ is a monochromatic book in colour~$i$ for each $i \in [r]$, it follows that $S_1,\dots,S_r$ and $W$ are sets with the claimed properties.
 \end{proof}
 
-\begin{lemma}[Lemma 5.3 in~\cite{Balister2024}]\label{lem:many:ESz:steps}
+\begin{lemma}[Lemma 5.3 in Balister et al.]\label{lem:many:ESz:steps}
   Let\/ $k,r \ge 2$ and\/ $\eps \in (0,1)$. We have 
   $$R_r\big( k - s_1, \ldots, k - s_r \big) \le e^{-\eps^3 k / 2} \bigg( \frac{1+\eps}{r} \bigg)^s r^{rk}$$
   for every $s_1,\ldots,s_r \in [k]$ with\/ $s = s_1 + \cdots + s_r \ge \eps^2 k$.
@@ -511,7 +511,7 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
   The claimed bound follows, since $( 1 + \eps )^{\eps^2 k} \ge e^{\eps^3 k/2}$ for every $\eps \in (0,1)$.
 \end{proof}
 
-\begin{theorem}[Theorem 5.1 in~\cite{Balister2024}] \label{thm:Ramsey:multicolour:quant}
+\begin{theorem}[Theorem 5.1 in Balister et al.] \label{thm:Ramsey:multicolour:quant}
   Let $r \ge 2$, and set $\delta = 2^{-160} r^{-12}$. Then
   %
   \begin{equation*}
@@ -523,7 +523,7 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
 \end{theorem}
 
 \begin{proof}
-  \uses{lem:ESz:steps, lem:many:ESz:steps, thm:book}
+  \uses{lem:ESz:steps, lem:many:ESz:steps, thm:book, lem:multibounds}
   Given $r \ge 2$, set $\delta = 2^{-160} r^{-12}$, let $k \ge 2^{160} r^{16}$ and $n \ge e^{-\delta k} r^{rk}$, and let $\chi$ be an arbitrary $r$-colouring of $E(K_n)$. Set $\eps = 2^{-50} r^{-4}$, and let $S_1,\ldots,S_r$ and $W$ be the sets given by Lemma~\ref{lem:ESz:steps}. Suppose first that $|S_1| + \cdots + |S_r| \ge \eps^2 k$, and observe that, by Lemma~\ref{lem:many:ESz:steps} and our lower bounds on $n$ and $|W|$, we have 
   $$|W| \ge \bigg( \frac{1+\eps}{r} \bigg)^{\sum_{j = 1}^r |S_j|} e^{-\delta k} r^{rk} \ge R_r\big( k - |S_1|, \ldots, k - |S_r| \big).$$ 
   Since $(S_i,W)$ is a monochromatic book in colour~$i$ for each $i \in [r]$, it follows that there exists a monochromatic copy of $K_k$ in $\chi$, as required.
@@ -536,7 +536,7 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
   $$|X| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t} \qquad \text{and} \qquad |Y_i| \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m.$$
   The first two of these inequalities are both easy: the first holds because $k \ge 2^{160} r^{16}$, and for the second note that since $n \ge r^{rk/2}$ and $\sum_{j = 1}^r |S_j| \le rk/4$, we have
   $$|X| \ge \bigg( \frac{1+\eps}{r} \bigg)^{rk/4} r^{rk/2} \ge r^{rk/4} \ge \big( 2^{61} r^7 \big)^{2^{-10} r k} \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t},$$
-  as required. The third inequality is more delicate: observe first\footnote{See Appendix~\ref{app:binomial} for a proof of the second inequality.} that 
+  as required. The third inequality is more delicate: observe first that 
   $$R\big( k, \ldots, k, k-t \big) \le \binom{rk-t}{k,\dots,k,k-t} \le e^{-(r-1)t^2/3rk} r^{rk-t} \le e^{-t^2/6k} r^{rk-t}.$$
   and therefore, since $\delta \le 2^{-10} t^2/k^2$ and $p = 1/r - 2\eps \ge e^{-3\eps r} / r$, we have 
   $$n \ge e^{-\delta k} r^{rk} \ge r^t e^{t^2/8k} \cdot R\big( k, \ldots, k, k-t \big) \ge \frac{m}{p^t} \cdot \exp\bigg( \frac{t^2}{8k} - 3\eps r t \bigg).$$
