@@ -298,8 +298,28 @@
 \end{proof}
 
 
+\begin{algorithm}[The Multicolour Book Algorithm in~\cite{Balister2024}]\label{alg:book}
+  %Let $\chi$ be an $r$-colouring of $E(K_n)$, let $X$ and $Y_1,\ldots, Y_r$ be disjoint sets of vertices of $K_n$, and 
+  Set $T_1 = \cdots = T_r = \emptyset$, and repeat the following steps until either $X = \emptyset$ or $\max\big\{ |T_i| : i \in [r] \big\} = t$. 
+  \begin{enumerate}[label=\arabic*., ref=\arabic*] 
+  \item\label{Alg:Step1} Applying the key lemma: let the vertex $x \in X$, the colour $\ell \in [r]$, the sets $X' \subset X$ and $Y'_1,\ldots,Y'_r$, and $\lambda \ge -1$ be given by Lemma~\ref{key:lemma}, applied with
+  \begin{equation}\label{def:alpha}
+  \alpha_i = \frac{p_i(X,Y_i) - p_0 + \delta}{t}
+  \end{equation}
+  for each $i \in [r]$, and go to Step~2.\smallskip
+  \item\label{Alg:Step2} Colour step: If $\lambda \le \lambda_0$, then choose a colour $j \in [r]$ such that the set
+  $$X'' = N_j(x) \cap X'$$ 
+  has at least $(|X'| - 1)/r$ elements, and update the sets as follows:
+  $$X \to X'', \qquad Y_j \to Y'_j \qquad \text{and} \qquad T_j \to T_j \cup \{x\}$$
+  and go to Step~1. Otherwise go to Step~3.\smallskip
+  \item\label{Alg:Step3} Density-boost step: If $\lambda > \lambda_0$, then we update the sets as follows:
+  $$X \to X' \qquad \text{and} \qquad Y_\ell \to Y'_\ell,$$
+  and go to Step~1.
+  \end{enumerate}  
+\end{algorithm} 
 
 \begin{lemma}[Lemma 4.1 in~\cite{Balister2024}]\label{lem:pi:lower:bound}
+  \uses{alg:book}
   For each $i \in [r]$ and $s \in \N$, 
   \begin{equation}\label{eq:pi:lower:bound}
     p_i(s) - p_0 + \delta \, \ge \, \delta \cdot \bigg( 1 - \frac{1}{t} \bigg)^{t} \prod_{j \in \cB_i(s)} \bigg( 1 + \frac{\lambda(j)}{t} \bigg).
@@ -319,7 +339,8 @@
 
 Before continuing, let's note a couple of important consequences of Lemma~\ref{lem:pi:lower:bound}. First, it implies that neither $p_i(s)$ nor $\alpha_i(s)$ can get too small. 
 
-\begin{lemma}[Lemma 4.2 in~\cite{Balister2024}]\label{lem:pi:min}
+\begin{lemma}[Lemma 4.2 in~\cite{Balister2024}]\label{lem:pi:min} 
+  \uses{alg:book}
   If\/ $t \ge 2$, then 
   $$p_i(s) \, \ge \, p_0 - \frac{3\delta}{4} \qquad \text{and} \qquad \alpha_i(s) \, \ge \, \frac{\delta}{4t}$$
   for every $i \in [r]$ and $s \in \N$. 
@@ -333,6 +354,7 @@ Before continuing, let's note a couple of important consequences of Lemma~\ref{l
 It also implies the following bound on the number of density-boost steps. 
 
 \begin{lemma}[Lemma 4.3 in~\cite{Balister2024}]\label{lem:Bi:max}
+  \uses{alg:book}
   If\/ $t \ge \lambda_0$ and\/ $\delta \le 1/4$, then
   $$|\cB_i(s)| \le \frac{4 \log(1/\delta)}{\lambda_0} \cdot t$$
   for every $i \in [r]$ and $s \in \N$. 
@@ -348,6 +370,7 @@ It also implies the following bound on the number of density-boost steps.
 Lemmas~\ref{lem:pi:min} and~\ref{lem:Bi:max} together provide a lower bound on the size of the set $Y_i(s)$. 
 
 \begin{lemma}[Lemma 4.4 in~\cite{Balister2024}]\label{lem:Y:lower:bound}
+  \uses{alg:book}
   If\/ $t \ge 2$, then
   $$|Y_i(s)| \ge \bigg( p_0 - \frac{3\delta}{4} \bigg)^{t + |\cB_i(s)|} |Y_i(0)|$$
   for every $i \in [r]$ and $s \in \N$. 
@@ -364,6 +387,7 @@ Lemmas~\ref{lem:pi:min} and~\ref{lem:Bi:max} together provide a lower bound on t
 Finally, we need to bound the size of the set $X(s)$. To do so, set $\eps = (\beta / r) e^{- C \sqrt{\lambda_0 + 1}}$, and define $\cB(s) = \cB_1(s) \cup \cdots \cup \cB_r(s)$ to be the set of all density-boost steps. 
 
 \begin{lemma}[Lemma 4.5 in~\cite{Balister2024}]\label{lem:X:lower:bound}
+  \uses{alg:book}
   For each $s \in \N$, 
   \begin{equation}\label{eq:X:lower:bound}
   |X(s)| \ge \eps^{rt + |\cB(s)|} \exp\bigg( - C \sum_{j \in \cB(s)} \sqrt{\lambda(j)+1}\,\, \bigg) |X(0)| - rt.
@@ -381,6 +405,7 @@ Finally, we need to bound the size of the set $X(s)$. To do so, set $\eps = (\be
 We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lower:bound}. 
 
 \begin{lemma}[Lemma 4.6 in~\cite{Balister2024}]\label{lem:sum:of:lambdas}
+  \uses{alg:book}
   If\/ $t \ge \lambda_0 / \delta > 0$ and\/ $\delta \le 1/4$, then
   $$\sum_{j \in \cB(s)} \sqrt{\lambda(j)} \le \frac{7r \log(1/\delta)}{\sqrt{\lambda_0}} \cdot t$$
   for every $s \in \N$. 
@@ -414,7 +439,7 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
 \end{theorem}
 
 \begin{proof}
-  \uses{lem:Bi:max, lem:Y:lower:bound, lem:sum:of:lambdas, lem:X:lower:bound}
+  \uses{lem:Bi:max, lem:Y:lower:bound, lem:sum:of:lambdas, lem:X:lower:bound, alg:book}
   Recall that we are given an $r$-colouring $\chi$ of $E(K_n)$ and a collection of %disjoint 
   sets $X,Y_1,\ldots,Y_r \subset V(K_n)$ with
   \begin{equation}\label{eq:book:thm:conditions}
