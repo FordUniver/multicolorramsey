@@ -298,6 +298,112 @@
 \end{proof}
 
 
+
+\begin{lemma}[Lemma 4.1 in~\cite{Balister2024}]\label{lem:pi:lower:bound}
+  For each $i \in [r]$ and $s \in \N$, 
+  \begin{equation}\label{eq:pi:lower:bound}
+    p_i(s) - p_0 + \delta \, \ge \, \delta \cdot \bigg( 1 - \frac{1}{t} \bigg)^{t} \prod_{j \in \cB_i(s)} \bigg( 1 + \frac{\lambda(j)}{t} \bigg).
+  \end{equation}
+\end{lemma}
+  
+\begin{proof}
+  \uses{lem:key-lemma}
+  Note first that if $Y_i(s+1) = Y_i(s)$, then $p_i(s+1) \ge p_i(s)$, since the minimum degree does not decrease when we take a subset of $X(s)$. When we perform a colour step in colour $i$, % (that is, we add $x$ to $T_i$), 
+  we have $p_i(s+1) \ge p_i(s) - \alpha_i(s)$, by Lemma~\ref{key:lemma}, and hence
+  $$p_i(s+1) - p_0 + \delta \ge \bigg( 1 - \frac{1}{t} \bigg) \big( p_i(s) - p_0 + \delta \big),$$
+  by our choice of $\alpha_i(s)$. Similarly, when we perform a density-boost step in colour $i$  
+  we have $p_i(s+1) \ge p_i(s) + \lambda(s) \alpha_i(s)$, by Lemma~\ref{key:lemma}, and hence
+  $$p_i(s+1) - p_0 + \delta \ge \bigg( 1 + \frac{\lambda(s)}{t} \bigg) \big( p_i(s) - p_0 + \delta \big).$$
+  Recalling that there are at most $t$ colour steps in colour $i$, and that $p_i(0) \ge p_0$, by the definition~\eqref{def:p0} of $p_0$, the claimed bound follows. 
+\end{proof}
+
+Before continuing, let's note a couple of important consequences of Lemma~\ref{lem:pi:lower:bound}. First, it implies that neither $p_i(s)$ nor $\alpha_i(s)$ can get too small. 
+
+\begin{lemma}[Lemma 4.2 in~\cite{Balister2024}]\label{lem:pi:min}
+  If\/ $t \ge 2$, then 
+  $$p_i(s) \, \ge \, p_0 - \frac{3\delta}{4} \qquad \text{and} \qquad \alpha_i(s) \, \ge \, \frac{\delta}{4t}$$
+  for every $i \in [r]$ and $s \in \N$. 
+\end{lemma}
+
+\begin{proof}
+  \uses{lem:pi:lower:bound}
+  Both bounds follow immediately from~\eqref{eq:pi:lower:bound} and the definition of $\alpha_i(s)$. 
+\end{proof}
+  
+It also implies the following bound on the number of density-boost steps. 
+
+\begin{lemma}[Lemma 4.3 in~\cite{Balister2024}]\label{lem:Bi:max}
+  If\/ $t \ge \lambda_0$ and\/ $\delta \le 1/4$, then
+  $$|\cB_i(s)| \le \frac{4 \log(1/\delta)}{\lambda_0} \cdot t$$
+  for every $i \in [r]$ and $s \in \N$. 
+\end{lemma}
+  
+\begin{proof}
+    \uses{lem:pi:lower:bound}
+  Since $\lambda(j) > \lambda_0$ for every $j \in \cB_i(s)$, and $p_i(s) \le 1$, it follows from~\eqref{eq:pi:lower:bound} that
+  $$\frac{\delta}{4} \bigg( 1 + \frac{\lambda_0}{t} \bigg)^{|\cB_i(s)|} \le 1 + \delta.$$
+  Since $t \ge \lambda_0$ and $\delta \le 1/4$, the claimed bound follows. 
+\end{proof}
+
+Lemmas~\ref{lem:pi:min} and~\ref{lem:Bi:max} together provide a lower bound on the size of the set $Y_i(s)$. 
+
+\begin{lemma}[Lemma 4.4 in~\cite{Balister2024}]\label{lem:Y:lower:bound}
+  If\/ $t \ge 2$, then
+  $$|Y_i(s)| \ge \bigg( p_0 - \frac{3\delta}{4} \bigg)^{t + |\cB_i(s)|} |Y_i(0)|$$
+  for every $i \in [r]$ and $s \in \N$. 
+\end{lemma}
+  
+\begin{proof}
+  \uses{lem:pi:min, lem:Bi:max}
+  Note that $Y_i(j+1) \ne Y_i(j)$ for at most $t + |\cB_i(s)|$ of the first $s$ steps, and for those steps we have
+  $$|Y_i(j+1)| = p_i(j) |Y_i(j)| \ge \bigg( p_0 - \frac{3\delta}{4} \bigg) |Y_i(j)|,$$ 
+  by~\eqref{eq:key:alli} and Lemma~\ref{lem:pi:min}.
+\end{proof}
+
+
+Finally, we need to bound the size of the set $X(s)$. To do so, set $\eps = (\beta / r) e^{- C \sqrt{\lambda_0 + 1}}$, and define $\cB(s) = \cB_1(s) \cup \cdots \cup \cB_r(s)$ to be the set of all density-boost steps. 
+
+\begin{lemma}[Lemma 4.5 in~\cite{Balister2024}]\label{lem:X:lower:bound}
+  For each $s \in \N$, 
+  \begin{equation}\label{eq:X:lower:bound}
+  |X(s)| \ge \eps^{rt + |\cB(s)|} \exp\bigg( - C \sum_{j \in \cB(s)} \sqrt{\lambda(j)+1}\,\, \bigg) |X(0)| - rt.
+  \end{equation}
+\end{lemma}
+
+\begin{proof}
+  If $\lambda(j) \le \lambda_0$, then by~\eqref{eq:key:ell} and Step~2 of the algorithm we have
+  $$|X(j+1)| \ge \frac{\beta e^{- C \sqrt{\lambda_0 + 1}}}{r} \cdot |X(j)| - 1 = \eps |X(j)| - 1.$$ 
+  On the other hand, if $\lambda(j) > \lambda_0$, then $j \in \cB(s)$, and we have 
+  $$|X(j+1)| \ge \beta e^{- C \sqrt{\lambda(j) + 1}} |X(j)|,$$ 
+  by~\eqref{eq:key:ell} and Step~3 of the algorithm. Since there are at most $rt$ colour steps, and $\beta \ge \eps$, the claimed bound follows.
+\end{proof}
+
+We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lower:bound}. 
+
+\begin{lemma}[Lemma 4.6 in~\cite{Balister2024}]\label{lem:sum:of:lambdas}
+  If\/ $t \ge \lambda_0 / \delta > 0$ and\/ $\delta \le 1/4$, then
+  $$\sum_{j \in \cB(s)} \sqrt{\lambda(j)} \le \frac{7r \log(1/\delta)}{\sqrt{\lambda_0}} \cdot t$$
+  for every $s \in \N$. 
+\end{lemma}
+
+\begin{proof}
+  Observe first that, by Lemma~\ref{lem:pi:lower:bound}, we have 
+  \begin{equation}\label{eq:B:condition}
+  \frac{\delta}{4} \prod_{j \in \cB_i(s)} \bigg( 1 + \frac{\lambda(j)}{t} \bigg) \le 1 + \delta
+  \end{equation}
+  for each $i \in [r]$. Note also that $\lambda_0 \le \lambda(j) \le 5t/\delta$ for every $j \in \cB(s)$, where the lower bound holds by the definition of $\cB(s)$, and the upper bound by~\eqref{eq:B:condition} and since $\delta \le 1/4$. Now, since $\log(1+x) \ge \min\{ x/2,1\}$ for all $x > 0$, it follows that
+  %the function $\sqrt{x}/\log(1+x)$ is increasing either side of its unique minimum, and therefore %is therefore maximised at one of its extreme points. 
+  \begin{equation}\label{eq:not:convexity}
+  \frac{ \sqrt{\lambda(j)} }{\log(1 + \lambda(j)/t) } \le \max\bigg\{ \frac{ 2t }{ \sqrt{\lambda_0} }, \, \sqrt{ \frac{5t}{\delta}} \bigg\} \le \frac{ 3t }{ \sqrt{\lambda_0} },
+  %\frac{ \sqrt{\lambda(j)} }{\log(1 + \lambda(j)/t) } \le \max\bigg\{ \frac{ \sqrt{\lambda_0} }{ \log(1 + \lambda_0/t) }, \, \frac{\sqrt{5t/\delta}}{\log(1 + 5/\delta)} \bigg\} \le \frac{ 2t }{ \sqrt{\lambda_0} },
+  \end{equation}
+  where in the second inequality we used %the fact that $\log(1 + x) \ge x/2$ for all $0 < x \le 1/4$, and 
+  our assumption that $t \ge \lambda_0 / \delta$. It now follows that
+  $$\sum_{j \in \cB_i(s)} \sqrt{\lambda(j)} \le \frac{ 3t }{ \sqrt{\lambda_0} } \sum_{j \in \cB_i(s)} \log \bigg( 1 + \frac{\lambda(j)}{t} \bigg) \le \frac{7 \log(1/\delta)}{\sqrt{\lambda_0}} \cdot t,$$
+  where the first inequality holds by~\eqref{eq:not:convexity}, and the second follows from~\eqref{eq:B:condition}, since $\delta \le 1/4$. Summing over $i \in [r]$, we obtain the claimed bound. 
+\end{proof}
+
+
 \begin{theorem}\label{thm:book}
   Let\/ $\chi$ be an\/ $r$-colouring of\/ $E(K_n)$, and let\/ $X,Y_1,\ldots,Y_r \subset V(K_n)$. % be disjoint sets. 
   For every $p > 0$ and $\mu \ge 2^{10} r^3$, and every $t,m \in \N$ with $t \ge \mu^5 / p$, the following holds. If 
@@ -307,7 +413,42 @@
   then $\chi$ contains a monochromatic $(t,m)$-book.
 \end{theorem}
 
-
+\begin{proof}
+  \uses{lem:Bi:max, lem:Y:lower:bound, lem:sum:of:lambdas, lem:X:lower:bound}
+  Recall that we are given an $r$-colouring $\chi$ of $E(K_n)$ and a collection of %disjoint 
+  sets $X,Y_1,\ldots,Y_r \subset V(K_n)$ with
+  \begin{equation}\label{eq:book:thm:conditions}
+  |X| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t} \qquad \text{and} \qquad |Y_i| \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m
+  \end{equation}
+  for each $i \in [r]$, for some $p > 0$, $\mu \ge 2^{10} r^3$ and $t,m \in \N$ with $t \ge \mu^5 / p$, and moreover
+  \begin{equation}\label{eq:book:thm:min:degree}
+  |N_i(x) \cap Y_i| \ge p|Y_i|
+  \end{equation}
+  for every $x \in X$ and $i \in [r]$. 
+  %Our task is to show that the multicolour book algorithm produces a monochromatic $(t,m)$-book. 
+  We will run the multicolour book algorithm with
+  $$\delta = \frac{p}{\mu^2} \qquad \text{and} \qquad \lambda_0 = \bigg( \frac{\mu \log(1/\delta)}{8C} \bigg)^2,$$
+  where $C = 4r^{3/2}$ (as before), and show that it ends with
+  $$\max \big\{ |T_i(s)| : i \in [r] \big\} = t \qquad \text{and} \qquad \min\big\{ |Y_i(s)| : i \in [r] \big\} \ge m,$$
+  and therefore produces a monochromatic $(t,m)$-book.
+  
+  To do so, we just need to bound the sizes of the sets $X(s)$ and $Y_i(s)$ from below. Observe that $t \ge \lambda_0$ and $\delta \le 1/4$, and therefore, by Lemma~\ref{lem:Bi:max}, that
+  \begin{equation}\label{eq:Bi:final:bound}
+  |\cB_i(s)| \, \le \, \frac{4 \log(1/\delta)}{\lambda_0} \cdot t \, = \, \frac{2^{12} r^3}{\mu^2 \log(1/\delta)} \cdot t \, \le \, t
+  \end{equation}
+  for every $i \in [r]$ and $s \in \N$. Since $p_0 \ge p$, by~\eqref{eq:book:thm:min:degree} and the definition of $p_0$, it follows that  
+  $$|Y_i(s)| \, \ge \, \bigg( p - \frac{3\delta}{4} \bigg)^{t + |\cB_i(s)|} |Y_i| \, \ge \, e^{-2\delta t / p} \, p^{|\cB_i(s)|} \, \big( e^{2^{13} r^3 / \mu^2} \big)^t \, m,$$
+  where the first inequality holds by Lemma~\ref{lem:Y:lower:bound}, and the second by~\eqref{eq:book:thm:conditions} and~\eqref{eq:Bi:final:bound}. Noting that $p^{|\cB_i(s)|} \ge e^{-2^{12} r^3 t / \mu^2}$, by~\eqref{eq:Bi:final:bound}, and that $\delta / p = 1/\mu^2$, it follows that 
+  $$|Y_i(s)| \, \ge \, e^{-2 t / \mu^2} \big( e^{2^{12} r^3 / \mu^2} \big)^t \, m \, \ge \, m,$$
+  as claimed. To bound $|X(s)|$, recall~\eqref{eq:X:lower:bound} and observe that 
+  $$\eps^{rt + |\cB(s)|}  \ge \bigg( \frac{\beta}{r} \cdot e^{- C \sqrt{\lambda_0 + 1}} \bigg)^{2rt} \ge \big( e^{- 4C \sqrt{\lambda_0}} \big)^{rt} = \delta^{\mu r t/2} = \bigg( \frac{\mu^2}{p} \bigg)^{-\mu r t / 2},$$
+  where the first step holds because $\eps = (\beta / r) e^{- C \sqrt{\lambda_0 + 1}}$ and $|\cB(s)| \le rt$, by~\eqref{eq:Bi:final:bound}, and the second step holds because $\beta = 3^{-4r}$ and $\lambda_0 \ge 2^{10} r^3$. Moreover, we have
+  $$\sum_{j \in \cB(s)} \sqrt{\lambda(j)+1} \le \frac{8r \log(1/\delta)}{\sqrt{\lambda_0}} \cdot t = \frac{2^6Crt}{\mu},$$
+  by Lemma~\ref{lem:sum:of:lambdas} and our choice of $\lambda_0$, and therefore 
+  $$|X(s)| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t / 2} \exp\bigg( - \frac{2^6C^2rt}{\mu} \bigg) - rt > 0,$$
+  for every $s \in \N$, by Lemma~\ref{lem:X:lower:bound} and since $\mu \ge 2^{10} r^3$ and $C = 4r^{3/2}$. It follows that the algorithm produces a monochromatic $(t,m)$-book, as claimed. 
+\end{proof}
+  
 
 
 
