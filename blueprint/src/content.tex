@@ -227,16 +227,20 @@
 
     For each colour $i \in [r]$, define a function $\sigma_i \colon X \to \R^{Y_i}$ as follows: for each $x \in X$, choose a set $N'_i(x) \subset N_i(x) \cap Y_i$ of size exactly $p_i|Y_i|$, where $p_i = p_i(X,Y_i)$, and set
     $$\sigma_i(x) = \frac{\id_{N'_i(x)} - p_i\id_{Y_i}}{\sqrt{\alpha_ip_i|Y_i|}},$$
-    where $\id_S \in \{0,1\}^{Y_i}$ denotes the indicator function of the set $S$. Note that, for any $x,y\in X$,
+    where $\id_S \in \{0,1\}^{Y_i}$ denotes the indicator function of the set $S$. Note that, for any $x,y\in X$, %TODO why? mp direction suffices
     $$\lambda \le \big\langle \sigma_i(x),\sigma_i(y) \big\rangle \quad \Leftrightarrow \quad \big( p_i + \lambda\alpha_i \big) p_i |Y_i| \le |N'_i(x) \cap N'_i(y)|.$$
     Now, by Lemma~\ref{lem:geometric}, there exists $\lambda \ge -1$ and colour $\ell \in [r]$ such that
     $$\beta e^{- C\sqrt{\lambda + 1}} \le \Pr\Big( \lambda  \le \big\langle \sigma_\ell(U),\sigma_\ell(U') \big\rangle \, \text{ and } \, -1 \le \big\langle \sigma_i(U), \sigma_i(U') \big\rangle \, \text{ for all } \, i \ne \ell \Big) .$$
     where $U$, $U'$ are independent random variables distributed uniformly in the set~$X$. Hence there exists a vertex $x \in X$ and a set $X' \subset X$ (namely $\{x'\}$ for the vertex that exists for $U'$?) %TODO
     such that,
-    $$\beta e^{- C \sqrt{\lambda + 1}} |X|  \le |X'|  \qquad \text{and} \qquad  \big( p_\ell + \lambda\alpha_\ell \big) p_\ell |Y_\ell | \le |N'_\ell(x) \cap N'_\ell(y)|$$
+    $$\beta e^{- C \sqrt{\lambda + 1}} |X| \le |X'|$$ %TODO why?
+    and
+    $$\big( p_\ell + \lambda\alpha_\ell \big) p_\ell |Y_\ell | \le |N'_\ell(x) \cap N'_\ell(y)|$$
     for every $y \in X'$, and
     $$\big( p_i - \alpha_i \big) p_i |Y_i| \le |N'_i(x) \cap N'_i(y)|$$
-    for every $y \in X'$ and $i \in [r]$. Setting $Y'_i = N'_i(x)$ for each $i \in [r]$, it follows that
+    for every $y \in X'$ and $i \in [r]$.
+    
+    Setting $Y'_i = N'_i(x)$ for each $i \in [r]$, it follows that
     \begin{multline}
         \begin{aligned}
         p_\ell(X,Y_\ell) + \lambda \alpha_\ell &= \frac{ \big( p_\ell + \lambda\alpha_\ell \big) p_\ell |Y_\ell |}{p_\ell |Y_\ell|}\\
