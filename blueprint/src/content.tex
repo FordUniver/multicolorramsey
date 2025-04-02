@@ -6,6 +6,35 @@
 % the current file can be a simple sequence of \input. Otherwise It
 % can start with a \section or \chapter for instance.
 
+\section{Introduction}
+
+\section{The Book Theorem}
+
+\section{The Proof of the Key Lemma}
+
+\section{Proof of the Book Theorem}
+
+
+\section{Deducing the bound on $R_r(k)$}
+
+
+\section*{Appendix: Bounding binomial coefficients}
+
+\begin{lemma}[(Lemma A.1) in~\cite{Balister2024}]  
+  \label{lem:multibounds}
+  For each $k,t,r \in \N$ with $3 \le t \le k$, we have
+  $$\binom{rk-t}{k,\dots,k,k-t} \le e^{-(r-1)t^2/3rk} r^{rk-t}.$$
+\end{lemma}
+ 
+\begin{proof}
+To prove this, observe that 
+$$\binom{rk-t}{k,\dots,k,k-t} \binom{rk}{k,\dots,k}^{-1} = \, \prod_{i = 0}^{t - 1} \frac{k - i}{rk - i} = r^{-t} \,\prod_{i = 0}^{t-1} \bigg( 1 - \frac{(r-1)i}{rk - i} \bigg) \le r^{-t} \cdot e^{-(r-1)t^2/3rk}.$$
+Since $\binom{rk}{k,\dots,k} \le r^{rk}$, the claimed bound follows.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \begin{definition}
   \label{def:edge-colouring}
   \lean{SimpleGraph.EdgeColoring}
