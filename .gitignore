@@ -1,5 +1,6 @@
 /.lake
 /venv
+/.venv
 __pycache__
 
 blueprint/web
