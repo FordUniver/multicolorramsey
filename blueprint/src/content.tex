@@ -209,6 +209,11 @@
   \end{equation}
 
   Let $M = \max \big\{ \big\langle \sigma_i(U),\sigma_i(U') \big\rangle : i \in [r] \big\}$. For any constant $c \le C - 1$, we have
+  \begin{align}
+  \exp(c\sqrt{M+1})\id_E&= \id_E \Bigl(e^{c\sqrt{1-1}}+ \int_{-1}^M \frac{ce^{c\sqrt{\lambda+1}}}{2\sqrt{\lambda+1}} d\lambda\Bigr)\\
+  &= \id_E+ \int_{-1}^{\infty} \id_{E,\{M\geq \lambda\}}\frac{ce^{c\sqrt{\lambda+1}}}{2\sqrt{\lambda+1}} d\lambda.
+  \end{align}
+  Taking the expected value of both sides of the previous equation and applying Tonelli's theorem gives:
   \begin{align*}
     \Ex\Big[ \exp\big( c \sqrt{M + 1} \big) \mathbf{1}_E \Big]
     & % = \int_{E} \exp\big( c \sqrt{M + 1}  \big) d\Pr
@@ -217,7 +222,7 @@
     & \le \, \beta + \beta r \int_{-1}^\infty \frac{c}{2\sqrt{\lambda + 1}} \cdot e^{- \sqrt{\lambda + 1}} \,\mathrm{d}\lambda\\
     & \le \, \beta (cr + 1),
   \end{align*}
-  where in the first step we used Fubini's theorem, in the second we used $\Pr(E) \le \beta$ and $c \le C - 1$, and in the final step we used the fact that $\int_0^\infty \frac{1}{2\sqrt{x}} e^{-\sqrt{x}} \, \mathrm{d}x = 1$.
+ where in the second step we used $\Pr(E) \le \beta$ and $c \le C - 1$, and in the final step we used the fact that $\int_0^\infty \frac{1}{2\sqrt{x}} e^{-\sqrt{x}} \, \mathrm{d}x = 1$.
 
   In particular, applying this with $c = \sqrt{3}r^{3/2}$, and recalling that $C = 4r^{3/2} \ge c + 1$ and $\beta = 3^{-4r}$, it follows that
   \begin{align}
@@ -237,10 +242,6 @@
   and therefore there exists an $i \in [r]$ as required.
 
 \end{proof}
-
-
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The Book Theorem}
@@ -266,21 +267,46 @@
 \begin{proof}
   \uses{def:p, lem:geometric}
 
-  For each colour $i \in [r]$, define a function $\sigma_i \colon X \to \R^{Y_i}$ as follows: for each $x \in X$, choose a set $N'_i(x) \subset N_i(x) \cap Y_i$ of size exactly $p_i|Y_i|$, where $p_i = p_i(X,Y_i)$, and set
+  For each colour $i \in [r]$, define a function $\sigma_i \colon X \to \R^{\cup_i Y_i}$ as follows: for each $x \in X$, choose a set $N'_i(x) \subset N_i(x) \cap Y_i$ of size exactly $p_i|Y_i|$, where $p_i = p_i(X,Y_i)$, and set
   $$\sigma_i(x) = \frac{\id_{N'_i(x)} - p_i\id_{Y_i}}{\sqrt{\alpha_ip_i|Y_i|}},$$
-  where $\id_S \in \{0,1\}^{Y_i}$ denotes the indicator function of the set $S$. Note that, for any $x,y\in X$, %TODO why? mp direction suffices
+  where $\id_S \in \{0,1\}^{\cup_i Y_i}$ denotes the indicator function of the set $S$. Note that, for any $x,y\in X$,
+   %TODO why? mp direction suffices
   $$\lambda \le \big\langle \sigma_i(x),\sigma_i(y) \big\rangle \quad \Leftrightarrow \quad \big( p_i + \lambda\alpha_i \big) p_i |Y_i| \le |N'_i(x) \cap N'_i(y)|.$$
+  Indeed, for every $x,y\in X$, we have 
+  \begin{multline}
+    \begin{aligned}
+            \alpha_ip_i|Y_i| \langle \sigma_i(x),\sigma_i(y) \rangle &= \langle \id_{N'_i(x)}- p_i\id_{Y_i},\id_{N'_i(y)}- p_i\id_{Y_i}\rangle\\
+            &= \Bigl(\big\langle \id_{N'_i(x)},\id_{N'_i(y)}\big\rangle +p_i^2\langle \id_{Y_i},
+            \id_{Y_i}\rangle - p_i \langle \id_{N'_i(x)},\id_{Y_i}\rangle- p_i \langle \id_{N'_i(y)},\id_{Y_i}\rangle\Bigr)\\
+            &= \Bigl(|N'_i(x) \cap N'_i(y)|-p_i^2|Y_i| \Bigr),
+    \end{aligned}
+  \end{multline}
+  Where the last ineqaulity follows since $|N'_i(x)|= N'_i(y)|= p_i|Y_i|$ and both sets are subsets of $Y_i$.
   Now, by Lemma~\ref{lem:geometric}, there exists $\lambda \ge -1$ and colour $\ell \in [r]$ such that
-  $$\beta e^{- C\sqrt{\lambda + 1}} \le \Pr\Big( \lambda  \le \big\langle \sigma_\ell(U),\sigma_\ell(U') \big\rangle \, \text{ and } \, -1 \le \big\langle \sigma_i(U), \sigma_i(U') \big\rangle \, \text{ for all } \, i \ne \ell \Big) .$$
-  where $U$, $U'$ are independent random variables distributed uniformly in the set~$X$. Hence there exists a vertex $x \in X$ and a set $X' \subset X$ (namely $\{x'\}$ for the vertex that exists for $U'$?) %TODO
+  \begin{equation}
+    \label{eq: geometric-app}
+    \beta e^{- C\sqrt{\lambda + 1}} \le \Pr\Big( \lambda  \le \big\langle \sigma_\ell(U),\sigma_\ell(U') \big\rangle \, \text{ and } \, -1 \le \big\langle \sigma_i(U), \sigma_i(U') \big\rangle \, \text{ for all } \, i \ne \ell \Big) .
+  \end{equation}
+
+  where $U$, $U'$ are independent random variables distributed uniformly in the set~$X$. We claim that there exists a vertex $x \in X$ and a set $X' \subset X$
+   %TODO
   such that,
   $$\beta e^{- C \sqrt{\lambda + 1}} |X| \le |X'|$$ %TODO why?
   and
   $$\big( p_\ell + \lambda\alpha_\ell \big) p_\ell |Y_\ell | \le |N'_\ell(x) \cap N'_\ell(y)|$$
   for every $y \in X'$, and
   $$\big( p_i - \alpha_i \big) p_i |Y_i| \le |N'_i(x) \cap N'_i(y)|$$
-  for every $y \in X'$ and $i \in [r]$.
-  
+  for every $y \in X'$ and $i \in [r]$. To see this, we let 
+  $$ P= \Biggl\{(x,x'): x,x' \in X , \lambda  \le \big\langle \sigma_\ell(x),\sigma_\ell(x') \big\rangle \, \text{ and } \, -1 \le \big\langle \sigma_i(x), \sigma_i(x') \big\rangle \, \text{ for all } \, i \ne \ell  \Biggr\}.$$
+  Since $U$ and $U'$ are independent and uniformly distributed over $x$, Equation \ref{eq: geometric-app} implies that
+  \begin{equation}
+  |P|\geq \beta e^{-C\sqrt{\lambda + 1}}|X|^2.
+  \end{equation} 
+  However, by averaging, there must then exist a vertex $x \in X$ such that:
+  \begin{equation}
+|X'|:=\bigl|\{y: (x,y) \in P  \} \bigr| \ge \frac{\beta e^{-C\sqrt{\lambda+1}}|X|^2}{|X|}\geq  \beta e^{-C\sqrt{\lambda+1}}|X|.
+  \end{equation}
+  We can them simply pick this $X'$ to be the desired subset.
   Setting $Y'_i = N'_i(x)$ for each $i \in [r]$, it follows that
   \begin{multline}
       \begin{aligned}
