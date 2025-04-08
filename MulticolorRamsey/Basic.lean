@@ -21,7 +21,14 @@ open MeasureTheory ProbabilityTheory Finset Real
 
 namespace SimpleGraph
 
-variable {V : Type α} {G : SimpleGraph V}
+variable {V : Type α}
+
+-- https://github.com/leanprover-community/mathlib4/pull/23838
+instance completeGraph.adjDecidable [DecidableEq V] : DecidableRel (completeGraph V).Adj :=
+  SimpleGraph.Top.adjDecidable V
+
+variable{G : SimpleGraph V}
+
 
 /-- An edge coloring maps each member of the graph's edge set to a colour in `C` --/
 abbrev EdgeColoring (C : Type) := G.edgeSet → C
