@@ -5,13 +5,6 @@ open MeasureTheory ProbabilityTheory Finset Real
 open scoped ENNReal
 
 ----------------------------------------------------------------------------------------------------
--- N
-
--- "Given an edge colouring, we write $N_i(u)$ to denote the neighbourhood of vertex $u$ in colour $i$."
-abbrev N {C} {V} {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeColoring C) (i : C) x :=
-  χ.coloredNeighborFinset i x
-
-----------------------------------------------------------------------------------------------------
 -- p
 -- TODO use the proper minimum or whatever! i was to annoyed to figure out how it works at the time
 
@@ -31,7 +24,7 @@ lemma min_le_mem_ℕ (f : V → ℕ) (v : V) (X : Finset V) : mymin f X ≤ f v 
 -- this is pᵢ|Yᵢ| in the text
 def pY {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
     (i : Fin r) : ℕ :=
-  mymin (fun x => #((N χ i x) ∩ Y)) X
+  mymin (fun x => #((χ.N i x) ∩ Y)) X
 
 -- this is pᵢ in the text
 noncomputable def p {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) (EC : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
@@ -56,7 +49,7 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
   ∃ l : Fin r, ∃ Λ, (-1 ≤ Λ) ∧
   ∃ x ∈ X, ∃ X' : Finset V, ∃ nx : Nonempty X', ∃ Y' : Fin r → (Finset V),
     X' ⊆ X ∧ -- TODO paper says strict subset but idk if that's true
-    (∀ i, (Y' i) ⊆ (N χ i x) ∩ (Y i)) ∧-- same
+    (∀ i, (Y' i) ⊆ (χ.N i x) ∩ (Y i)) ∧-- same
 
     β * Real.exp (-C * Real.sqrt (Λ + 1)) * X.card ≤ X'.card ∧
 
@@ -67,16 +60,16 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
 
   intros β C
 
-  let p' (i : Fin r) (x : V) : (pY X (Y i) χ i) ≤ #(N χ i x ∩ Y i) :=
-    min_le_mem_ℕ (fun x => #((N χ i x) ∩ Y i)) x X
+  let p' (i : Fin r) (x : V) : (pY X (Y i) χ i) ≤ #(χ.N i x ∩ Y i) :=
+    min_le_mem_ℕ (fun x => #((χ.N i x) ∩ Y i)) x X
 
   -- "for each 𝑥 ∈ 𝑋, choose a set N′i (x) ⊂ 𝑁i(x) ∩ Yi of size exactly 𝑝𝑖(𝑋, 𝑌𝑖)|Yi|"
   let N' (i : Fin r) (x : V) : (Finset V) := Classical.choose (Finset.exists_subset_card_eq (p' i x))
 
-  have N'sub {x : V} (i : Fin r) : (N' i x) ⊆ N χ i x ∩ Y i := by
+  have N'sub {x : V} (i : Fin r) : (N' i x) ⊆ χ.N i x ∩ Y i := by
     simp [N', Classical.choose_spec (Finset.exists_subset_card_eq (p' i x))]
 
-  have N'subN {i : Fin r} {x : V} : (N' i x) ⊆ N χ i x :=
+  have N'subN {i : Fin r} {x : V} : (N' i x) ⊆ χ.N i x :=
   (Finset.subset_inter_iff.mp (N'sub i)).1
 
   have N'card {i : Fin r} {x : V} : #(N' i x) = (pY X (Y i) χ i) := by
