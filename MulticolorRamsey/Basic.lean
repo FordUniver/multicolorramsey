@@ -48,7 +48,7 @@ abbrev EdgeColoring.N {C} {V} {G : SimpleGraph V} [DecidableRel G.Adj] [Decidabl
   χ.coloredNeighborFinset i x
 
 /-- The book graph with vertex set $A \cup B$ has edge set $\{uv : u ≠ v \text{ and } \{u,v\} \not\subset B\}$ --/
-def BookGraph (A B : Type) : SimpleGraph (A ⊕ B) := {
+def Book (A B : Type) : SimpleGraph (A ⊕ B) := {
   Adj := by
     rintro x y
     rcases x with a | b <;> rcases y with a' | b'

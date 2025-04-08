@@ -33,7 +33,7 @@
 
 \begin{definition}
   \label{def:book-graph}
-  \lean{BookGraph}
+  \lean{Book}
   \leanok
   The book $(A,B)$ is the graph formed by removing the clique with vertex set $B$ from the clique with vertex set $A \cup B$;
   that is, it is the graph with vertex set $A \cup B$ and edge set $\big\{ uv : \{u,v\} \not\subset B \big\}.$
@@ -439,6 +439,7 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
 
 
 \begin{theorem}\label{thm:book}
+  \lean{book}
   Let\/ $\chi$ be an\/ $r$-colouring of\/ $E(K_n)$, and let\/ $X,Y_1,\ldots,Y_r \subset V(K_n)$. % be disjoint sets. 
   For every $p > 0$ and $\mu \ge 2^{10} r^3$, and every $t,m \in \N$ with $t \ge \mu^5 / p$, the following holds. If 
   $$|N_i(x) \cap Y_i| \ge p|Y_i|$$
