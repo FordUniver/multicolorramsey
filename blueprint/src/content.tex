@@ -33,6 +33,8 @@
 
 \begin{definition}
   \label{def:book-graph}
+  \lean{BookGraph}
+  \leanok
   The book $(A,B)$ is the graph formed by removing the clique with vertex set $B$ from the clique with vertex set $A \cup B$;
   that is, it is the graph with vertex set $A \cup B$ and edge set $\big\{ uv : \{u,v\} \not\subset B \big\}.$
   We say that a graph is a \emph{$(t,m)$-book} if $|A| = t$ and $|B|= m$ and $A \cap B = \emptyset$.

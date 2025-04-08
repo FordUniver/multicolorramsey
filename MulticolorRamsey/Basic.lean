@@ -43,6 +43,21 @@ def EdgeColoring.coloredNeighborFinset {EC : G.EdgeColoring C} (c : C) (v : V)
     [Fintype (EC.coloredNeighborSet c v)] : Finset V :=
   (EC.coloredNeighborSet c v).toFinset
 
+def BookGraph (A B : Type) : SimpleGraph (A ⊕ B) := {
+  Adj := by
+    rintro x y
+    rcases x with a | b <;> rcases y with a' | b'
+    · exact a ≠ a'
+    · exact True
+    · exact True
+    · exact False
+  symm := by aesop_graph
+  loopless := by
+    intro x
+    rcases x with a | b
+    all_goals push_neg; simp
+}
+
 end SimpleGraph
 
 ----------------------------------------------------------------------------------------------------
