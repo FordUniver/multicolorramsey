@@ -43,6 +43,11 @@ def EdgeColoring.coloredNeighborFinset {EC : G.EdgeColoring C} (c : C) (v : V)
     [Fintype (EC.coloredNeighborSet c v)] : Finset V :=
   (EC.coloredNeighborSet c v).toFinset
 
+-- "Given an edge colouring, we write $N_i(u)$ to denote the neighbourhood of vertex $u$ in colour $i$."
+abbrev EdgeColoring.N {C} {V} {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeColoring C) (i : C) x :=
+  χ.coloredNeighborFinset i x
+
+/-- The book graph with vertex set $A \cup B$ has edge set $\{uv : u ≠ v \text{ and } \{u,v\} \not\subset B\}$ --/
 def BookGraph (A B : Type) : SimpleGraph (A ⊕ B) := {
   Adj := by
     rintro x y
