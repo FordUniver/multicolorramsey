@@ -23,8 +23,8 @@ title: Formalising "Upper bounds for multicolour Ramsey numbers"
 description: A formalisation of the proof of the improved upper bounds for multicolour Ramsey numbers by Balister et al. in Lean 4
 
 
-baseurl: "/multicolorramsey" # the subpath of your site, e.g. /blog
-url: "https://forduniver.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://forduniver.github.io/multicolorramsey" # the base hostname & protocol for your site, e.g. http://example.com
 github_username: FordUniver
 repository: FordUniver/multicolorramsey
 
