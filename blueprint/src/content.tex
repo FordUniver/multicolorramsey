@@ -72,10 +72,10 @@
   \label{lem:le-coshsqrt}
   \uses{def:coshsqrt}
   \lean{le_coshsqrt}
-  For all $x \in \R$, it is $x \le 2 + \cosh\sqrt{x}$.
+  For all $x \in \R$, it is $1 \le 2 + \cosh\sqrt{x}$.
 \end{lemma}
 \begin{proof}
-  %TODO
+  When $x$ is negative, we use $\cosh \sqrt{x} = \cos \sqrt{-x}\ge -1$. When $x$ is positive this is implied by the fact that all coefficients in the power series of $\cosh \sqrt{x}$ are positive.
 \end{proof}
 
 \begin{lemma}
@@ -84,7 +84,15 @@
   $x \le 2 + \cosh \sqrt{x} \le 3 e^{\sqrt{x}}$ for every $x > 0$.
 \end{lemma}
 \begin{proof}
-  %TODO
+  For the lower-bound, using the fact that $x>0$ and all coefficients of $\cosh \sqrt{x}$ are positive,
+  \begin{equation*}
+    2+\cosh \sqrt{x} - x \ge 2 - \frac{x}{2} + \frac{x^2}{24} = \frac{1}{2}+\frac{1}{24}(x-6)^2 \ge 0.
+\end{equation*}
+For the upper bound, we observe that because by comparing coefficients,
+\begin{equation*}
+  e^{\sqrt{x}} = \sum 3\frac{x^{n/2}}{n!}  \ge \cosh\sqrt{x}
+\end{equation*}
+Finally, $2e^{\sqrt{x}}\ge 2$ when $x>0$.
 \end{proof}
 
 \begin{lemma}
@@ -102,7 +110,7 @@
   \lean{f}
   Let $r \in \N$.
   \begin{equation}\label{eq:f}
-    f(x_1,\dots,x_r) = \sum_{j = 1}^r x_j \prod_{i \ne j} \big( 2 + \cosh\sqrt{x_i} \big),
+    f(x_1,\dots,x_r) = \sum_{j = 1}^r x_j \prod_{i \ne j} \big( 2 + \cosh\sqrt{x_i} \big).
   \end{equation}
 \end{definition}
 
@@ -112,7 +120,7 @@
   All of the coefficients of the Taylor expansion of $f$ are non-negative.
 \end{lemma}
 \begin{proof}
-  %TODO
+  By definition $2+\cosh\sqrt{x}$ has positive coefficients. It suffices to observe that the product and sum of two Taylor series with only positive coefficients has again positive coefficients. Since $f$ is such a combination of sums and products of Taylor series with only positive coefficients, we get the claim.
 \end{proof}
 
 
