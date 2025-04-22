@@ -184,7 +184,7 @@
   \end{align*}
   hence the claimed inequality holds.
 
-  Now, assume $\Pr(E) \le \beta$ and assume that for all $\lambda$,
+  Now, assume $\Pr(E) \le \beta$ and assume for the sake of a contradiction that for all $\lambda \geq -1$,
 
   \begin{align}\label{eq:max:big:and:E:no}
     \Pr\left(E \cap \left( \bigcup_{i \in [r]} \left\{ \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \ge \lambda \right\}\right)\right) < \beta r e^{-C\sqrt{\lambda + 1}}.
@@ -213,17 +213,18 @@
   \exp(c\sqrt{M+1})\id_E&= \id_E \Bigl(e^{c\sqrt{1-1}}+ \int_{-1}^M \frac{ce^{c\sqrt{\lambda+1}}}{2\sqrt{\lambda+1}} d\lambda\Bigr)\\
   &= \id_E+ \int_{-1}^{\infty} \id_{E,\{M\geq \lambda\}}\frac{ce^{c\sqrt{\lambda+1}}}{2\sqrt{\lambda+1}} d\lambda.
   \end{align}
-  Taking the expected value of both sides of the previous equation and applying Tonelli's theorem gives:
+  Given any $c \leq C-1$ we take the expected value of both sides of the previous equation and apply Tonelli's theorem to obtain:
   \begin{align*}
     \Ex\Big[ \exp\big( c \sqrt{M + 1} \big) \mathbf{1}_E \Big]
     & % = \int_{E} \exp\big( c \sqrt{M + 1}  \big) d\Pr
     \\
     & \le \, \Pr(E) + \int_{-1}^\infty \Pr\Big( \big\{ M \ge \lambda \big\} \cap E \Big) \cdot \frac{c}{2\sqrt{\lambda + 1}} \cdot e^{c \sqrt{\lambda + 1}} \,\mathrm{d}\lambda\\ %TODO not clear!
+    & \le \, \beta +  \int_{-1}^\infty \frac{\beta r c}{2\sqrt{\lambda + 1}} \cdot e^{- C\sqrt{\lambda + 1}+c\sqrt{\lambda+1}} \,\mathrm{d}\lambda\\
     & \le \, \beta + \beta r \int_{-1}^\infty \frac{c}{2\sqrt{\lambda + 1}} \cdot e^{- \sqrt{\lambda + 1}} \,\mathrm{d}\lambda\\
     & \le \, \beta (cr + 1),
   \end{align*}
- where in the second step we used $\Pr(E) \le \beta$ and $c \le C - 1$, and in the final step we used the fact that $\int_0^\infty \frac{1}{2\sqrt{x}} e^{-\sqrt{x}} \, \mathrm{d}x = 1$.
-
+ where in the second inequality we used (\ref{eq:max:big:and:E:no}) and $\Pr(E) \le \beta$; in the third we used $c \le C - 1$; and in the last inequality we used the fact that $\int_0^\infty \frac{1}{2\sqrt{x}} e^{-\sqrt{x}} \, \mathrm{d}x = 1$.
+ Note that the second and third inequalities rely on the non-negativity of the integrand.
   In particular, applying this with $c = \sqrt{3}r^{3/2}$, and recalling that $C = 4r^{3/2} \ge c + 1$ and $\beta = 3^{-4r}$, it follows that
   \begin{align}
     1 - \Pr(E) &\le 3^r r \cdot \Ex\bigg[ \exp\bigg( \sum_{i = 1}^r \sqrt{ Z_i + 3r } \bigg) \mathbf{1}_E \bigg]\\
