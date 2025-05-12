@@ -1,8 +1,5 @@
 import MulticolorRamsey.GeometricLemma
-
-open MeasureTheory ProbabilityTheory Finset Real
-
-open scoped ENNReal
+import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
 
 ----------------------------------------------------------------------------------------------------
 -- N
@@ -13,73 +10,97 @@ abbrev N {C} {V} {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Finty
 
 ----------------------------------------------------------------------------------------------------
 -- p
--- TODO use the proper minimum or whatever! i was to annoyed to figure out how it works at the time
+-- TODO maybe mathlib wants some of this.
 
-def mymin (f : V → W) (X : Finset V) : W := sorry
+def mymin {V W : Type} [LinearOrder W] (f : V → W) (X : Finset V) [nen: Nonempty X] : W :=
+  Finset.min' (Finset.image f X) (Finset.image_nonempty.mpr (Finset.nonempty_coe_sort.mp nen))
 
-lemma min_const (f : V → ℝ) (X : Finset V) (_ : ∀ x ∈ X, f x = c) : c = mymin f X := sorry
+lemma min_const {f : V → ℝ} {X : Finset V} (cn : ∀ x ∈ X, f x = c) [nen: Nonempty X] :
+    c = mymin f X := by
+  obtain ⟨xg, ⟨xgm, xgn⟩⟩ := Finset.mem_image.mp (Finset.min'_mem (Finset.image f X) _)
+  rw [cn xg xgm] at xgn
+  assumption
 
-lemma min_le (f g : V → ℝ) (X : Finset V) (_ : ∀ x ∈ X, f x ≤ g x) : mymin f X ≤ mymin g X := sorry
+lemma min_le_ℕ {f : V → ℝ} {g : V → ℕ} {X : Finset V} [nen: Nonempty X] (le : ∀ x ∈ X, f x ≤ g x) :
+    mymin f X ≤ mymin g X := by
+  obtain ⟨xg, ⟨xgm, xgn⟩⟩ := Finset.mem_image.mp (Finset.min'_mem (Finset.image g X) _)
+  convert le_trans (Finset.min'_le _ (f xg) (Finset.mem_image_of_mem f xgm)) (le xg xgm)
+  exact xgn.symm
 
-lemma min_le_ℕ (f : V → ℝ) (g : V → ℕ) (X : Finset V) (_ : ∀ x ∈ X, f x ≤ g x) : mymin f X ≤ mymin g X := sorry
-
-lemma min_le_mem (f : V → ℝ) (v : V) (X : Finset V) : mymin f X ≤ f v := sorry
-
-lemma min_le_mem_ℕ (f : V → ℕ) (v : V) (X : Finset V) : mymin f X ≤ f v := sorry
+lemma min_le_mem_ℕ {f : V → ℕ} {X : Finset V} {v : X} [Nonempty X] : mymin f X ≤ f v :=
+  Finset.min'_le _ _ (Finset.mem_image_of_mem f (Finset.coe_mem v))
 
 
 -- this is pᵢ|Yᵢ| in the text
-def pY {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
+def pY {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nen: Nonempty X] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
     (i : Fin r) : ℕ :=
-  mymin (fun x => #((N χ i x) ∩ Y)) X
+  mymin (fun x => ((N χ i x) ∩ Y).card) X
 
 -- this is pᵢ in the text
-noncomputable def p {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) (EC : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
-    (i : Fin r) : ℝ := (pY X Y EC i) / (#Y : ℝ)
+noncomputable def p {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [Nonempty X] (EC : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
+    (i : Fin r) : ℝ := (pY X Y EC i) / (Y.card : ℝ)
+
+
+----------------------------------------------------------------------------------------------------
+-- lifting finset elements
+
+def lift {X : Finset V} (X' : Finset { x // x ∈ X }) : Finset V := Finset.map (Function.Embedding.subtype fun x => x ∈ X) X'
+
+instance lift.Nonempty {X : Finset V} (X' : Finset { x // x ∈ X }) [nen : Nonempty X'] : Nonempty (lift X') := by
+ obtain ⟨x', x'X'⟩ := nen
+ refine ⟨(Function.Embedding.subtype fun x => x ∈ X) x', ?_⟩
+ simp [lift, x'X']
+
+lemma tr {X : Finset V} {X' : Finset { x // x ∈ X }} {p : V → Prop} (e : ∀ a ∈ X', p a) :
+    ∀ x ∈ lift X', p x  := by
+  intro x xlX
+  simp [lift] at xlX
+  obtain ⟨xi, h⟩ := xlX
+  exact e ⟨x, xi⟩ h
 
 ----------------------------------------------------------------------------------------------------
 -- key lemma
 
-lemma sposnn {Λ : ℝ} :
-    (0 : ℝ≥0∞) < ENNReal.ofReal (1 / 3 ^ ((4 : ℝ) * r) * rexp (-(4 * ↑r ^ (3 / 2)) * √(Λ + 1))) := by
-  positivity
+open MeasureTheory ProbabilityTheory Finset Real
 
-lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [Fintype V] {cardV : Fintype.card V = n} [MeasurableSpace V]
+open scoped ENNReal
+
+lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [Fintype V] {cardV : Fintype.card V = n}
   (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
   (X : Finset V) [nenX : Nonempty X]-- TODO strict subset!
   (Y : Fin r → (Finset V)) (Ypos : ∀ i, 0 < #(Y i)) -- TODO here too
-  (α : Fin r → ℝ) (αpos : ∀ i, 0 < α i) :
+  (α : Fin r → ℝ) (αpos : ∀ i, 0 < α i)
+  (ppos : ∀ i, 0 < pY X (Y i) χ i) :
 
-  let β := ↑1 / (3 ^ (4 * r) : ℝ)
+
+  let β := (3 ^ (-(4 : ℝ) * r) : ℝ)
   let C := 4 * (↑r : ℝ) ^ ((3 : ℝ) / ↑2)
 
   ∃ l : Fin r, ∃ Λ, (-1 ≤ Λ) ∧
-  ∃ x ∈ X, ∃ X' : Finset V, ∃ nx : Nonempty X', ∃ Y' : Fin r → (Finset V),
-    X' ⊆ X ∧ -- TODO paper says strict subset but idk if that's true
-    (∀ i, (Y' i) ⊆ (N χ i x) ∩ (Y i)) ∧-- same
+  ∃ x ∈ X, ∃ X' : Finset X, ∃ nx : Nonempty X', ∃ Y' : Fin r → (Finset V), -- TODO paper says strict subset but idk if that's true
+    (∀ i, ↑(Y' i) ⊆ (N χ i x) ∩ (Y i)) ∧-- same
 
-    β * Real.exp (-C * Real.sqrt (Λ + 1)) * X.card ≤ X'.card ∧
-
-    p X (Y l) χ l + Λ * (α l) ≤ p X' (Y' l) χ l ∧
-
+    β * Real.exp (-C * Real.sqrt (Λ + 1)) * ↑X.card ≤ ↑X'.card ∧
     (∀ i ≠ l, ((Y' i).card = (p X (Y i) χ i) * (Y i).card)) ∧
-    ∀ i ≠ l, p X (Y i) χ i - (α i) ≤ p X' (Y' i) χ i := by
+
+    p X (Y l) χ l + Λ * (α l) ≤ p (lift X') (Y' l) χ l ∧
+
+    ∀ i ≠ l, p X (Y i) χ i - (α i) ≤ p (lift X') (Y' i) χ i := by
 
   intros β C
 
-  let p' (i : Fin r) (x : V) : (pY X (Y i) χ i) ≤ #(N χ i x ∩ Y i) :=
-    min_le_mem_ℕ (fun x => #((N χ i x) ∩ Y i)) x X
+  let p' (i : Fin r) (x : X) : (pY X (Y i) χ i) ≤ #(N χ i x ∩ Y i) := min_le_mem_ℕ
 
   -- "for each 𝑥 ∈ 𝑋, choose a set N′i (x) ⊂ 𝑁i(x) ∩ Yi of size exactly 𝑝𝑖(𝑋, 𝑌𝑖)|Yi|"
-  let N' (i : Fin r) (x : V) : (Finset V) := Classical.choose (Finset.exists_subset_card_eq (p' i x))
+  let N' (i : Fin r) (x : X) : (Finset V) := Classical.choose (Finset.exists_subset_card_eq (p' i x))
 
-  have N'sub {x : V} (i : Fin r) : (N' i x) ⊆ N χ i x ∩ Y i := by
+  have N'sub {x : X} (i : Fin r) : (N' i x) ⊆ N χ i x ∩ Y i := by
     simp [N', Classical.choose_spec (Finset.exists_subset_card_eq (p' i x))]
 
-  have N'subN {i : Fin r} {x : V} : (N' i x) ⊆ N χ i x :=
+  have N'subN {i : Fin r} {x : X} : (N' i x) ⊆ N χ i x :=
   (Finset.subset_inter_iff.mp (N'sub i)).1
 
-  have N'card {i : Fin r} {x : V} : #(N' i x) = (pY X (Y i) χ i) := by
+  have N'card {i : Fin r} {x : X} : #(N' i x) = (pY X (Y i) χ i) := by
     simp [N', Classical.choose_spec (Finset.exists_subset_card_eq (p' i x))]
 
   -- "... and set ..."
@@ -88,93 +109,93 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
       ((Set.indicator ↑(N' i x) (fun _ ↦ 1)) - (p X (Y i) χ i) • (Set.indicator ↑(Y i) (fun _ ↦ 1)))
 
   -- "... Note that, for any x,y ∈ X,..."
+  -- TODO issue #14
   have Λiff (Λ : ℝ) (i : Fin r) {x y : X} (lam_ge : Λ ≤ ((σ i x) ⬝ᵥ (σ i y))) : -- we only need mp direction, paper says iff
       ((p X (Y i) χ i) + Λ * (α i)) * ((pY X (Y i) χ i) : ℝ) ≤ ((N' i x) ∩ (N' i y)).card := sorry
 
+
   -- "Now by Lemma 7, there exists Λ ≥ -1 and colour l ∈ [r] such that..."
-  let U := (PMF.uniformOfFintype X).toMeasure
+  let Fintype.instMeasurableSpace : MeasurableSpace X := ⊤ -- we use the power set Σ-algebra so that the measure theory stuff stays sane
+  let U := (PMF.uniformOfFintype (X × X)).toMeasure
   obtain ⟨Λ, ⟨Λgen1, ⟨l, probge⟩⟩⟩ := geometric r X U σ
   exists l
   exists Λ; simp only [Λgen1, true_and]
 
   -- "Hence there exists a vertex x ∈ X and a set X' ⊂ X such that, ..."
-  obtain ⟨x, ⟨x', ⟨hl, hi⟩⟩⟩ :=
-    probabilistic_method U
-      (fun (x x' : X) ↦ Λ ≤ σ l x ⬝ᵥ σ l x' ∧ ∀ i, i ≠ l → -1 ≤ σ i x ⬝ᵥ σ i x')
-      (lt_of_lt_of_le sposnn probge)
-  set X' : Finset V := { ↑x' } with X'd -- TODO we choose the singleton. is this a problem?
-
+  obtain ⟨x, ⟨X', ⟨X'card, X'props⟩⟩⟩ :=
+    pidgeon_thing
+      (fun (x : X × X) ↦ Λ ≤ σ l x.1 ⬝ᵥ σ l x.2 ∧ ∀ i, i ≠ l → -1 ≤ σ i x.1 ⬝ᵥ σ i x.2)
+      probge
 
   exists x; simp only [coe_mem, neg_mul, true_and]
-  exists X'; simp only [singleton_subset_iff, coe_mem, mem_singleton, nonempty_subtype, exists_eq, exists_const, X']
+  exists X'
+
+  have : Nonempty { x // x ∈ X' } := by
+    apply Fintype.card_pos_iff.mp
+    have : 0 < (3 ^ (-(4 : ℝ) * ↑r)) * rexp (-((4 : ℝ) * ↑r ^ ((3 : ℝ) / 2)) * √(Λ + 1)) * ↑(Fintype.card { x // x ∈ X }) := by positivity
+    convert lt_of_lt_of_le this X'card
+    simp only [Fintype.card_coe, card_pos, Nat.cast_pos, N']
+
+  exists this
 
   -- "Setting $Y'_i = N'_i(x)$ for each $i \in [r]$,..."
   let Y' (i : Fin r) : Finset V := N' i x
+  exists fun i => Y' i
 
   have Y'card {i : Fin r} : #(Y' i) = (p X (Y i) χ i) * #(Y i) := by
     simp_rw [Y', N'card, p]
-    exact omg (Nat.cast_pos.mpr (Ypos i))
+    exact omg (ne_of_gt (Nat.cast_pos.mpr (Ypos i)))
+
+  let lX' := lift X'
 
   -- "...it follows that..."
-  -- TODO need to handle empty N'. at the moment we just "sorry" that case where we call Y'lee
-  have Y'lee (pos : ∀ (i : Fin r), 0 < ↑(#(N' i x) : ℝ)) :
-      p X (Y l) χ l + Λ * (α l) ≤ p X' (Y' l) χ l ∧
-      ∀ (i : Fin r), (i ≠ l) → p X (Y i) χ i - (α i) ≤ p X' (Y' i) χ i := by
+  have Y'lee :
+      p X (Y l) χ l + Λ * (α l) ≤ p (lift X') (Y' l) χ l ∧
+      ∀ (i : Fin r), (i ≠ l) → p X (Y i) χ i - (α i) ≤ p lX' (Y' i) χ i := by
 
-    -- the cases for l and i look so similar i'm sure there is some golf opportunity
+    let factor (i : Fin r) : ℝ := if i = l then Λ else -1
 
-    let fl (x' : V) : ℝ := (p X (Y l) χ l  + Λ * α l) * (pY X (Y l) χ l)
-    let f (i : Fin r) (x' : V) : ℝ := (p X (Y i) χ i - α i) * (pY X (Y i) χ i)
-    let g i (x' : V) : ℕ := #(N' i x' ∩ N' i x)
+    let f (i : Fin r) (x' : V) : ℝ := (p X (Y i) χ i + (factor i) * α i) * (pY X (Y i) χ i)
+    let g (i : Fin r) (x' : V) : ℕ := #(N χ i x' ∩ N' i x)
 
-    have ext2 : (∀ a ∈ X', fl a ≤ g l a)  := by
-      simp only [X'd, mem_singleton, forall_eq]
-      have := calc Λ
-        _ ≤ σ l x ⬝ᵥ σ l x' := by simp [hl]
-        _ = σ l x' ⬝ᵥ σ l x := dotProduct_comm (σ l x) (σ l x')
-      exact (Λiff Λ l) this
+    have ext (i : Fin r) : (∀ a ∈ X', f i a ≤ g i a) := by
+      intro x' xX'
+      have : ∀ i, factor i ≤ σ i x' ⬝ᵥ σ i x := by
+        intro i
+        let xp := X'props x' xX'
+        by_cases h : i = l
+        all_goals simp only [h, ↓reduceIte, dotProduct_comm, factor]
+        · exact xp.1
+        · exact (xp.2 i h)
 
-    have ext (i : Fin r) (inl : i ≠ l): (∀ a ∈ X', f i a ≤ g i a)  := by
-      simp [X'd]
-      have := calc -1
-        _ ≤ σ i x ⬝ᵥ σ i x' := hi i inl
-        _ = σ i x' ⬝ᵥ σ i x := dotProduct_comm (σ i x) (σ i x')
-      have := (Λiff (-1 : ℝ) i) this
-      simp only [neg_mul, one_mul] at this
+      have le : #(N' i ↑x' ∩ N' i ↑x) ≤ #(N χ i ↑x' ∩ N' i ↑x) := card_le_card (inter_subset_inter_right N'subN)
+      have := le_trans ((Λiff (factor i) i) (this i)) (Nat.cast_le.mpr le)
       assumption
 
 
-    have minsl := calc fl x
-     _ = (mymin fl X')           := min_const fl X' (fun _ _ ↦ rfl)
-     _ ≤ (mymin (g l) X')        := min_le_ℕ fl (g l) X' ext2
+    have mins (i : Fin r) := calc f i x
+     _ = (mymin (f i) lX')        := min_const (fun _ _ ↦ rfl)
+     _ ≤ (mymin (g i) lX')        := min_le_ℕ (tr (ext i))
 
-    have mins (i : Fin r) (inl : i ≠ l) := calc f i x
-     _ = (mymin (f i) X')           := min_const (f i) X' (fun _ _ ↦ by simp_rw [f])
-     _ ≤ (mymin (g i) X')           := min_le_ℕ (f i) (g i) X' (ext i inl)
+    have pos (i : Fin r) : (0 : ℝ) < ↑(#(N' i x)) := by simp only [N'card, Nat.cast_pos]; exact ppos i
+
+    have hm (i : Fin r) :=
+      calc p X (Y i) χ i + (factor i) * α i
+     _ = (f i) x / ↑(pY X (Y i) χ i) := omg3 (by rw [← @N'card i x]; exact ne_of_gt (pos i))
+     _ = (f i) x / #(N' i x)  := by simp [N'card]
+     _ ≤ (mymin (g i) lX') / #(N' i x) := (omg2 (ne_of_gt (pos i))).mp (mins i)
 
     constructor
-
-    · calc p X (Y l) χ l + Λ * α l
-     _ = fl x / ↑(pY X (Y l) χ l) := omg3 (by rw [← @N'card l x]; exact pos l)
-     _ = fl x / #(N' l x)  := by simp [N'card]
-     _ ≤ (mymin (g l) X') /  #(N' l x) := (omg2 (pos l)).mp minsl
-
+    · convert (hm l)
+      exact Eq.symm (if_pos rfl)
     · intros i inl
-      calc p X (Y i) χ i - α i
-     _ = f i x / ↑(pY X (Y i) χ i) := omg3 (by rw [← @N'card i x]; exact pos i)
-     _ = f i x / #(N' i x)  := by simp [N'card]
-     _ ≤ (mymin (g i) X') / #(N' i x) := (omg2 (pos i)).mp (mins i inl)
-
-
-  exists fun i => Y' i
+      have := hm i
+      simpa only [inl, reduceIte, neg_mul, one_mul, factor]
 
   repeat any_goals constructor
-  · simp [Y', N'sub]
-  · sorry
-  · have := (Y'lee (fun i => Nat.cast_pos.mpr sorry)).1
-    simp [X', this]
-  · simp [Y'card]
-  · simp [←X'd]
-    intros i inl
-    have := (Y'lee sorry).2 i inl
-    exact (OrderedSub.tsub_le_iff_right  (p X (Y i) χ i) (α i) (p X' (Y' i) χ i)).mp this
+  · simp only [N'sub, implies_true, Y']
+  · simp only [neg_mul, Fintype.card_coe] at X'card
+    simp only [neg_mul, Fintype.card_coe, X'card, β, C]
+  · simp only [Y'card, implies_true]
+  · exact Y'lee.1
+  · exact fun i inl ↦ Y'lee.2 i inl
