@@ -268,10 +268,10 @@ lemma pidgeon_thing {X Y : Type} [Nonempty X] [Fintype X] [Nonempty Y] [Fintype 
   rw [ENNReal.ofReal_le_iff_le_toReal, ← Nat.cast_mul, ← Fintype.card_prod] at bound
 
   · simp only [ENNReal.toReal_div, ENNReal.toReal_natCast] at bound
-    exact pidgeon_sum (fun x y ↦ p ⟨x, y⟩) (by convert bound) -- TODO convert needed because of a mathlib issue: PR https://github.com/leanprover-community/mathlib4/pull/24074
+    exact pidgeon_sum (fun x y ↦ p ⟨x, y⟩) bound
 
   · have nz : (Fintype.card X : ENNReal) * (Fintype.card Y) ≠ 0 := by simp
-    convert ne_of_lt (ENNReal.div_lt_top (ENNReal.natCast_ne_top _) nz) -- same
+    exact ne_of_lt (ENNReal.div_lt_top (ENNReal.natCast_ne_top _) nz)
 
 
 ----------------------------------------------------------------------------------------------------
