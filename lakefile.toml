@@ -22,3 +22,6 @@ rev = "main"
 [[lean_lib]]
 name = "MulticolorRamsey"
 
+[[require]]
+name = "Canonical"
+scope = "chasenorman"
