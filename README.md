@@ -12,5 +12,5 @@
 - https://github.com/leanprover-community/mathlib4/pull/24074
 
 ## open
-
+- https://github.com/leanprover-community/mathlib4/pull/25045
 ## stale
