@@ -1,4 +1,5 @@
 import MulticolorRamsey.Basic
+import MulticolorRamsey.Integrals
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 import Mathlib.MeasureTheory.Integral.Prod
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
@@ -55,8 +56,7 @@ lemma three_ineq {r : ℕ} (rpos : 0 < r) : ↑r * 3 ^ (-((r : ℝ) * 4)) * 3 ^ 
   -- simp [rpos]
   -- ring_nf; linarith
 
-
--- theorem one_le_r_mul_r_mul_sqrt_r (r : ℝ) (h : 2 ≤ r) : 1 ≤ r * (r * √r) := by
+-- theeorem one_le_r_mul_r_mul_sqrt_r (r : ℝ) (h : 2 ≤ r) : 1 ≤ r * (r * √r) := by
 --   have h₃ : 0 ≤ r * √r := by positivity
 --   nlinarith [sq_sqrt (show 0 ≤ r by linarith), sq_nonneg (r - 1), sq_nonneg (√r - 1)]
 
@@ -77,11 +77,6 @@ lemma C_ineq (r : ℕ) (rpos : 0 < r) :
   linarith
 
 
--- maybe mathlib
-lemma indicator_one_mul {x : X} {f : X → ℝ} [MeasurableSpace X] {E : Set X}:
-    f x * E.indicator 1 x = E.indicator f x := by
-  by_cases hx : x ∈ E <;> simp [hx]
-
 theorem sum_sqrt_le {r : ℕ} {X : Type*} [Fintype X] [nenr: Nonempty (Fin r)] {τ : X → Fin r → ℝ} {x : X} :
     let M := fun x ↦ (Finset.image (τ x) (Finset.univ : Finset (Fin r))).max' (Finset.Nonempty.image Finset.univ_nonempty (τ x))
     ∑ i, √(3 * ↑r * τ x i + 3 * ↑r) ≤ ↑r * (√3 * √↑r) * √((M x) + 1) := by
@@ -97,20 +92,6 @@ theorem sum_sqrt_le {r : ℕ} {X : Type*} [Fintype X] [nenr: Nonempty (Fin r)] {
   repeat rw [← sqrt_mul (Nat.cast_nonneg' r)]
   left; ring_nf
 
-lemma hrm : ContinuousOn (fun (x : ℝ) ↦ (x + c)) s := ((continuousOn_id' _).add continuousOn_const)
-
-lemma improper_integral_shift (c : ℝ) (f : ℝ → ℝ) (cf : ContinuousOn f (Ioi 0))
-    (If : IntegrableOn f (Ici 0) ℙ) (Iif : IntegrableOn (fun x ↦ f (x + c)) (Ici (-c)) ℙ) :
-    ∫ (x : ℝ) in Ioi (-c), f (x + c) = ∫ (x : ℝ) in Ioi 0, f x := by
-  have deriv (x : ℝ) (_ : x ∈ Ioi (-c)) : HasDerivWithinAt (fun x ↦ x + c) ((fun x ↦ 1) x) (Ioi x) x := by
-    simp; exact hasDerivWithinAt_id x (Ici x)
-  have := integral_comp_mul_deriv_Ioi hrm (Filter.tendsto_atTop_add_const_right _ _ fun ⦃U⦄ a ↦ a)
-      deriv
-      (by simpa)
-      (by simpa)
-      (by simpa)
-  simpa [this]
-
 
 lemma terrible (c : ℝ) : ∫ a in Ioi (-1), rexp (- √(a + 1)) *  (c * (1 / (2 * √(a + 1)))) = c := by
   have := improper_integral_shift 1 (fun a ↦ rexp (-√a) * (c * (1 / (2 * √a)))) ?_ ?_ ?_
@@ -124,9 +105,12 @@ lemma terrible (c : ℝ) : ∫ a in Ioi (-1), rexp (- √(a + 1)) *  (c * (1 / (
     continuousOn_const.div ((continuousOn_id' _).sqrt.const_smul 2) (by simp [sqrt_ne_zero'])
   have := (continuousOn_id' _).sqrt.neg.rexp.mul (this.const_smul c)
   simpa only [nsmul_eq_mul, smul_eq_mul]
-  · sorry
-  · simp only
-    sorry
+  -- TODO what
+  all_goals have (a : ℝ) : rexp (-√a) * (c * (1 / (2 * √a))) = (rexp (-√a) * (1 / (2 * √a))) * c := by ring
+  all_goals simp_rw [this]
+  all_goals apply integrableOn_Ici_iff_integrableOn_Ioi.mpr
+  · exact (integrableOn_exp_neg_sqrt).smul_const c
+  · exact ((integrableOn_exp_neg_sqrt_plus zero_le_one).smul_const c)
 
 
 lemma einzwei (l : ℝ) (f : ℝ → ℝ) (x : X) (b : X → ℝ) :
@@ -138,30 +122,8 @@ lemma einzwei (l : ℝ) (f : ℝ → ℝ) (x : X) (b : X → ℝ) :
   exact measurableSet_Ioc
 
 
-lemma intOn1 {m : ℝ} : IntegrableOn (fun x ↦ 1 / (2 * √(x + 1))) (Ioc (-1) m) := by
-  apply intervalIntegral.integrableOn_deriv_of_nonneg hrm.sqrt
-  · intros x xi
-    apply HasDerivAt.sqrt
-    simp only [hasDerivAt_add_const_iff]
-    exact (hasDerivAt_id' x)
-    by_contra h
-    rw [neg_eq_of_add_eq_zero_left h] at xi
-    exact left_mem_Ioo.mp xi
-  · intros ; positivity
-
-
 lemma IntegrableFin {X : Type} [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X] {ℙᵤ : Measure X} [IsFiniteMeasure ℙᵤ] {f : X → ℝ} :
   Integrable f ℙᵤ := ⟨ AEStronglyMeasurable.of_discrete , HasFiniteIntegral.of_finite ⟩
-
--- lemma intOn :
---     let ecsq (c : ℝ) := fun y ↦ rexp (c * √(y + 1))
---     let ecsq' (c : ℝ) := fun x ↦ (rexp (c * √(x + 1)) * (c * (1 / (2 * √(x + 1)))))
---     IntegrableOn (fun a ↦ ecsq' c a * ecsq (-C) a) (Ioi (-1)) ℙ := by
---   intros ecsq ecsq'
---   sorry
-
--- lemma intOn3 :
---     IntegrableOn (fun x ↦ (rexp (c * √(x + 1)) * (c * (1 / (2 * √(x + 1))))) * rexp (-C * √(x + 1)) * β * ↑r) (Ioi (-1)) ℙ := (intOn.mul_const β).mul_const (r : ℝ)
 
 lemma fundamental (c m : ℝ) (mp : -1 ≤ m) :
     let ecsq (c : ℝ) := fun y ↦ rexp (c * √(y + 1))
@@ -173,7 +135,7 @@ lemma fundamental (c m : ℝ) (mp : -1 ≤ m) :
     have : x + 1 ≠ 0 := by linarith [mem_Ioo.mp xi]
     exact ((((hasDerivAt_id' x).add_const (1 : ℝ)).sqrt this).const_mul c).exp
 
-  have hcont (c m : ℝ) : ContinuousOn (ecsq c) (Icc (-1) m) := (hrm.sqrt.const_smul c).rexp
+  have hcont (c m : ℝ) : ContinuousOn (ecsq c) (Icc (-1) m) := (continuousOn_add_const.sqrt.const_smul c).rexp
 
   have hcont' (c m : ℝ) : ContinuousOn (ecsq' c) (Ioc (-1) m) := by
     have (x : ℝ) (xi : x ∈ Ioc (-1) m) : 2 * √(x + 1) ≠ 0 := by
@@ -181,7 +143,7 @@ lemma fundamental (c m : ℝ) (mp : -1 ≤ m) :
       have : 0 < 2 * √(x + 1) := by positivity
       linarith
     let Ccon {c  : ℝ} {s : Set ℝ} : ContinuousOn (fun x ↦ c) s := continuousOn_const
-    exact ((hcont c m).mono Ioc_subset_Icc_self).mul (Ccon.mul (Ccon.div (Ccon.mul hrm.sqrt) this))
+    exact ((hcont c m).mono Ioc_subset_Icc_self).mul (Ccon.mul (Ccon.div (Ccon.mul continuousOn_add_const.sqrt) this))
 
   have hint (c m : ℝ) (mp : -1 ≤ m) : IntervalIntegrable (ecsq' c) volume (-1) m := by
     refine (intervalIntegrable_iff_integrableOn_Ioc_of_le mp).mpr ?_
@@ -258,13 +220,11 @@ lemma exp_ineq {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Fi
       intros x xinEc
       simp only [E, mem_compl_iff, mem_setOf_eq, not_forall, not_le] at xinEc
       exact specialFunctionEc (fun i ↦ Z i x) xinEc
-    exact setIntegral_mono_on (Integrable.integrableOn IntegrableFin) (by simp) mEc this
+    exact setIntegral_mono_on IntegrableFin.integrableOn (by simp) mEc this
 
   have Eb : ∫ x in E, f fun i ↦ Z i x ∂ℙᵤ ≤ 𝔼exp :=
     setIntegral_mono_on
-      (Integrable.integrableOn IntegrableFin)
-      IntegrableFin
-      measE
+      IntegrableFin.integrableOn IntegrableFin measE
       (fun x xinE => specialFunctionE (fun i ↦ Z i x) xinE)
 
   have : ∫ x in Eᶜ, -1 ∂ℙᵤ = - 1 + (ℙᵤ E).toReal := by
@@ -335,7 +295,8 @@ lemma juicy {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Finse
 
     have int_le (c : ℝ) (cpos : 0 < c) (cleC : c ≤ C - 1) :
         ∫ x in E, ecsq c (M x) ∂ℙᵤ ≤ β * (r * c + 1) := by
-      simp only [Nat.ofNat_nonneg, sqrt_mul, ← MeasureTheory.integral_indicator measE]
+
+      simp only [Nat.ofNat_nonneg, sqrt_mul, ← integral_indicator measE]
       have (x : X×X) := @indicator_one_mul (X×X) x (fun x ↦ ecsq c (M x)) _ E
       simp_rw [← this]
 
@@ -345,7 +306,8 @@ lemma juicy {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Finse
         have : 0 < (3 * (r : ℝ)) := by simp only [Nat.ofNat_pos, mul_pos_iff_of_pos_left, Nat.cast_pos]; exact Fin.pos'
         rw [← (lt_div_iff₀' this)]
         ring_nf
-        simp [M] at aM
+        simp only [Finset.max'_lt_iff, Finset.mem_image, Finset.mem_univ, true_and,
+          forall_exists_index, forall_apply_eq_imp_iff, M] at aM
         convert aM nenr.some
         exact Field.mul_inv_cancel (↑r : ℝ) (ne_of_gt (Nat.cast_pos'.mpr Fin.pos'))
 
@@ -358,40 +320,69 @@ lemma juicy {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Finse
 
       -- first step
       have := congrArg (fun (f : (X × X → ℝ)) ↦ (∫ x, f x ∂ℙᵤ)) (exp_bound23)
-      simp [integral_add, integral_indicator_const (1 : ℝ) measE] at this
-      simp [this]
+      -- simp? [integral_add, integral_indicator_const (1 : ℝ) measE] at this
+      simp only [Pi.add_apply, Integrable.of_finite, integral_add,
+        integral_indicator_const (1 : ℝ) measE, smul_eq_mul, mul_one] at this
+      simp only [this, ge_iff_le]
       rw [integral_integral_swap]
       have nn (y : ℝ) : ∫ a , (E ∩ {x | y ≤ M x}).indicator (fun x ↦ 1) a ∂ℙᵤ = ℙᵤ.real (E ∩ {x | y ≤ M x}) := by
         convert integral_indicator_const (1 : ℝ) MeasurableSet.of_discrete
-        simp only [smul_eq_mul, mul_one, dm]
+        simp only [smul_eq_mul, mul_one]
         exact dm
-      simp [integral_const_mul, nn]
+      simp only [integral_const_mul, nn]
 
       -- second step
       have step2 (y : ℝ) (yge : y ∈ Ioi (-1)) : ecsq' c y * ℙᵤ.real (E ∩ {x | y ≤ M x}) ≤ ecsq' c y * rexp (-C * √(y + 1)) * β * r := by
         have : 0 ≤ ecsq' c y := by positivity
         have := mul_le_mul_of_nonneg_left (le_of_lt (ch y (le_of_lt yge))) this
-        simpa [mul_assoc]
+        simpa only [mul_assoc]
 
       -- third step
       have step3 (y : ℝ) (yge : y ∈ Ioi (-1)) : ecsq' c y * (ecsq (-C) y) ≤ rexp (- √(y + 1)) * (c * (1 / (2 * √(y + 1)))) := by
         have yspos : 0 < √(y + 1) := sqrt_pos_of_pos (neg_lt_iff_pos_add.mp yge)
-        simp [ecsq', ecsq, mul_comm, mul_assoc, cpos, this, ← exp_add, ← one_add_mul, cleC, yspos]
+        simp only [one_div, mul_inv_rev, mul_comm, mul_assoc, neg_mul, ← exp_add, cpos,
+          _root_.mul_le_mul_left, inv_pos, Nat.ofNat_pos, yspos, exp_le_exp, add_neg_le_iff_le_add,
+          le_neg_add_iff_add_le, ← one_add_mul, _root_.mul_le_mul_right, ecsq', ecsq, M]
         exact le_sub_iff_add_le'.mp cleC
 
       have βpos : 0 ≤ β := by positivity
-      have urrg (y : ℝ) (yge : y ∈ Ioi (-1)) : ecsq' c y * ℙᵤ.real (E ∩ {x | y ≤ M x}) ≤ rexp (- √(y + 1)) * (c * (1 / (2 * √(y + 1))))  * β * r :=
-        le_trans (step2 y yge) ( mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (step3 y yge) βpos) (Nat.cast_nonneg' r))
+      have I0 : IntegrableOn (fun (_ : ℝ) ↦ (0 : ℝ)) (Ioi (-1)) := integrable_zero _ _ _
+      have urrg (y : ℝ) (yge : y ∈ Ioi (-1)) :=
+        le_trans (step2 y yge) (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (step3 y yge) βpos) (Nat.cast_nonneg' r))
       apply le_trans (add_le_add_left (le_of_lt h) _) ?_
       apply le_trans (add_le_add_right (setIntegral_mono_on ?_ ?_ measurableSet_Ioi urrg) β) ?_
-      · sorry
-      · sorry
+      · refine bounded_thingy_on_s measurableSet_Ioi I0 (((intEsqc c).mul_const β).mul_const r) (by intros; positivity) ?_ ?_
+        · intros x xi; exact urrg x xi
+        · refine measEsqc.mul (Antitone.measurable (antitone_iff_forall_lt.mpr ?_))
+          intros a b alb
+          refine (ofReal_le_ofReal_iff (by positivity)).mp ?_
+          simp only [ne_eq, measure_ne_top, not_false_eq_true, ofReal_measureReal]
+
+          have : E ∩ {x_1 | b ≤ M x_1} ⊆ E ∩ {x_1 | a ≤ M x_1} := by
+            refine inter_subset_inter_right ?_ (setOf_subset_setOf.mpr ?_)
+            intros _ bm
+            exact le_of_lt (lt_of_lt_of_le alb bm)
+
+          exact measure_mono this
+
+      · have : IntegrableOn (fun x ↦ rexp (-√(x + 1)) * (c * (1 / (2 * √(x + 1))))) (Ioi (-1)) ℙ := by
+          simp_rw [mul_comm c, ← mul_assoc]
+          simp only [IntegrableOn]
+          convert (integrableOn_exp_neg_sqrt_plus zero_le_one).smul_const c
+        have := (this.smul_const β).smul_const (r : ℝ)
+        simpa only
+
       · simp only [integral_mul_const]
         rw [terrible c]
         ring_nf
         exact Preorder.le_refl _
 
-      · sorry -- whet?
+      · have : (fun x ↦ 1 : { x // x ∈ X } × { x // x ∈ X } → ℝ) = 1 := sorry
+        simp_rw [Function.uncurry_def, ← smul_eq_mul, this, Set.smul_indicator_one_apply]
+        -- refine IntegrableOn.integrable_indicator ?_ ?_
+        -- simp
+
+        sorry -- whet?
 
     have rpos : 0 < r := Fin.pos'
 
@@ -412,11 +403,11 @@ lemma juicy {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Finse
           := by simp only [integral_const_mul, 𝔼exp, Z, C, ecsq, M, exp]
       _ ≤ (3 ^ r * ↑r ) * (β * (↑r * (↑r * √(3 * r)) + 1))
           := by simp_all only [Nat.cast_pos, Nat.ofNat_pos, mul_pos_iff_of_pos_right, pow_pos, _root_.mul_le_mul_left]
-      _ ≤ 1/3 := by simp [β]; ring_nf; convert three_ineq (show 0 < r by sorry);
+      _ ≤ 1/3 := by simp only [neg_mul, Nat.ofNat_nonneg, sqrt_mul, one_div, β]; ring_nf; convert three_ineq (show 0 < r by positivity);
 
     have : 2/3 ≤ (ℙᵤ E).toReal := by linarith
     have βle : β < 2/3 := by
-      simp[β]
+      simp only [neg_mul, β]
       have : (3 : ℝ) ^ (-(4 * (r: ℝ))) ≤ (3 : ℝ) ^ (-(4 : ℝ)) := by simpa
       exact lt_of_le_of_lt this (by linarith)
 
@@ -432,7 +423,7 @@ lemma juicy {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Finse
   have Eiff : (E ∩ {x | Λ ≤ τ x i}) =
       {x | Λ ≤ τ x i ∧ (∀ (j : Fin r), j ≠ i → -1 ≤ τ x j) } := by
     ext x
-    simp [and_comm, neg_mul, mem_inter_iff, mem_setOf_eq, and_congr_right_iff, E, τ]
+    simp only [and_comm, neg_mul, mem_inter_iff, mem_setOf_eq, and_congr_right_iff, E, τ]
     intro l
     constructor
     · intro xM j jni
@@ -453,7 +444,7 @@ lemma juicy {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Finse
       ((toReal_le_toReal (measure_ne_top ℙᵤ (⋃ i, E ∩ {x | Λ ≤ τ x i})) (by simp)).mpr union_bound))
 
   convert union
-  simp [mul_comm, mul_assoc, ofReal_mul (Nat.cast_nonneg' r)]
+  simp only [mul_comm, ofReal_mul (Nat.cast_nonneg' r), ofReal_natCast, β]
 
 ----------------------------------------------------------------------------------------------------
 

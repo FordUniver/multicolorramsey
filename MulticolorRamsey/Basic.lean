@@ -62,68 +62,6 @@ def EdgeColoring.coloredNeighborFinset {EC : G.EdgeColoring C} (c : C) (v : V)
 end SimpleGraph
 
 ----------------------------------------------------------------------------------------------------
---  stuuf we may need
-
--- variable {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} -- [IsProbabilityMeasure P]
---  {n r : ℕ}
-
--- def foldvecn : (r : ℕ) → (σ : Fin r → (Fin n → α)) → (Fin (∑ _ : Fin r, n) → α)
--- | 0 => fun _ => Matrix.vecEmpty
--- | r + 1 => fun σ => Matrix.vecAppend (by simp [add_mul, add_comm]) (σ 0) (foldvecn r (fun i => σ (i + 1)))
-
--- -- a computable tensor product
--- def foldvecc : (r : ℕ) → (σ : Fin r → (X → (Fin n → ℝ))) → (X → (Fin (∑ _ : Fin r, n) → ℝ)) :=
---   fun r σ x => foldvecn r (fun r' n' => σ r' x n')
-
--- -- open scoped TensorProduct
-
--- -- def tp (v w : (Fin r → ℝ)) : TensorProduct ℝ (Fin r → ℝ) (Fin r → ℝ) := by exact v ⊗ₜ w
-
--- lemma dotAppend : (r : ℕ) → (v v' w w' : Fin r → ℝ) → dotProduct (Fin.append v v') (Fin.append w w') = (dotProduct v w) * (dotProduct v' w')
--- | 0 => by simp
--- | r + 1 => _
-
--- lemma dotAppendV : (r : ℕ) → (v v' w w' : Vector ℝ r) → dotProduct (Fin.append v v') (Fin.append w w') = 0
--- | 0 => by simp
--- | r + 1 => _
-
-
--- lemma image_nenf {s : Finset A} (f : A → B) [DecidableEq B] [nx : Nonempty  { x // x ∈ s }] :
---     (image f s).Nonempty := image_nonempty.mpr (nonempty_coe_sort.mp nx)
-
--- lemma image_nen {s : Finset A} {f : A → B} [DecidableEq B] [nx : Nonempty  { x // x ∈ s }] :
---     (image f s).Nonempty := image_nenf f
-
-
--- lemma min_le [LinearOrder B] (f g : A → B) (exteq : ∀ a, f a ≤ g a) (X : Finset A) [Nonempty X]:
---     Finset.min (image f X) ≤ Finset.min (image g X) := by
---   simp [Finset.le_min_iff, mem_image, forall_exists_index, and_imp, forall_apply_eq_imp_iff₂]
---   intros a as
---   have := Finset.min_le (mem_image_of_mem f as)
---   exact le_trans this (by simp only [WithTop.coe_le_coe, ge_iff_le]; exact (exteq a))
-
-
--- lemma min'_le [LinearOrder A] [LinearOrder B] (f g : A → B) (exteq : ∀ a, f a ≤ g a) (X : Finset A) [nx : Nonempty X]:
---     Finset.min' (image f X) (image_nen) ≤
---     Finset.min' (image g X) (image_nen) := by
---   simp [Finset.le_min_iff, mem_image, forall_exists_index, and_imp, forall_apply_eq_imp_iff₂]
---   intros a as
---   have : (image f X).min' _ ≤ ↑(f a) := Finset.min'_le (image f X) _ (mem_image_of_mem f as)
---   exact Preorder.le_trans ((image f X).min' image_nen) (f a) (g a) this (exteq a)
-
-
--- lemma min'_leX [LinearOrder A] [LinearOrder B] (f g : A → B) (X : Finset A) [nx : Nonempty X] (exteq : ∀ a, (a ∈ X) → f a ≤ g a):
---     Finset.min' (image f X) (image_nen) ≤
---     Finset.min' (image g X) (image_nen) := by
---   simp [Finset.le_min_iff, mem_image, forall_exists_index, and_imp, forall_apply_eq_imp_iff₂]
---   intros a as
---   have : (image f X).min' _ ≤ ↑(f a) := Finset.min'_le (image f X) _ (mem_image_of_mem f as)
---   exact Preorder.le_trans ((image f X).min' image_nen) (f a) (g a) this (exteq a as)
-
--- lemma image_const [LinearOrder B] (f : A → B) (c : B) (X : Finset A) [nen: Nonempty X] (cnst : ∀ x ∈ X , f x = c) :
---     Finset.min' (image f X) (image_nen) = c := by sorry
-
-----------------------------------------------------------------------------------------------------
 --  moments lemma
 section
 open MeasureTheory ProbabilityTheory Finset Real
@@ -158,11 +96,14 @@ lemma le_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : x ≤ 2 + coshsqrt x := by
   have : coshsqrt x = 1 + x / 2 + x ^ 2 / ↑(4).factorial + ∑' (i : ℕ), x ^ (i + 3) / ↑(2 * (i + 3)).factorial := by
     simp [coshsqrt, ← Summable.sum_add_tsum_nat_add 3 (mew xnn), Finset.sum, add_comm]
   simp [this]
-  have spos : 0 ≤ ∑' (i : ℕ), x ^ (i + 3) / ↑(2 * (i + 3)).factorial := tsum_nonneg (by intro; positivity)
-  have : 2 + (1 + x / 2 + x ^ 2 / ↑(Nat.factorial 4) + ∑' (i : ℕ), x ^ (i + 3) / ↑(2 * (i + 3)).factorial) = (3 + x / 2 + x ^ 2 / ↑(Nat.factorial 4)) + ∑' (i : ℕ), x ^ (i + 3) / ↑(2 * (i + 3)).factorial := by ring
+  have : 2 + (1 + x / 2 + x ^ 2 / ↑(Nat.factorial 4) + ∑' (i : ℕ), x ^ (i + 3) / ↑(2 * (i + 3)).factorial) =
+      (3 + x / 2 + x ^ 2 / ↑(Nat.factorial 4)) + ∑' (i : ℕ), x ^ (i + 3) / ↑(2 * (i + 3)).factorial := by ring
   simp [this]
-  suffices x ≤ 3 + x / 2 + x ^ 2 / 24 from le_add_of_le_of_nonneg this spos
+  suffices x ≤ 3 + x / 2 + x ^ 2 / 24 from le_add_of_le_of_nonneg this (tsum_nonneg (by intro; positivity))
   nlinarith
+
+lemma ge_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : 2 + coshsqrt x ≤ 3 * Real.exp √x := by sorry
+
 
 noncomputable def f (x : Fin r → ℝ) : ℝ :=
   ∑ j : Fin r, x j * (1 / (2 + coshsqrt (x j))) * (∏ i : Fin r, (2 + coshsqrt (x i)))
@@ -277,88 +218,7 @@ lemma pidgeon_thing {X Y : Type} [Nonempty X] [Fintype X] [Nonempty Y] [Fintype 
   · have nz : (Fintype.card X : ENNReal) * (Fintype.card Y) ≠ 0 := by simp
     exact ne_of_lt (ENNReal.div_lt_top (ENNReal.natCast_ne_top _) nz)
 
-----------------------------------------------------------------------------------------------------
--- integral of rexp (-√x) * (1 / (2 * √x))
 
-section
-
-open MeasureTheory ProbabilityTheory Real ENNReal Set
-
-lemma integrableOn_one_div_two_mul_sqrt {m : ℝ} : IntegrableOn (fun x ↦ 1 / (2 * √x)) (Icc 0 m) := by
-  have : (∀ x ∈ Ioo 0 m, HasDerivAt (fun x ↦ √x) ((fun x ↦ 1 / (2 * √ x)) x) x) := by
-    intros x xi
-    refine (hasDerivAt_id' x).sqrt ?_
-    by_contra h
-    rw [h] at xi
-    exact left_mem_Ioo.mp xi
-  apply integrableOn_Icc_iff_integrableOn_Ioc.mpr
-
-  exact intervalIntegral.integrableOn_deriv_of_nonneg (continuousOn_id' _).sqrt this (by intros; positivity)
-
-
-lemma integrableOn_exp_neg_sqrt : IntegrableOn (fun x ↦ rexp (-√x) * (1 / (2 * √x))) (Ioi 0) ℙ := by
-
-  have i0 : IntegrableOn (fun x ↦ rexp (-√x) * (1 / (2 * √x))) (Ioc 0 1) ℙ := by
-    apply integrableOn_Icc_iff_integrableOn_Ioc.mp
-    exact IntegrableOn.continuousOn_mul (continuousOn_id' _).sqrt.neg.rexp integrableOn_one_div_two_mul_sqrt isCompact_Icc
-
-  have i1 : IntegrableOn (fun x ↦ rexp (-√x) * (1 / (2 * √x))) (Ioi 1) ℙ := by
-    have {m : ℝ} (mp : 0 < m) : IntegrableOn (fun (x : ℝ) ↦ x ^ (-(1.5 : ℝ))) (Ioi m) ℙ :=
-      integrableOn_Ioi_rpow_of_lt (show -(1.5 : ℝ) < -1 by linarith) mp
-
-    refine integrable_of_le_of_le ?_ ?_ ?_ (integrable_zero _ _ _) (this (by positivity))
-    · have := (measurable_exp.comp continuous_sqrt.measurable.neg).mul ((continuous_sqrt.measurable.const_mul 2).const_div 1)
-      exact this.stronglyMeasurable.aestronglyMeasurable
-    all_goals {
-      have s1 : {a | 1 < a ∧ rexp (-√a) * (1 / (2 * √a)) ≤ 0} = ∅ := by ext x; simp; intro; positivity
-      have s2 : {a | 1 < a ∧ a ^ (-(1.5 : ℝ)) ≤ rexp (-√a) * (1 / (2 * √a))} = ∅ := by
-        ext x; simp only [mem_setOf_eq, mem_empty_iff_false, iff_false, not_and, not_le]; intro
-        have : √x ^ 2 / 2 < rexp √x := lt_of_lt_of_le (by linarith [sqrt_pos.mpr (by positivity)]) (quadratic_le_exp_of_nonneg (by positivity))
-        simp only [sq_sqrt] at this
-        have := (inv_lt_inv₀ (by positivity) (by positivity)).mpr this
-        have xpos : 0 < x := by positivity
-        have pow_recip_sqrt_cubed : ((√x)⁻¹) ^ 3 = x ^ (-(1.5 : ℝ)) := by
-          rw [sqrt_eq_rpow, ← Real.rpow_neg_one, ← rpow_mul (le_of_lt xpos), ← Real.rpow_natCast, ← rpow_mul (le_of_lt xpos)]
-          norm_num
-        rw [← pow_recip_sqrt_cubed, exp_neg, show (√x)⁻¹ ^ 3 = (√x ^ 2 / 2)⁻¹ * (1 / (2 * √x)) by ring]
-        exact (mul_lt_mul_iff_of_pos_right (show 0 < (1 / (2 * sqrt x)) by positivity)).mpr this
-
-      refine ae_le_of_ae_lt (ae_iff.mpr ?_)
-      simp only [not_lt, measurableSet_Ioi, Measure.restrict_apply', setOf_inter_eq_sep, mem_Ioi]
-      simp only [s1, s2, OuterMeasureClass.measure_empty]
-    }
-
-  convert i0.union i1
-  symm
-  exact Ioc_union_Ioi_eq_Ioi (by positivity)
-
-
-lemma integral_exp_neg_sqrt : ∫ (x : ℝ) in Ioi 0, rexp (-√x) * (1 / (2 * √x)) = 1 := by
-
-  nth_rewrite 2 [integral_exp_neg_Ioi_zero.symm]
-  have := @MeasureTheory.integral_comp_mul_deriv_Ioi (fun x ↦ √x) (fun x ↦ 1 / (2 * √ x)) (fun x ↦ rexp (-x)) 0
-  simp only [mem_Ioi, Function.comp_apply,sqrt_zero] at this
-  refine this ?_ ?_ ?_ ?_ ?_ ?_
-  exact continuous_sqrt.continuousOn
-  · refine Filter.tendsto_atTop_atTop.mpr ?_
-    intro b; use b^2; intro a ab
-    exact le_sqrt_of_sq_le ab
-  · intro x xpos
-    apply HasDerivWithinAt.sqrt
-    exact (hasDerivWithinAt_id x _)
-    exact Ne.symm (ne_of_lt xpos)
-  · exact (continuous_id.neg).rexp.continuousOn
-  · have : (fun x ↦ √x) '' Ici 0 = Ici 0 := by
-      ext b
-      constructor
-      · simp only [mem_image, mem_Ici, forall_exists_index, and_imp]; intro x xpos xe; simp [← xe]
-      · simp; intro bpos; use b^2; simp [bpos]
-    rw [this]
-    have := integrableOn_Ici_iff_integrableOn_Ioi.mpr (exp_neg_integrableOn_Ioi 0 zero_lt_one)
-    simpa only [neg_mul, one_mul]
-  exact integrableOn_Ici_iff_integrableOn_Ioi.mpr integrableOn_exp_neg_sqrt
-
-end
 
 ----------------------------------------------------------------------------------------------------
 
@@ -392,6 +252,13 @@ lemma maxUnion {X Y : Type} [Fintype X] [Nonempty X] [LinearOrder X] (τ : Y →
 end
 
 ----------------------------------------------------------------------------------------------------
+
+-- maybe mathlib
+lemma indicator_one_mul {x : X} {f : X → ℝ} [MeasurableSpace X] {E : Set X}:
+    f x * E.indicator 1 x = E.indicator f x := by
+  by_cases hx : x ∈ E <;> simp [hx]
+
+
 
 -- TODO i just put here everything that annoyed me
 lemma omg {a b : ℝ} (p : b ≠ 0) : a = a / b * b := by
