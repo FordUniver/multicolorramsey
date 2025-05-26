@@ -138,8 +138,28 @@ Finally, $2e^{\sqrt{x}}\ge 2$ when $x>0$.
 \begin{proof}
   %TODO
 \end{proof}
-
-
+\textbf{Remark.} Let $g(x):= cosh(\sqrt{x})$ where $cosh(x)$ is defined by $cosh(\sqrt{x})=\overunderset{\infty}{n=0}{\sum}\frac{x^n}{(2n)!}$, then: 
+\begin{enumerate}
+\item For all $x\geq 0$, we have $x \leq 2+cosh(\sqrt{x}) \leq 3e^{\sqrt{x}}$.
+\item For all $x <0$, we have $-1 \leq cosh(\sqrt{x})\leq 1$. In particular, $2+cosh(x)\geq 1$ for all $x\in \mathbb{R}$.
+\end{enumerate}
+\begin{proof} To prove (1), let $x\geq 0$ then:
+\begin{equation*}
+  2+cosh(\sqrt{x}) = 3 + \overunderset{\infty}{n=1}{\sum}\frac{x^n}{(2n)!}\geq 3 + \frac{x}{2}+\frac{x^2}{24}.
+\end{equation*}
+However, \begin{equation*}
+  3+\frac{x}{2}+\frac{x^2}{24}\geq x \iff \frac{1}{24}(x^2-12x+72)\geq 0 \iff \frac{1}{24}((x-6)^2+36)\geq 0,s
+\end{equation*}
+which concludes the lower bound in the first point. To conclude (1), we note the following for $x\geq0$: 
+\begin{equation*}
+3e^{\sqrt{x}}= 3\overunderset{\infty}{n=0}{\sum}\frac{x^{n/2}}{n!}\geq 3\overunderset{\infty}{n=0}{\sum}\frac{x^{n}}{(2n)!} \geq 2 + \overunderset{\infty}{n=0}{\sum}\frac{x^{n}}{(2n)!}= 2 + cosh(\sqrt{x}).
+\end{equation*}
+To prove (2), note that for $x<0$,
+\begin{equation*}
+cosh(\sqrt{x})= \overunderset{\infty}{n=0}{\sum}\frac{x^n}{(2n)!}= \overunderset{\infty}{n=0}{\sum}\frac{(-1)^n \sqrt{-x}^{2n}}{(2n)!}= cos(\sqrt{-x}).
+\end{equation*}
+(2) then follows by noting that $cos(\sqrt{-x}) \in [-1,1]$ for all $x<0$. 
+\end{proof}
 \begin{lemma}[Special-function lemma (Part 1 of Lemma 3.3 in Balister et al.)]
   \label{lem:special-function-e}
   \uses{def:f}
@@ -147,8 +167,15 @@ Finally, $2e^{\sqrt{x}}\ge 2$ when $x>0$.
   Let $r \in \N$. If $x_i \ge - 3r$ for all $i \in [r]$, the function $f \colon \R^r \to \R$ defined in~\eqref{eq:f} satisfies 
   $$ f(x_1,\dots,x_r) \le 3^r r \exp\bigg( \displaystyle\sum_{i = 1}^r \sqrt{ x_i + 3r } \bigg)$$
 \end{lemma}
-\begin{proof}
-  %TODO
+\begin{proof} 
+  \begin{equation*}
+    \begin{align}
+    f(x_1,\dots,x_r)&= \Bigl(\overunderset{r}{i=1}{\prod}(2+cosh\sqrt{x_i})\Bigr)\overunderset{r}{j=1}{\sum}\frac{x_j}{2+cosh \sqrt{x_j}}\\
+    &\overset{*}{\leq} \Bigl(\overunderset{r}{i=1}{\prod}(2+cosh\sqrt{x_i +3r})\Bigr)\overunderset{r}{j=1}{\sum}1 \overset{**}{\leq}r\Bigl(\overunderset{r}{i=1}{\prod} 3e^{\sqrt{x_i+3r}}\Bigr),
+    \end{align}
+  \end{equation*}
+  Where (*) follows since $cosh(\sqrt{x})$ is increasing on the positive reals, that $cosh(x)\leq 1$ for negative $x$, and point (1) of the above remark.
+  (**) follows from point (1) of the above remark.
 \end{proof}
 
 
@@ -162,11 +189,22 @@ Finally, $2e^{\sqrt{x}}\ge 2$ when $x>0$.
 \end{lemma}
 
 \begin{proof}
-  %TODO
+  Let $i \in [r]$ satisfy $x_i \leq -3r$. Note that if $x\geq 0$, then $\frac{x}{2+cosh(\sqrt{x})}\leq 1$ by point (1) of the above remark.
+  Trivially, we have $\frac{x}{2+cosh{\sqrt{x}}}<0\leq 1$ for $x<0$ (note that $2+cosh(\sqrt{x})\geq 1$.)
+  Therefore, we have 
+  \begin{equation*}
+  \underset{j \in [r], j \neq i}{\sum} \frac{x_j}{2+cosh(\sqrt{x_j})} \leq r-1.
+  \end{equation*}
+  On the other hand, we know that $\frac{x_i}{2+cosh(\sqrt{x_i})} \leq \frac{x_i}{3}$ by part (2) in the remark above and therefore,
+\begin{equation*}
+\overunderset{r}{j=1}{\sum}\frac{x_j}{2+cosh(\sqrt{x_j})}\leq \frac{x_i}{3}+r-1\leq -1.
+\end{equation*}
+Finally we write 
+\begin{equation*}
+  f(x_1,\dots,x_r) = \Bigl(\overunderset{r}{i=1}{\prod}(2+cosh\sqrt{x_i})\Bigr)\overunderset{r}{j=1}{\sum}\frac{x_j}{2+cosh \sqrt{x_j}} \leq -1,
+\end{equation*}
+since the sum in the last term is $\leq -1$ while the product is at least $1$ (each factor in the product is at least 1).
 \end{proof}
-
-
-
 \begin{lemma}[Geometric lemma (Lemma 3.1 in Balister et al.)]
   \label{lem:geometric}
   Let $r, n\in\N$. Set $\beta = 3^{-4r}$ and $C = 4r^{3/2}$.
@@ -192,7 +230,7 @@ Finally, $2e^{\sqrt{x}}\ge 2$ when $x>0$.
   \end{align*}
   hence the claimed inequality holds.
 
-  Now, assume $\Pr(E) \le \beta$ and assume that for all $\lambda$,
+  Now, assume $\Pr(E) \le \beta$ and assume for the sake of a contradiction that for all $\lambda \geq -1$,
 
   \begin{align}\label{eq:max:big:and:E:no}
     \Pr\left(E \cap \left( \bigcup_{i \in [r]} \left\{ \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \ge \lambda \right\}\right)\right) < \beta r e^{-C\sqrt{\lambda + 1}}.
@@ -221,17 +259,18 @@ Finally, $2e^{\sqrt{x}}\ge 2$ when $x>0$.
   \exp(c\sqrt{M+1})\id_E&= \id_E \Bigl(e^{c\sqrt{1-1}}+ \int_{-1}^M \frac{ce^{c\sqrt{\lambda+1}}}{2\sqrt{\lambda+1}} d\lambda\Bigr)\\
   &= \id_E+ \int_{-1}^{\infty} \id_{E,\{M\geq \lambda\}}\frac{ce^{c\sqrt{\lambda+1}}}{2\sqrt{\lambda+1}} d\lambda.
   \end{align}
-  Taking the expected value of both sides of the previous equation and applying Tonelli's theorem gives:
+  Given any $c \leq C-1$ we take the expected value of both sides of the previous equation and apply Tonelli's theorem to obtain:
   \begin{align*}
     \Ex\Big[ \exp\big( c \sqrt{M + 1} \big) \mathbf{1}_E \Big]
     & % = \int_{E} \exp\big( c \sqrt{M + 1}  \big) d\Pr
     \\
     & \le \, \Pr(E) + \int_{-1}^\infty \Pr\Big( \big\{ M \ge \lambda \big\} \cap E \Big) \cdot \frac{c}{2\sqrt{\lambda + 1}} \cdot e^{c \sqrt{\lambda + 1}} \,\mathrm{d}\lambda\\ %TODO not clear!
+    & \le \, \beta +  \int_{-1}^\infty \frac{\beta r c}{2\sqrt{\lambda + 1}} \cdot e^{- C\sqrt{\lambda + 1}+c\sqrt{\lambda+1}} \,\mathrm{d}\lambda\\
     & \le \, \beta + \beta r \int_{-1}^\infty \frac{c}{2\sqrt{\lambda + 1}} \cdot e^{- \sqrt{\lambda + 1}} \,\mathrm{d}\lambda\\
     & \le \, \beta (cr + 1),
   \end{align*}
- where in the second step we used $\Pr(E) \le \beta$ and $c \le C - 1$, and in the final step we used the fact that $\int_0^\infty \frac{1}{2\sqrt{x}} e^{-\sqrt{x}} \, \mathrm{d}x = 1$.
-
+ where in the second inequality we used (\ref{eq:max:big:and:E:no}) and $\Pr(E) \le \beta$; in the third we used $c \le C - 1$; and in the last inequality we used the fact that $\int_0^\infty \frac{1}{2\sqrt{x}} e^{-\sqrt{x}} \, \mathrm{d}x = 1$.
+ Note that the second and third inequalities rely on the non-negativity of the integrand.
   In particular, applying this with $c = \sqrt{3}r^{3/2}$, and recalling that $C = 4r^{3/2} \ge c + 1$ and $\beta = 3^{-4r}$, it follows that
   \begin{align}
     1 - \Pr(E) &\le 3^r r \cdot \Ex\bigg[ \exp\bigg( \sum_{i = 1}^r \sqrt{ Z_i + 3r } \bigg) \mathbf{1}_E \bigg]\\
