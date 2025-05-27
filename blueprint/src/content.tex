@@ -169,8 +169,8 @@ cosh(\sqrt{x})= \overunderset{\infty}{n=0}{\sum}\frac{x^n}{(2n)!}= \overunderset
 \end{lemma}
 \begin{proof} 
   \begin{equation*}
-    f(x_1,\dots,x_r)&= \Bigl(\overunderset{r}{i=1}{\prod}(2+cosh\sqrt{x_i})\Bigr)\overunderset{r}{j=1}{\sum}\frac{x_j}{2+cosh \sqrt{x_j}}\\
-    &\overset{*}{\leq} \Bigl(\overunderset{r}{i=1}{\prod}(2+cosh\sqrt{x_i +3r})\Bigr)\overunderset{r}{j=1}{\sum}1 \overset{**}{\leq}r\Bigl(\overunderset{r}{i=1}{\prod} 3e^{\sqrt{x_i+3r}}\Bigr),
+    f(x_1,\dots,x_r)= \Bigl(\overunderset{r}{i=1}{\prod}(2+cosh\sqrt{x_i})\Bigr)\overunderset{r}{j=1}{\sum}\frac{x_j}{2+cosh \sqrt{x_j}}
+    \overset{*}{\leq} \Bigl(\overunderset{r}{i=1}{\prod}(2+cosh\sqrt{x_i +3r})\Bigr)\overunderset{r}{j=1}{\sum}1 \overset{**}{\leq}r\Bigl(\overunderset{r}{i=1}{\prod} 3e^{\sqrt{x_i+3r}}\Bigr),
   \end{equation*}
   Where (*) follows since $cosh(\sqrt{x})$ is increasing on the positive reals, that $cosh(x)\leq 1$ for negative $x$, and point (1) of the above remark.
   (**) follows from point (1) of the above remark.
