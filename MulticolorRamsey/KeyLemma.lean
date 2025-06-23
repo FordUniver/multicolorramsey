@@ -74,11 +74,11 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
 
 
   let β := (3 ^ (-(4 : ℝ) * r) : ℝ)
-  let C := 4 * (↑r : ℝ) ^ ((3 : ℝ) / ↑2)
+  let C := 4 * (↑r : ℝ) * √r
 
   ∃ l : Fin r, ∃ Λ, (-1 ≤ Λ) ∧
   ∃ x ∈ X, ∃ X' : Finset X, ∃ nx : Nonempty X', ∃ Y' : Fin r → (Finset V), -- TODO paper says strict subset but idk if that's true
-    (∀ i, ↑(Y' i) ⊆ (N χ i x) ∩ (Y i)) ∧-- same
+    (∀ i, ↑(Y' i) ⊆ (N χ i x) ∩ (Y i)) ∧ -- same
 
     β * Real.exp (-C * Real.sqrt (Λ + 1)) * ↑X.card ≤ ↑X'.card ∧
     (∀ i ≠ l, ((Y' i).card = (p X (Y i) χ i) * (Y i).card)) ∧
@@ -117,7 +117,7 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
   -- "Now by Lemma 7, there exists Λ ≥ -1 and colour l ∈ [r] such that..."
   let Fintype.instMeasurableSpace : MeasurableSpace X := ⊤ -- we use the power set Σ-algebra so that the measure theory stuff stays sane
   let U := (PMF.uniformOfFintype (X × X)).toMeasure
-  obtain ⟨Λ, ⟨Λgen1, ⟨l, probge⟩⟩⟩ := geometric r X U σ
+  obtain ⟨Λ, ⟨Λgen1, ⟨l, probge⟩⟩⟩ := geometric X U σ
   exists l
   exists Λ; simp only [Λgen1, true_and]
 
@@ -132,7 +132,7 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
 
   have : Nonempty { x // x ∈ X' } := by
     apply Fintype.card_pos_iff.mp
-    have : 0 < (3 ^ (-(4 : ℝ) * ↑r)) * rexp (-((4 : ℝ) * ↑r ^ ((3 : ℝ) / 2)) * √(Λ + 1)) * ↑(Fintype.card { x // x ∈ X }) := by positivity
+    have : 0 < (3 ^ (-(4 : ℝ) * ↑r)) * rexp (-((4 : ℝ) * r * √r) * √(Λ + 1)) * ↑(Fintype.card { x // x ∈ X }) := by positivity
     convert lt_of_lt_of_le this X'card
     simp only [Fintype.card_coe, card_pos, Nat.cast_pos, N']
 

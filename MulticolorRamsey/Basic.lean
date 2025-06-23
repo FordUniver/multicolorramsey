@@ -85,6 +85,8 @@ end
 
 noncomputable def coshsqrt (x : ℝ) :=  ∑' n : ℕ , (x ^ n / (2 * n).factorial)
 
+lemma monotone_coshsqrt : MonotoneOn coshsqrt (Set.Ici 0) := sorry
+
 lemma mew {x} (xpos: (0 : ℝ) ≤ ↑x) : Summable (fun n ↦ (x ^ n / (2 * n).factorial)) := by
     refine Summable.of_nonneg_of_le ?_ ?_ (Real.summable_pow_div_factorial x)
     all_goals intro b
@@ -104,6 +106,16 @@ lemma le_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : x ≤ 2 + coshsqrt x := by
 
 lemma ge_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : 2 + coshsqrt x ≤ 3 * Real.exp √x := by sorry
 
+lemma icc_coshsqrt (x : ℝ) (xnn : x < 0) : coshsqrt x ∈ Set.Icc (-1) 1 := by sorry
+
+lemma coshsqrt_pos {x : ℝ} : 0 ≤ 2 + coshsqrt x := by
+  by_cases xnn : 0 ≤ x
+  · exact le_trans xnn (le_coshsqrt x xnn)
+  · have := Set.mem_Icc.mp (icc_coshsqrt x (lt_of_not_le xnn))
+    linarith
+
+lemma coshsqrt_m1 (x : ℝ) : 0 ≤ 2 + coshsqrt x := sorry
+
 
 noncomputable def f (x : Fin r → ℝ) : ℝ :=
   ∑ j : Fin r, x j * (1 / (2 + coshsqrt (x j))) * (∏ i : Fin r, (2 + coshsqrt (x i)))
@@ -113,7 +125,54 @@ lemma f_ge (x : Fin r → ℝ) : (∏ i : Fin r, (x i)) ≤ f x := by
   sorry
 
 lemma specialFunctionE (x : Fin r → ℝ) (_ :  ∀ i, -3 * r ≤ x i) :
-    f x ≤ 3^r * r * Real.exp (∑ i, Real.sqrt (x i + 3 * r)) := sorry
+    f x ≤ 3^r * r * Real.exp (∑ i, Real.sqrt (x i + 3 * r)) := by
+  simp only [f]
+  rw [← Finset.sum_mul]
+
+  trans  (∑ i : Fin r, 1) * ∏ i, (2 + coshsqrt (x i))
+  gcongr
+  have : ∀ i, 0 ≤ (2 + coshsqrt (x i)) := sorry
+  exact Finset.prod_nonneg fun i a ↦ this i
+
+  expose_names
+  by_cases hh : 0 < x i
+  · trans x i * (x i)⁻¹
+    gcongr
+    ring_nf
+    have : x i ≤ (2 + coshsqrt (x i)) := le_coshsqrt _ (le_of_lt hh)
+    exact (inv_le_inv₀ (lt_of_lt_of_le hh this) hh).mpr this
+    exact mul_inv_le_one
+  · by_cases hhh : x i = 0
+    · rw [hhh]
+      simp
+    · trans x i * (1 / (2 + (-1)))
+      sorry
+      ring_nf
+      exact le_trans (le_of_not_lt hh) zero_le_one
+
+  trans  (∑ i : Fin r, 1) * ∏ i, (2 + coshsqrt (x i + 3 * r))
+  gcongr
+  intros
+  exact coshsqrt_pos
+  expose_names
+  have : 0 ≤ x i + 3 * ↑r := by trans -3 * r + 3 * r; field_simp; exact add_le_add_right (h i) (3 * ↑r)
+  by_cases 0 ≤ x i
+  · sorry
+  · sorry
+
+  trans  (∑ i : Fin r, 1) * ∏ i, 3 * Real.exp √(x i + 3 * r)
+  gcongr
+  · intros; exact coshsqrt_pos
+  · refine ge_coshsqrt ?_ ?_
+    sorry
+
+  simp
+  rw [Real.exp_sum, Finset.prod_mul_distrib, Finset.prod_const, ← mul_assoc]
+  ring_nf; gcongr
+  exact Nat.one_le_ofNat
+  exact card_finset_fin_le Finset.univ
+
+
 
 lemma specialFunctionEc (x : Fin r → ℝ) (_ :  ∃ i, x i < -3 * r) :
     f x ≤ -1 := sorry
@@ -223,8 +282,13 @@ lemma pidgeon_thing {X Y : Type} [Nonempty X] [Fintype X] [Nonempty Y] [Fintype 
 ----------------------------------------------------------------------------------------------------
 
 section
+--TODO maybe mathlib
 
 open Set Finset
+
+lemma prod_set_eq_union {X Y : Type} (f : X × Y → Prop) : {a | f a} = ⋃ x, {x} ×ˢ {y : Y | f (x, y)} := by
+  ext ⟨x, y⟩
+  simp only [mem_setOf_eq, mem_iUnion, mem_prod, mem_singleton_iff, exists_eq_left']
 
 lemma Fintype.argmax' {X Y : Type} [Fintype X] [Nonempty X] (f : X → Y) [LinearOrder Y] :
     ∃ x : X, ∀ y : X, f y ≤ f x := by
@@ -253,11 +317,26 @@ end
 
 ----------------------------------------------------------------------------------------------------
 
--- maybe mathlib
-lemma indicator_one_mul {x : X} {f : X → ℝ} [MeasurableSpace X] {E : Set X}:
-    f x * E.indicator 1 x = E.indicator f x := by
-  by_cases hx : x ∈ E <;> simp [hx]
+section
 
+open Real
+
+lemma sum_sqrt_le {r : ℕ} {X : Type*} [Fintype X] [nenr: Nonempty (Fin r)] {τ : X → Fin r → ℝ} {x : X} :
+    let M := fun x ↦ (Finset.image (τ x) (Finset.univ : Finset (Fin r))).max' (Finset.Nonempty.image Finset.univ_nonempty (τ x))
+    ∑ i, √(3 * ↑r * τ x i + 3 * ↑r) ≤ ↑r * (√3 * √↑r) * √((M x) + 1) := by
+  intro M
+  have (i : Fin r) : √(3 * ↑r * τ x i + 3 * ↑r) ≤ √(3 * ↑r * (M x) + 3 * ↑r) := by
+    apply Real.sqrt_le_sqrt
+    have : τ x i ≤ M x := by
+      apply Finset.le_max'
+      exact Finset.mem_image.mpr ⟨i, Finset.mem_univ _, rfl⟩
+    nlinarith
+  convert Finset.sum_le_sum fun i _ => this i
+  simp [mul_assoc, ← mul_add]
+  repeat rw [← sqrt_mul (Nat.cast_nonneg' r)]
+  left; ring_nf
+
+end
 
 
 -- TODO i just put here everything that annoyed me
@@ -270,3 +349,6 @@ lemma omg4 {a b c : ℝ} (bnn : 0 ≤ b) : a ≤ c ↔ a * b ≤ c * b := by sor
 lemma omg5 {a b c : ENNReal} : b ≤ c ↔ a * b ≤ a * c := by sorry
 lemma omg6 {a b : ℝ} : - a ≤ a * b ↔ -1 ≤ b := by
   sorry
+
+
+lemma omg7 (a b c : ENNReal) (ab : a < b) (ac : a < c) (bc : b < c) : c - b < c - a := by sorry
