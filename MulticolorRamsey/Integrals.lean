@@ -43,19 +43,6 @@ theorem ae_le_of_forallOn_le {f : α → ℝ} {s : Set α}  [MeasurableSpace α]
     g ≤ᶠ[ae (μ.restrict s)] f := by
       filter_upwards [ae_restrict_mem ms] with x hx using h₁ x hx
 
-theorem ae_nonneg_of_forall_nonneg {f : ℝ → ℝ} (h₁ : ∀ x ∈ Ioi (-1 : ℝ), 0 ≤ f x) :
-    0 ≤ᶠ[ae (volume.restrict (Ioi (-1 : ℝ)))] f := by
-      filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx using h₁ x hx
-
-theorem integral_eq_lintegral_ofReal_of_nonneg {f : ℝ → ℝ}
-  (h₁ : ∀ x ∈ Ioi (-1 : ℝ), 0 ≤ f x) (h₂ : AEStronglyMeasurable f (volume.restrict (Ioi (-1 : ℝ)))) :
-  ∫ (x : ℝ) in Ioi (-1 : ℝ), f x = (∫⁻ (x : ℝ) in Ioi (-1 : ℝ), ENNReal.ofReal (f x)).toReal := by
-    exact integral_eq_lintegral_of_nonneg_ae (ae_le_of_forallOn_le measurableSet_Ioi h₁) h₂
-
-theorem ddsa {f : α → ℝ} {s : Set α} [MeasurableSpace α] {μ : Measure α} (ms : MeasurableSet s)
-  (h₁ : ∀ x ∈ s, 0 ≤ f x) (h₂ : AEStronglyMeasurable f (μ.restrict s)) :
-  ∫ (x : α) in s, f x ∂μ = (∫⁻ (x : α) in s, ENNReal.ofReal (f x) ∂μ).toReal := integral_eq_lintegral_of_nonneg_ae (ae_le_of_forallOn_le ms h₁) h₂
-
 -- maybe mathlib
 lemma indicator_one_mul {x : X} [MulZeroOneClass Y] (f : X → Y) [MeasurableSpace X] (E : Set X) :
     f x * E.indicator 1 x = E.indicator f x := by
@@ -64,11 +51,6 @@ lemma indicator_one_mul {x : X} [MulZeroOneClass Y] (f : X → Y) [MeasurableSpa
 
 ----------------------------------------------------------------------------------------------------
 -- integral of rexp (-√x) * (1 / (2 * √x))
-
-
-lemma bounded_thingy {f g h : ℝ → ℝ} (Ig : IntegrableOn g s) (Ih : IntegrableOn h s)
-    (dg : f ≤ g) (dh : h ≤ f) (mf : Measurable f) : IntegrableOn f s :=
-  integrable_of_le_of_le (mf.aestronglyMeasurable) (Filter.Eventually.of_forall dh) (Filter.Eventually.of_forall dg) Ih Ig
 
 lemma bounded_thingy_on_s {f g h : ℝ → ℝ} (ms : MeasurableSet s) (Ih : IntegrableOn h s) (Ig : IntegrableOn g s)
     (dh : ∀ x ∈ s, h x ≤ f x) (dg : ∀ x ∈ s, f x ≤ g x) (mf : Measurable f) : IntegrableOn f s :=
@@ -82,10 +64,6 @@ lemma integrableOn_one_div_two_mul_sqrt_plus (m : ℝ) (c : ℝ) : IntegrableOn 
   apply integrableOn_Icc_iff_integrableOn_Ioc.mpr
 
   exact intervalIntegral.integrableOn_deriv_of_nonneg ((continuousOn_id' _).add continuousOn_const).sqrt this (by intros; positivity)
-
-lemma integrableOn_one_div_two_mul_sqrt {m : ℝ} : IntegrableOn (fun x ↦ 1 / (2 * √x)) (Icc 0 m) := by
-  have := integrableOn_one_div_two_mul_sqrt_plus m 0
-  simpa
 
 lemma continuousOn_add_const : ContinuousOn (fun (x : ℝ) ↦ (x + c)) s := ((continuousOn_id' _).add continuousOn_const)
 
@@ -132,8 +110,6 @@ lemma measEsqc : Measurable fun x ↦ rexp (d * √(x + 1)) * (c * (1 / (2 * √
   have : Measurable fun x ↦  √(id x + 1) := (continuous_id.add continuous_const).sqrt.measurable
   exact (measurable_exp.comp (this.const_mul d)).mul (((this.const_mul 2).const_div 1).const_mul c)
 
-
-
 lemma integrableOn_exp_neg_sqrt_plus {c : ℝ} (cn : 0 ≤ c) : IntegrableOn (fun x ↦ rexp (-√(x + c)) * (1 / (2 * √(x + c)))) (Ioi (-c)) ℙ := by
 
   have i0 : IntegrableOn (fun x ↦ rexp (-√(x + c)) * (1 / (2 * √(x + c)))) (Ioc (-c) 1) ℙ := by
@@ -172,52 +148,6 @@ lemma integrableOn_exp_neg_sqrt_plus {c : ℝ} (cn : 0 ≤ c) : IntegrableOn (fu
   symm
   exact Ioc_union_Ioi_eq_Ioi (le_trans (Right.neg_nonpos_iff.mpr cn) zero_le_one)
 
-
-
--- lemma integrableOn_exp_neg_sqrt_plus_mul {c d e : ℝ} (cn : 0 ≤ c) (epos : 0 ≤ e) (dnz : d ≠ 0) : IntegrableOn (fun x ↦ rexp (d * √(x + c)) * (e * (1 / (2 * √(x + c))))) (Ioi (-c)) ℙ := by
-
---   simp_rw [mul_comm d, ← smul_eq_mul _ d]
---   -- simp_rw [mul_comm e, ← smul_eq_mul _ e]
-
-
---   have i0 : IntegrableOn (fun x ↦ rexp (√(x + c) • d) * (e * (1 / (2 * √(x + c))))) (Ioc (-c) 1) ℙ := by
---     apply integrableOn_Icc_iff_integrableOn_Ioc.mp
---     refine IntegrableOn.continuousOn_mul ?_ ?_ isCompact_Icc
---     exact hrrrm
---     exact (integrableOn_one_div_two_mul_sqrt_plus _ cn).const_mul e
-
---   have i1 : IntegrableOn (fun x ↦ rexp (√(x + c) • d) * (e * (1 / (2 * √(x + c))))) (Ioi 1) ℙ := by
---     have mf : Measurable (fun x ↦ rexp (√(x + c) • d) * (e * (1 / (2 * √(x + c))))) :=
---         have := (continuous_id.add continuous_const).sqrt.measurable
---         (measurable_exp.comp (this.smul_const d)).mul (((this.const_mul 2).const_div 1).const_mul e)
---     have Ig : IntegrableOn (fun x ↦ e * ((x + c) ^ (-(1.5 : ℝ)))) (Ioi 1) := (integrableOn_pow zero_lt_one (by linarith : -(1.5 : ℝ) < -1) cn).const_mul e
---     refine bounded_thingy_on_s measurableSet_Ioi (integrable_zero _ _ _) Ig ?_ ?_ mf
-
---     all_goals intros x ax
---     positivity
-
---     simp only [mem_Ioi] at ax
---     have xcn : 0 < x + c := by positivity
---     have xpos : 0 < x := by positivity
---     have pow_recip_sqrt_cubed (x : ℝ) (xpos : 0 < x) : ((√x)⁻¹) ^ 3 = x ^ (-(1.5 : ℝ)) := by
---       rw [sqrt_eq_rpow, ← Real.rpow_neg_one, ← rpow_mul (le_of_lt xpos), ← Real.rpow_natCast, ← rpow_mul (le_of_lt xpos)]
---       norm_num
---     have moo : e * (√(x + c))⁻¹ ^ 3 = (√((x + c) • d) ^ 2 / 2)⁻¹ * (e * (1 / (2 * √(x + c)))) := by
---       have (x : ℝ) : (√x)⁻¹ ^ 3 = (√x ^ 2 / 2)⁻¹ * (1 / (2 * √x)) := by ring
---       have := this ((x + c) • d)
---       sorry
---     rw [← pow_recip_sqrt_cubed (x + c) xcn, smul_eq_mul, exp_mul, moo]
-
---     have : √((x + c) • d) ^ 2 / 2 < rexp √((x + c) • d) := lt_of_lt_of_le (by linarith [sqrt_pos.mpr xcn]) (quadratic_le_exp_of_nonneg (by positivity))
---     simp only [sq_sqrt] at this
---     have := (inv_lt_inv₀ (by positivity) (by linarith [xcn, dnz])).mpr this
---     `exact le_of_lt ((mul_lt_mul_iff_of_pos_right (show 0 < e * (1 / (2 * sqrt (x + c))) by positivity)).mpr this)
-
---   convert i0.union i1
---   symm
---   exact Ioc_union_Ioi_eq_Ioi (le_trans (Right.neg_nonpos_iff.mpr cn) zero_le_one)
-
-
 lemma intEsqc (c : ℝ) : IntegrableOn (fun x ↦ rexp (- √(x + 1)) * (c * (1 / (2 * √(x + 1))))) (Ioi (-1)) := by
     have := (integrableOn_exp_neg_sqrt_plus (zero_le_one)).mul_const c
     simpa [mul_comm c, mul_assoc]
@@ -228,7 +158,6 @@ lemma integrableOn_exp_neg_sqrt : IntegrableOn (fun x ↦ rexp (-√x) * (1 / (2
   simpa
 
 lemma integral_exp_neg_sqrt : ∫ (x : ℝ) in Ioi 0, rexp (-√x) * (1 / (2 * √x)) = 1 := by
-
   nth_rewrite 2 [integral_exp_neg_Ioi_zero.symm]
   have := @MeasureTheory.integral_comp_mul_deriv_Ioi (fun x ↦ √x) (fun x ↦ 1 / (2 * √ x)) (fun x ↦ rexp (-x)) 0
   simp only [mem_Ioi, Function.comp_apply,sqrt_zero] at this
@@ -254,41 +183,6 @@ lemma integral_exp_neg_sqrt : ∫ (x : ℝ) in Ioi 0, rexp (-√x) * (1 / (2 * �
     have := integrableOn_exp_neg_sqrt_plus (Preorder.le_refl 0)
     simpa
   exact integrableOn_Ici_iff_integrableOn_Ioi.mpr this
-
-
-lemma integrable_p {X : Finset V} [Nonempty X] (M : { x // x ∈ X } × { x // x ∈ X } → ℝ) [MeasurableSpace X] [MeasurableSingletonClass (X × X)] [dm: DiscreteMeasurableSpace (X × X)] [DecidableEq X] {ℙᵤ : Measure (X × X)} [IsProbabilityMeasure ℙᵤ] (E : Set ({ x // x ∈ X } × { x // x ∈ X })) (ch : ∀ (y : ℝ), -1 ≤ y → ℙᵤ.real (E ∩ {x | y ≤ M x}) < rexp (-c * √(y + 1)) * β * ↑r) (cpos : 0 < c) (βpos : 0 < β) :
-    let f := (fun (p : ({ x // x ∈ X } × { x // x ∈ X }) × ℝ) ↦ rexp (c * √(p.2 + 1)) * (c * (1 / (2 * √(p.2 + 1)))) * (E ∩ {x | p.2 ≤ M x}).indicator (fun x ↦ 1) p.1)
-    Integrable f (ℙᵤ.prod (Measure.restrict ℙ (Ioi (-1)))) := by
-  intro f
-  have meas : AEStronglyMeasurable f (ℙᵤ.prod (Measure.restrict ℙ (Ioi (-1)))) := sorry
-
-  refine (integrable_prod_iff meas).mpr ⟨?_, Integrable.of_finite⟩
-
-  refine Filter.Eventually.of_forall ?_
-  intro x
-  simp only [f]
-
-  have Ig : IntegrableOn (fun y ↦  rexp (c * √(y + 1)) * (c * (1 / (2 * √(y + 1)))) * rexp (-c * √(y + 1)) * β * r) (Ioi (-1)) := sorry
-  refine bounded_thingy_on_s measurableSet_Ioi (integrable_zero _ _ _) Ig ?_ ?_ ?_
-
-  intros y yi
-  refine mul_nonneg (mul_nonneg ?_ ?_) ?_
-  positivity; positivity; exact Set.indicator_nonneg (fun x a ↦ (zero_le_one' ℝ)) x
-
-  intros y yi
-  have :  rexp (c * √(y + 1)) * (c * (1 / (2 * √(y + 1)))) * (E ∩ {x | y ≤ M x}).indicator (fun x ↦ 1) x ≤ rexp (c * √(y + 1)) * (c * (1 / (2 * √(y + 1)))) * (rexp (-c * √(y + 1)) * β * ↑r) := by
-    have : (E ∩ {x | y ≤ M x}).indicator (fun x ↦ 1) x < (rexp (-c * √(y + 1)) * β * ↑r) := by
-      convert ch y (le_of_lt yi)
-      sorry
-
-
-
-    exact mul_le_mul_of_nonneg_left (le_of_lt this) (by positivity)
-
-  sorry
-  sorry
-
-
 
 lemma terriblel (c : ℝ) : ∫ a in Ioi (-1), (rexp (- √(a + 1)) *  (c * (1 / (2 * √(a + 1))))) = c := by
   have := improper_integral_shift 1 (fun a ↦ rexp (-√a) * (c * (1 / (2 * √a)))) ?_ ?_ ?_
@@ -331,48 +225,5 @@ lemma lintegral_Ioc_eq_Ioi (l : ℝ) (f : ℝ → ENNReal) (x : X) (b : X → �
   congr; ext; congr
   exact measurableSet_Ioi
   exact measurableSet_Ioc
-
-lemma IntegrableFin {X : Type} [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X] {ℙᵤ : Measure X} [IsFiniteMeasure ℙᵤ] {f : X → ℝ} :
-  Integrable f ℙᵤ := ⟨ AEStronglyMeasurable.of_discrete , HasFiniteIntegral.of_finite ⟩
-
-
-
-  -- let ff := (fun y ↦ rexp (c * √(y + 1)) * (c * (1 / (2 * √(y + 1)))) * (E ∩ {x | y ≤ M x}).indicator (fun x ↦ 1) x)
-
-  -- obtain ⟨ε, ⟨εl, pe⟩⟩ :
-  --     ∃ ε ∈ Ioi (-1), ∀ p2 ∈ (Ioo (-1) ε),  {x | ε ≤ M x} = {x | p2 ≤ M x} := by sorry
-  -- have i0 : IntegrableOn ff (Ioo (-1) ε) ℙ := by
-  --   simp only [ff]
-  --   have hst :
-  --       EqOn (fun y ↦ rexp (c * √(y + 1)) * (c * (1 / (2 * √(y + 1)))) * (E ∩ {x | ε ≤ M x}).indicator (fun x ↦ 1) x) ff (Ioo (-1) ε) := by
-  --     simp only [EqOn, ff]
-  --     intros y yoo
-  --     congr
-  --     exact pe y yoo
-  --   refine IntegrableOn.congr_fun ?_ hst measurableSet_Ioo
-  --   refine Integrable.mul_const ?_ ((E ∩ {x | ε ≤ M x}).indicator (fun x ↦ 1) x)
-  --   apply integrableOn_Icc_iff_integrableOn_Ioo.mp
-  --   refine IntegrableOn.continuousOn_mul ?_ ?_ isCompact_Icc
-  --   convert (continuousOn_add_const.sqrt.const_smul c).rexp
-  --   have : (fun y ↦ c * (1 / (2 * √(y + 1)))) = fun y ↦ ((fun _ ↦ c) y) * ((fun y ↦ (1 / (2 * √(y + 1)))) y) := by simp
-  --   rw [this]
-  --   exact IntegrableOn.continuousOn_mul continuousOn_const (integrableOn_one_div_two_mul_sqrt_plus ε 1) isCompact_Icc
-
-  -- have i1 : IntegrableOn ff (Ici (-1)) ℙ := by
-  --   have Ig : IntegrableOn (fun y ↦  rexp (c * √(y + 1)) * (c * (1 / (2 * √(y + 1)))) * rexp (-c * √(y + 1)) * β * r) (Ici (-1)) := sorry
-  --   refine bounded_thingy_on_s measurableSet_Ici (integrable_zero _ _ _) Ig ?_ ?_ ?_
-  --   simp [ff]; intros;
-  --   have (y : ℝ)  :  rexp (c * √(y + 1)) * (c * ((√(y + 1))⁻¹ * 2⁻¹)) * rexp (-(c * √(y + 1))) * β * r =  (c * ((√(y + 1))⁻¹ * 2⁻¹)) * β * r := by sorry
-
-
-  --   sorry
-
-
-  -- -- have := i0.union i1
-  -- -- rw [Ioo_union_Ici_eq_Ioi] at this
-  -- -- simp [IntegrableOn] at this
-  -- -- convert this
-  -- -- exact εl
-  -- sorry
 
 end

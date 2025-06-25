@@ -1,81 +1,11 @@
 import MulticolorRamsey.Basic
 import MulticolorRamsey.Integrals
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
-import Mathlib.MeasureTheory.Integral.Prod
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import Mathlib.Analysis.Calculus.Deriv.Basic
-import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Algebra.Group.Indicator
-import Mathlib.MeasureTheory.Integral.IntegralEqImproper
-import Mathlib.MeasureTheory.Integral.IntegrableOn
-import Mathlib.Topology.ContinuousOn
-import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
-import Mathlib.MeasureTheory.Integral.ExpDecay
-
-import Canonical
-
-import Init.Tactics
-
-import Mathlib.Tactic.Linarith
-
 
 open MeasureTheory ProbabilityTheory Real ENNReal Set Fin
 
 variable {r : ℕ}
 
 
--- lemma three_ineq {r : ℕ} (rpos : 0 < r) : ↑r * 3 ^ (-((r : ℝ) * 4)) * 3 ^ r + ↑r ^ 3 * 3 ^ (-((r : ℝ) * 4)) * √3 * √↑r * 3 ^ r ≤ 1 / 3 := by sorry
-  -- suffices hh :  3 ^ r * (3 ^ (-((4 : ℝ) * ↑r)) * ↑r * (↑r * (↑r * (√3 * √↑r)) + 1)) ≤ 1/3 from by ring_nf at hh;
-  -- cancel_denoms
-  -- have : (3 : ℝ) ^ (r : ℝ) * 3 ^ (-(4 * (r : ℝ))) = 3 ^ (- (r : ℝ) * 3) := by rw [← rpow_add zero_lt_three]; ring_nf
-  -- have : 3 * (3 : ℝ) ^ r * 3 ^ (-(4 * (r : ℝ))) = 3 * 3 ^ (- (r : ℝ) * 3) := by linarith
-  -- simp_rw [this]
-
-  -- have : r * r * √3 * √r + 1 ≤ r * r * √r * 3 := by
-  --   suffices 1 ≤ (3 - √3) * (r * (r * √r)) from by linarith
-  --   have o : 1 ≤ (3 - √3) := by nlinarith [sq_sqrt (zero_le_three)]
-  --   have t : 1 ≤ r * (r * √r) := by
-  --     nlinarith [sq_sqrt (le_trans zero_le_one (show 1 ≤ (r : ℝ) by sorry)),
-  --       show 0 < r * (r * √r) by positivity,
-  --       sq_nonneg (r - 1), sq_nonneg (√r - 1)]
-  --   exact one_le_mul_of_one_le_of_one_le o t
-
-
-  -- suffices h : (3 * 3 ^ (- r * 3) * r) * (r * r * √r * 3) ≤ 1 from le_trans (mul_le_mul_of_nonneg_left this (by positivity)) h
-
-  -- have : 3 * 3 ^ (- r * 3) * r * (r * r * √r * 3) ≤ 3 ^ (- r * 5) * 3 := by
-  --   have : 3 * 3 ^ (- r * 3) * r * (r * r * √r * 3) = (r * √3 ^ (-r)) ^ (7/2) * 3 ^ (- r * 5) * 3 := by sorry
-  --   rw [this]
-  --   have : (r / √3 ^ r) ^ (7/2) ≤ 1 := sorry
-  --   have : (r / √3 ^ r) ^ (7 / 2) * 3 ^ (-r * 5) ≤ 3 ^ (-r * 5) := mul_le_of_le_one_left (by positivity) this
-  --   sorry
-
-  -- trans 3 ^ (-(5 : ℝ)) * 3
-  -- trans 3 ^ (-r * 5) * 3
-  -- exact this
-  -- simp [rpos]
-  -- ring_nf; linarith
-
--- theeorem one_le_r_mul_r_mul_sqrt_r (r : ℝ) (h : 2 ≤ r) : 1 ≤ r * (r * √r) := by
---   have h₃ : 0 ≤ r * √r := by positivity
---   nlinarith [sq_sqrt (show 0 ≤ r by linarith), sq_nonneg (r - 1), sq_nonneg (√r - 1)]
-
--- lemma C_ineq (r : ℕ) (rpos : 0 < r) :
---     ↑r * √(3 * ↑r) ≤ 4 * (↑r : ℝ) * √↑r - 1 := by
---   simp only [Nat.ofNat_nonneg, sqrt_mul]
---   have one_le : 1 ≤ (r : ℝ) := by exact Nat.one_le_cast.mpr rpos
---   have dd :  0 < 4 * ↑r * √↑r - 1 := by
---     have : 4 ≤ 4 * r * √r := by nlinarith [sqrt_nonneg r, sq_sqrt (Nat.cast_nonneg' r)]
---     linarith
---   apply (one_le_div (by positivity)).mp
---   rw [sub_div]
---   have : 4 * ↑r * √↑r / (↑r * (√3 * √↑r)) = 4 / √3 := by field_simp; linarith
---   have : 4 / 2 ≤ 4 / √3 := div_le_div_of_nonneg_left zero_le_four (sqrt_pos.mpr zero_lt_three) (sqrt_le_iff.mpr (by simp only [Nat.ofNat_nonneg, true_and]; linarith))
---   have : 1 / (↑r * (√3 * √↑r)) ≤ 1 := by
---     rw [one_div]; refine inv_le_one_of_one_le₀ ?_;
---     nlinarith [show 1 ≤ √3 by exact one_le_sqrt.mpr Nat.one_le_ofNat, one_le_sqrt.mpr one_le]
---   linarith
 
 
 lemma fundamental (c m : ℝ) (mp : -1 ≤ m) :
@@ -84,28 +14,28 @@ lemma fundamental (c m : ℝ) (mp : -1 ≤ m) :
     ∫ (y : ℝ) in (Ioc (-1) m), ecsq' c y = ecsq c m - ecsq c (-1) := by
   intros ecsq ecsq'
 
-  have hderiv (c x : ℝ) (xi : x ∈ Ioo (-1) m) := by
+  have hderiv (x : ℝ) (xi : x ∈ Ioo (-1) m) := by
     have : x + 1 ≠ 0 := by linarith [mem_Ioo.mp xi]
     exact ((((hasDerivAt_id' x).add_const (1 : ℝ)).sqrt this).const_mul c).exp
 
-  have hcont (c m : ℝ) : ContinuousOn (ecsq c) (Icc (-1) m) := (continuousOn_add_const.sqrt.const_smul c).rexp
+  have hcont : ContinuousOn (ecsq c) (Icc (-1) m) := (continuousOn_add_const.sqrt.const_smul c).rexp
 
-  have hcont' (c m : ℝ) : ContinuousOn (ecsq' c) (Ioc (-1) m) := by
+  have hcont' : ContinuousOn (ecsq' c) (Ioc (-1) m) := by
     have (x : ℝ) (xi : x ∈ Ioc (-1) m) : 2 * √(x + 1) ≠ 0 := by
       have : 0 < x + 1 := by linarith [xi.1]
       have : 0 < 2 * √(x + 1) := by positivity
       linarith
-    let Ccon {c  : ℝ} {s : Set ℝ} : ContinuousOn (fun x ↦ c) s := continuousOn_const
-    exact ((hcont c m).mono Ioc_subset_Icc_self).mul (Ccon.mul (Ccon.div (Ccon.mul continuousOn_add_const.sqrt) this))
+    let ccon {c  : ℝ} {s : Set ℝ} : ContinuousOn (fun x ↦ c) s := continuousOn_const
+    exact (hcont.mono Ioc_subset_Icc_self).mul (ccon.mul (ccon.div (ccon.mul continuousOn_add_const.sqrt) this))
 
-  have hint (c m : ℝ) (mp : -1 ≤ m) : IntervalIntegrable (ecsq' c) volume (-1) m := by
+  have hint : IntervalIntegrable (ecsq' c) volume (-1) m := by
     refine (intervalIntegrable_iff_integrableOn_Ioc_of_le mp).mpr ?_
     have : IntegrableOn (fun x ↦ c * (1 / (2 * √(x + 1)))) (Icc (-1) m) ℙ :=
       (integrableOn_Icc_iff_integrableOn_Ioc.mpr intOn1).continuousOn_mul continuousOn_const isCompact_Icc
-    exact (this.continuousOn_mul (hcont c m) isCompact_Icc).mono_set Ioc_subset_Icc_self
+    exact (this.continuousOn_mul hcont isCompact_Icc).mono_set Ioc_subset_Icc_self
 
   -- fundamental thm of calculus
-  have := intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le mp (hcont c m) (hderiv c) (hint c m mp)
+  have := intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le mp hcont hderiv hint
   convert this
   exact (intervalIntegral.integral_of_le mp).symm
 
@@ -401,10 +331,6 @@ lemma expPos {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Fins
 
     (0 ≤ ℙᵤ[ fun xx => f (fun i => (Z i xx)) ]) := by sorry -- big sorry. issue #8
 
-
-lemma three_ineq_ENN {r : ℕ} (rpos: 0 < r) : r * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 +
-      r ^ 2 * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * ENNReal.ofReal (r * √3 * √r) * 3 ^ r * 3 ≤
-    1 := sorry -- likely extremely ugly
 
 --------------------------------------------------------------------------------------------------
 

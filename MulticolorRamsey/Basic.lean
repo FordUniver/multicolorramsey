@@ -83,7 +83,7 @@ end
 ----------------------------------------------------------------------------------------------------
 -- special function lemma
 
-noncomputable def coshsqrt (x : ℝ) :=  ∑' n : ℕ , (x ^ n / (2 * n).factorial)
+noncomputable def coshsqrt (x : ℝ) :=  ∑' n : ℕ , (x ^ n / ((2 * n).factorial : ℝ))
 
 lemma monotone_coshsqrt : MonotoneOn coshsqrt (Set.Ici 0) := sorry
 
@@ -104,7 +104,46 @@ lemma le_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : x ≤ 2 + coshsqrt x := by
   suffices x ≤ 3 + x / 2 + x ^ 2 / 24 from le_add_of_le_of_nonneg this (tsum_nonneg (by intro; positivity))
   nlinarith
 
-lemma ge_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : 2 + coshsqrt x ≤ 3 * Real.exp √x := by sorry
+section
+
+open Real
+
+----------------------------------------------------------------------------------------------------
+--idk mathlib?
+
+theorem tsum_even_nat [TopologicalSpace T] [AddCommMonoid T] (f : Nat → T) :
+    ∑' (x : {n : ℕ | Even n}), f x = ∑' (x : ℕ), f (2 * x) := by
+  rw [← Equiv.tsum_eq (Equiv.ofBijective (fun n : {n : ℕ | Even n} => (n : ℕ) / 2) ?_)]
+  · congr; ext x; congr; simp; exact (Nat.two_mul_div_two_of_even (x.prop)).symm
+  · constructor
+    · rintro ⟨_, hn⟩ ⟨_, hm⟩ h
+      simp_all [Nat.even_iff, Nat.div_eq_of_lt]
+      exact (Nat.div_left_inj (even_iff_two_dvd.mp hn) (even_iff_two_dvd.mp hm)).mp h
+    · intro n
+      exact ⟨⟨2 * n, (by simp)⟩, by simp⟩
+
+----------------------------------------------------------------------------------------------------
+
+lemma ge_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : 2 + coshsqrt x ≤ 3 * Real.exp √x := by
+  have : coshsqrt x ≤ rexp √x := by
+    simp [coshsqrt, Real.exp_eq_exp_ℝ, NormedSpace.exp, NormedSpace.expSeries_sum_eq_div]
+    have : ∑' (a : ℕ), ENNReal.ofReal (x ^ a / ↑(2 * a).factorial) ≤ ∑' (a : ℕ), ENNReal.ofReal (√x ^ a / ↑a.factorial) := by
+      nth_rw 2 [← Summable.tsum_add_tsum_compl (s := { n : ℕ | Even n}) (by simp) (by simp)]
+      rw [tsum_even_nat (fun n ↦ ENNReal.ofReal (√x ^ n / (n : ℕ).factorial))]
+      simp_rw [pow_mul, Real.sq_sqrt xnn]
+      exact le_self_add
+    rw [← ENNReal.ofReal_tsum_of_nonneg] at this
+    rw [← ENNReal.ofReal_tsum_of_nonneg] at this
+    rw [← ENNReal.ofReal_le_ofReal_iff]
+    exact this
+    · positivity
+    · intro; positivity
+    · exact Real.summable_pow_div_factorial √x
+    · intro; positivity
+    · exact mew xnn
+
+  have : 2 ≤ 2 * rexp √x := by linarith [one_le_exp (sqrt_nonneg x)]
+  linarith
 
 lemma icc_coshsqrt (x : ℝ) (xnn : x < 0) : coshsqrt x ∈ Set.Icc (-1) 1 := by sorry
 
@@ -172,11 +211,10 @@ lemma specialFunctionE (x : Fin r → ℝ) (_ :  ∀ i, -3 * r ≤ x i) :
   exact Nat.one_le_ofNat
   exact card_finset_fin_le Finset.univ
 
-
-
 lemma specialFunctionEc (x : Fin r → ℝ) (_ :  ∃ i, x i < -3 * r) :
     f x ≤ -1 := sorry
 
+end
 ----------------------------------------------------------------------------------------------------
 -- TODO maybe mathlib wants some of this
 
@@ -339,6 +377,45 @@ lemma sum_sqrt_le {r : ℕ} {X : Type*} [Fintype X] [nenr: Nonempty (Fin r)] {τ
 end
 
 
+-- lemma three_ineq_ENN {r : ℕ} (rpos: 0 < r) : r * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 +
+--       r ^ 2 * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * ENNReal.ofReal (r * √3 * √r) * 3 ^ r * 3 ≤
+--     1 := by
+--   suffices r * (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 + r ^ 2 * (3 ^ (-((r : ℝ) * 4))) * (r * √3 * √r) * 3 ^ r * 3 ≤ 1 from sorry
+
+--   have : 3 ^ (-((r : ℝ) * 4)) * (3 : ℝ) ^ (r : ℝ) = 3 ^ (- (r : ℝ) * 3) := by rw [← rpow_add zero_lt_three]; ring_nf
+--   have ee : (3 ^ (-((r : ℝ) * 4))) * (3 : ℝ) ^ r * 3 = 3 ^ (- (r : ℝ) * 3) * 3 := by congr; convert this; norm_cast
+--   have : (3 : ℝ) ^ (- (r : ℝ) * 3) * 3 = 3 ^ (- (r : ℝ) * 3 + 1) := by rw [← rpow_add_one]; exact (NeZero.ne' 3).symm
+--   rw [this] at ee
+--   simp_rw [ee]
+
+--   have : r * r * √3 * √r + 1 ≤ r * r * √r * 3 := by
+--     suffices 1 ≤ (3 - √3) * (r * (r * √r)) from by linarith
+--     have o : 1 ≤ (3 - √3) := by nlinarith [sq_sqrt (zero_le_three)]
+--     have t : 1 ≤ r * (r * √r) := by
+--       nlinarith [sq_sqrt (le_trans zero_le_one (show 1 ≤ (r : ℝ) by sorry)),
+--         show 0 < r * (r * √r) by positivity,
+--         sq_nonneg (r - 1), sq_nonneg (√r - 1)]
+--     exact one_le_mul_of_one_le_of_one_le o t
+
+
+--   suffices h : (3 * 3 ^ (- r * 3) * r) * (r * r * √r * 3) ≤ 1 from le_trans (mul_le_mul_of_nonneg_left this (by positivity)) h
+
+--   have : 3 * 3 ^ (- r * 3) * r * (r * r * √r * 3) ≤ 3 ^ (- r * 5) * 3 := by
+--     have : 3 * 3 ^ (- r * 3) * r * (r * r * √r * 3) = (r * √3 ^ (-r)) ^ (7/2) * 3 ^ (- r * 5) * 3 := by sorry
+--     rw [this]
+--     have : (r / √3 ^ r) ^ (7/2) ≤ 1 := sorry
+--     have : (r / √3 ^ r) ^ (7 / 2) * 3 ^ (-r * 5) ≤ 3 ^ (-r * 5) := mul_le_of_le_one_left (by positivity) this
+--     sorry
+
+--   trans 3 ^ (-(5 : ℝ)) * 3
+--   trans 3 ^ (-r * 5) * 3
+--   exact this
+--   simp [rpos]
+--   ring_nf; linarith
+
+
+lemma three_ineq_ENN {r : ℕ} (rpos: 0 < r) : r * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 +       r ^ 2 * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * ENNReal.ofReal (r * √3 * √r) * 3 ^ r * 3 ≤     1 := by sorry
+
 -- TODO i just put here everything that annoyed me
 lemma omg {a b : ℝ} (p : b ≠ 0) : a = a / b * b := by
   have := invertibleOfNonzero p
@@ -349,6 +426,5 @@ lemma omg4 {a b c : ℝ} (bnn : 0 ≤ b) : a ≤ c ↔ a * b ≤ c * b := by sor
 lemma omg5 {a b c : ENNReal} : b ≤ c ↔ a * b ≤ a * c := by sorry
 lemma omg6 {a b : ℝ} : - a ≤ a * b ↔ -1 ≤ b := by
   sorry
-
 
 lemma omg7 (a b c : ENNReal) (ab : a < b) (ac : a < c) (bc : b < c) : c - b < c - a := by sorry
