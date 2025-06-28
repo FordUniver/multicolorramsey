@@ -251,8 +251,7 @@ since the sum in the last term is $\leq -1$ while the product is at least $1$ (e
 
   Observe that, since $x \le 2 + \cosh\sqrt{x}$ (Lemma~\ref{lem:le-coshsqrt}) and using Lemma~\ref{lem:moments} and linearity of expectation,
   \[
-    \Ex\big[ f\big( Z_1,\ldots,Z_r \big) \big] = \Ex\left[ \sum_{j = 1}^r Z_j \prod_{i \ne j} \left( 2 + \cosh(\sqrt{Z_i}) \right) \right]
-    \ge \sum_{j = 1}^r \Ex\left[ \prod_{i \in [r]} Z_i \right] = \sum_{j = 1}^r (3r)^r \Ex\left[ \prod_{i \in [r]} \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \right] \ge 0
+    \Ex\big[ f\big( Z_1,\ldots,Z_r \big) \big] \ge 0
   \]
 
   We hence have
