@@ -80,33 +80,6 @@ lemma moments (X : Type) [Fintype X] [Nonempty X] [MeasurableSpace X] [Fintype V
 
 end
 
-----------------------------------------------------------------------------------------------------
--- special function lemma
-
-noncomputable def coshsqrt (x : ℝ) :=  ∑' n : ℕ , (x ^ n / ((2 * n).factorial : ℝ))
-
-lemma monotone_coshsqrt : MonotoneOn coshsqrt (Set.Ici 0) := sorry
-
-lemma mew {x} (xpos: (0 : ℝ) ≤ ↑x) : Summable (fun n ↦ (x ^ n / (2 * n).factorial)) := by
-    refine Summable.of_nonneg_of_le ?_ ?_ (Real.summable_pow_div_factorial x)
-    all_goals intro b
-    positivity
-    refine div_le_div₀ (pow_nonneg xpos b) (Preorder.le_refl (x ^ b)) (by positivity) ?_
-    exact Nat.cast_le.mpr (Nat.factorial_le (by linarith))
-
-lemma le_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : x ≤ 2 + coshsqrt x := by
-  have : coshsqrt x = 1 + x / 2 + x ^ 2 / ↑(4).factorial + ∑' (i : ℕ), x ^ (i + 3) / ↑(2 * (i + 3)).factorial := by
-    simp [coshsqrt, ← Summable.sum_add_tsum_nat_add 3 (mew xnn), Finset.sum, add_comm]
-  simp [this]
-  have : 2 + (1 + x / 2 + x ^ 2 / ↑(Nat.factorial 4) + ∑' (i : ℕ), x ^ (i + 3) / ↑(2 * (i + 3)).factorial) =
-      (3 + x / 2 + x ^ 2 / ↑(Nat.factorial 4)) + ∑' (i : ℕ), x ^ (i + 3) / ↑(2 * (i + 3)).factorial := by ring
-  simp [this]
-  suffices x ≤ 3 + x / 2 + x ^ 2 / 24 from le_add_of_le_of_nonneg this (tsum_nonneg (by intro; positivity))
-  nlinarith
-
-section
-
-open Real
 
 ----------------------------------------------------------------------------------------------------
 --idk mathlib?
@@ -122,12 +95,38 @@ theorem tsum_even_nat [TopologicalSpace T] [AddCommMonoid T] (f : Nat → T) :
     · intro n
       exact ⟨⟨2 * n, (by simp)⟩, by simp⟩
 
+
 ----------------------------------------------------------------------------------------------------
+-- coshsqrt0
+
+section
+
+open Real
+
+noncomputable def coshsqrt (x : ℝ) :=  ∑' n : ℕ , (x ^ n / ((2 * n).factorial : ℝ))
+
+lemma mew {x} (xpos: (0 : ℝ) ≤ x) : Summable (fun n ↦ (x ^ n / (2 * n).factorial)) := by
+    refine Summable.of_nonneg_of_le ?_ ?_ (Real.summable_pow_div_factorial x)
+    all_goals intro b
+    positivity
+    refine div_le_div₀ (pow_nonneg xpos b) (Preorder.le_refl (x ^ b)) (by positivity) ?_
+    exact Nat.cast_le.mpr (Nat.factorial_le (by linarith))
+
+lemma lt_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : x < 2 + coshsqrt x := by
+  have : coshsqrt x = 1 + x / 2 + x ^ 2 / ↑(4).factorial + ∑' (i : ℕ), x ^ (i + 3) / (2 * (i + 3)).factorial := by
+    simp [coshsqrt, ← Summable.sum_add_tsum_nat_add 3 (mew xnn), Finset.sum, add_comm]
+  simp [this]
+  have : 2 + (1 + x / 2 + x ^ 2 / (Nat.factorial 4) + ∑' (i : ℕ), x ^ (i + 3) / (2 * (i + 3)).factorial) =
+      (3 + x / 2 + x ^ 2 / (Nat.factorial 4)) + ∑' (i : ℕ), x ^ (i + 3) / (2 * (i + 3)).factorial := by ring
+  simp [this]
+  suffices x < 3 + x / 2 + x ^ 2 / 24 from lt_add_of_lt_of_nonneg this (tsum_nonneg (by intro; positivity))
+  nlinarith
 
 lemma ge_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : 2 + coshsqrt x ≤ 3 * Real.exp √x := by
   have : coshsqrt x ≤ rexp √x := by
     simp [coshsqrt, Real.exp_eq_exp_ℝ, NormedSpace.exp, NormedSpace.expSeries_sum_eq_div]
-    have : ∑' (a : ℕ), ENNReal.ofReal (x ^ a / ↑(2 * a).factorial) ≤ ∑' (a : ℕ), ENNReal.ofReal (√x ^ a / ↑a.factorial) := by
+    -- "compare coefficients"
+    have : ∑' (a : ℕ), ENNReal.ofReal (x ^ a / (2 * a).factorial) ≤ ∑' (a : ℕ), ENNReal.ofReal (√x ^ a / a.factorial) := by
       nth_rw 2 [← Summable.tsum_add_tsum_compl (s := { n : ℕ | Even n}) (by simp) (by simp)]
       rw [tsum_even_nat (fun n ↦ ENNReal.ofReal (√x ^ n / (n : ℕ).factorial))]
       simp_rw [pow_mul, Real.sq_sqrt xnn]
@@ -145,76 +144,157 @@ lemma ge_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : 2 + coshsqrt x ≤ 3 * Real.exp �
   have : 2 ≤ 2 * rexp √x := by linarith [one_le_exp (sqrt_nonneg x)]
   linarith
 
-lemma icc_coshsqrt (x : ℝ) (xnn : x < 0) : coshsqrt x ∈ Set.Icc (-1) 1 := by sorry
+lemma icc_coshsqrt_neg (x : ℝ) (xnn : x ≤ 0) : coshsqrt x ∈ Set.Icc (-1) 1 := by
+  have : coshsqrt x = Real.cos √(-x) := by
+    rw [Real.cos_eq_tsum, coshsqrt]
+    congr; ext n; congr
+    rw [pow_mul, sq_sqrt]
+    by_cases h : Even n
+    · simp [h.neg_pow]
+    · rw [Nat.not_even_iff_odd] at h
+      rw [h.neg_one_pow, h.neg_pow]
+      simp
+    exact Left.nonneg_neg_iff.mpr xnn
+  rw [this]
+  exact cos_mem_Icc √(-x)
 
-lemma coshsqrt_pos {x : ℝ} : 0 ≤ 2 + coshsqrt x := by
+lemma coshsqrt_pos {x : ℝ} (xn : x ≤ 0) : 0 < 2 + coshsqrt x := by
+  have := Set.mem_Icc.mp (icc_coshsqrt_neg x xn)
+  linarith
+
+lemma coshsqrt_nonneg {x : ℝ} : 0 ≤ 2 + coshsqrt x := by
   by_cases xnn : 0 ≤ x
-  · exact le_trans xnn (le_coshsqrt x xnn)
-  · have := Set.mem_Icc.mp (icc_coshsqrt x (lt_of_not_le xnn))
+  · exact le_trans xnn (le_of_lt (lt_coshsqrt x xnn))
+  · exact le_of_lt (coshsqrt_pos (le_of_lt (lt_of_not_ge xnn)))
+
+
+lemma coshsqrt_mono {x y : ℝ} (xnn : 0 ≤ x) (xly : x ≤ y) : coshsqrt x ≤ coshsqrt y := by
+  simp [coshsqrt]
+  have ynn : 0 ≤ y := by trans x; exact xnn; exact xly
+  have : ∑' (a : ℕ), ENNReal.ofReal (x ^ a / (2 * a).factorial) ≤ ∑' (a : ℕ), ENNReal.ofReal (y ^ a / (2 * a).factorial) := by
+    gcongr
+  rw [← ENNReal.ofReal_tsum_of_nonneg _ (mew xnn)] at this
+  rw [← ENNReal.ofReal_tsum_of_nonneg _ (mew ynn)] at this
+  rw [← ENNReal.ofReal_le_ofReal_iff]
+  exact this
+  positivity
+  intros; positivity
+  intros; positivity
+
+lemma tt (x : ℝ) : 1 ≤ 2 + coshsqrt x := by
+  by_cases h : 0 < x
+  · have : 1 ≤ coshsqrt x := by
+      trans 1 + ∑' (i : ℕ), x ^ (i + 1) / ↑(2 * (i + 1)).factorial
+      simp; positivity
+      simp [coshsqrt, ← Summable.sum_add_tsum_nat_add 1 (mew (le_of_lt h)), Finset.sum, add_comm]
+    linarith
+  · have := (Set.mem_Icc.mp (icc_coshsqrt_neg x (le_of_not_lt h))).left
     linarith
 
-lemma coshsqrt_m1 (x : ℝ) : 0 ≤ 2 + coshsqrt x := sorry
+-- TODO hmmm. mathlib? there is a version with [IsOrderedMonoid R] but not requiring zero
+-- but the reals are not
+theorem Finset.one_le_prod''' {ι : Type u_1}
+    [CommMonoidWithZero R] [PartialOrder R] [ZeroLEOneClass R] [PosMulMono R] {f : ι → R} {s : Finset ι}
+    (h : ∀ i ∈ s, 1 ≤ f i) :
+1 ≤ ∏ i ∈ s, f i := by
+  trans ∏ i ∈ s, 1
+  · simp
+  · gcongr
+    exact fun i a ↦ zero_le_one' R
+    (expose_names; exact h i h_1)
 
+----------------------------------------------------------------------------------------------------
+-- special function lemma
 
 noncomputable def f (x : Fin r → ℝ) : ℝ :=
   ∑ j : Fin r, x j * (1 / (2 + coshsqrt (x j))) * (∏ i : Fin r, (2 + coshsqrt (x i)))
 
-lemma f_ge (x : Fin r → ℝ) : (∏ i : Fin r, (x i)) ≤ f x := by
-  have :  ∏ i : Fin r, x i ≤ ∏ i : Fin r, (2 + coshsqrt (x i)) := sorry
-  sorry
+lemma specialFunctionE (x : Fin r → ℝ) : f x ≤ 3^r * r * Real.exp (∑ i, Real.sqrt (x i + 3 * r)) := by
+  simp only [f, ← Finset.sum_mul]
 
-lemma specialFunctionE (x : Fin r → ℝ) (_ :  ∀ i, -3 * r ≤ x i) :
-    f x ≤ 3^r * r * Real.exp (∑ i, Real.sqrt (x i + 3 * r)) := by
-  simp only [f]
-  rw [← Finset.sum_mul]
+  trans r * ∏ i, (2 + coshsqrt (x i))
 
-  trans  (∑ i : Fin r, 1) * ∏ i, (2 + coshsqrt (x i))
-  gcongr
-  have : ∀ i, 0 ≤ (2 + coshsqrt (x i)) := sorry
-  exact Finset.prod_nonneg fun i a ↦ this i
+  · gcongr
+    · exact Finset.prod_nonneg fun _ _ ↦ coshsqrt_nonneg
+    · trans (∑ i : Fin r, 1)
+      · gcongr; expose_names
+        by_cases h : 0 < x i
+        · rw [← div_eq_mul_one_div]
+          have := lt_coshsqrt (x i) (le_of_lt h)
+          refine le_of_lt ((div_lt_one ?_).mpr this)
+          linarith
+        · push_neg at h
+          have : 1 / (2 + coshsqrt (x i)) * x i ≤ 0 := by
+            refine mul_nonpos_of_nonneg_of_nonpos ?_ h
+            have := (Set.mem_Icc.mp (icc_coshsqrt_neg (x i) h)).right
+            have := coshsqrt_pos h
+            have : 0 ≤ 1 / (2 + coshsqrt (x i)) := by positivity
+            linarith
+          linarith
+      · simp
 
-  expose_names
-  by_cases hh : 0 < x i
-  · trans x i * (x i)⁻¹
+  · rw [mul_comm (3 ^ r), mul_assoc]
     gcongr
-    ring_nf
-    have : x i ≤ (2 + coshsqrt (x i)) := le_coshsqrt _ (le_of_lt hh)
-    exact (inv_le_inv₀ (lt_of_lt_of_le hh this) hh).mpr this
-    exact mul_inv_le_one
-  · by_cases hhh : x i = 0
-    · rw [hhh]
-      simp
-    · trans x i * (1 / (2 + (-1)))
-      sorry
-      ring_nf
-      exact le_trans (le_of_not_lt hh) zero_le_one
+    · simp_rw [Real.exp_sum, ← Fin.prod_const, ← Finset.prod_mul_distrib]
+      gcongr <;> expose_names
+      · intros; exact coshsqrt_nonneg
+      · by_cases h : 0 < x i
+        · trans 3 * rexp √(x i)
+          exact ge_coshsqrt _ (le_of_lt h)
+          gcongr; simp
+        · push_neg at h
+          have := (Set.mem_Icc.mp (icc_coshsqrt_neg (x i) h)).right
+          have : 3 ≤ 3 * rexp √(x i + 3 * ↑r) := by simp
+          linarith
 
-  trans  (∑ i : Fin r, 1) * ∏ i, (2 + coshsqrt (x i + 3 * r))
+
+lemma specialFunctionEc (rpos : 0 < r) (x : Fin r → ℝ) (h : ∃ i, x i < -3 * r) :
+    f x ≤ -1 := by
+  obtain ⟨i, xil⟩ := h
+
+  have t1 (x : ℝ) : x * (1 / (2 + coshsqrt x)) ≤ 1 := by
+    by_cases hh : 0 < x
+    · trans x * (1 / x)
+      gcongr
+      exact le_of_lt (lt_coshsqrt x (le_of_lt hh))
+      simp [mul_inv_le_one]
+    · push_neg at hh
+      have := coshsqrt_pos hh
+      have : 0 ≤ 1 / (2 + coshsqrt x) := by positivity
+      trans 0; exact mul_nonpos_of_nonpos_of_nonneg hh this; exact zero_le_one' ℝ
+
+  have t2 : (x i) * (1 / (2 + coshsqrt (x i))) ≤ (x i) / 3 := by
+    rw [div_eq_mul_one_div _ 3]
+    have : x i < 0 := lt_of_lt_of_le xil (by nlinarith)
+    apply (mul_le_mul_left_of_neg _).mpr
+    · gcongr; exact coshsqrt_pos (le_of_lt this)
+      have := (Set.mem_Icc.mp (icc_coshsqrt_neg (x i) (le_of_lt this))).right
+      linarith
+    · exact this
+
+  have t3 : ∑ j, x j * (1 / (2 + coshsqrt (x j))) ≤ -1 := by
+    trans (x i) / 3 + (r - 1)
+    · rw [Fintype.sum_eq_add_sum_compl i]
+      gcongr
+      trans ∑ i ∈ {i}ᶜ, 1
+      gcongr; expose_names; exact t1 (x i_1)
+      simp only [Finset.sum_const, Finset.card_compl, Fintype.card_fin, Finset.card_singleton,
+        nsmul_eq_mul, mul_one]
+      rw [Nat.cast_sub]
+      simp; exact rpos
+    · linarith
+
+  have t4 : 1 ≤ ∏ i, (2 + coshsqrt (x i)) := by
+    refine Finset.one_le_prod''' ?_
+    intros i _; expose_names; exact tt (x i)
+
+  simp only [f, mul_comm _  (∏ i, (2 + coshsqrt (x i))), ← Finset.mul_sum]
+  trans (∏ i, (2 + coshsqrt (x i))) * (-1)
   gcongr
-  intros
-  exact coshsqrt_pos
-  expose_names
-  have : 0 ≤ x i + 3 * ↑r := by trans -3 * r + 3 * r; field_simp; exact add_le_add_right (h i) (3 * ↑r)
-  by_cases 0 ≤ x i
-  · sorry
-  · sorry
-
-  trans  (∑ i : Fin r, 1) * ∏ i, 3 * Real.exp √(x i + 3 * r)
-  gcongr
-  · intros; exact coshsqrt_pos
-  · refine ge_coshsqrt ?_ ?_
-    sorry
-
-  simp
-  rw [Real.exp_sum, Finset.prod_mul_distrib, Finset.prod_const, ← mul_assoc]
-  ring_nf; gcongr
-  exact Nat.one_le_ofNat
-  exact card_finset_fin_le Finset.univ
-
-lemma specialFunctionEc (x : Fin r → ℝ) (_ :  ∃ i, x i < -3 * r) :
-    f x ≤ -1 := sorry
+  linarith
 
 end
+
 ----------------------------------------------------------------------------------------------------
 -- TODO maybe mathlib wants some of this
 
@@ -269,7 +349,7 @@ lemma probabilistic_method {X : Type} [Fintype X] [MeasurableSpace X] (U : Measu
 
 lemma pidgeon_sum {X Y : Type} [nenx: Nonempty X] [fin: Fintype X] [nen: Nonempty Y] [fin: Fintype Y]
     (p : X → Y → Prop) [∀ i j, Decidable (p i j)] {β : Real} :
-    β ≤ ((Fintype.card ↑{x : X × Y | p x.1 x.2}) : ℝ) / ((Fintype.card (X × Y)) : ℝ) →
+    β ≤ ((Fintype.card {x : X × Y | p x.1 x.2}) : ℝ) / ((Fintype.card (X × Y)) : ℝ) →
     ∃ x : X, ∃ Y' : Finset Y, β * (Fintype.card Y) ≤ ((Y'.card) : ℝ) ∧ ∀ y ∈ Y', p x y := by
 
   intros bound
@@ -280,7 +360,7 @@ lemma pidgeon_sum {X Y : Type} [nenx: Nonempty X] [fin: Fintype X] [nen: Nonempt
     rw [Fintype.card_subtype, Finset.card_filter, this]
     simp only [sum_boole, Nat.cast_id, Nat.cast_sum, f]
 
-  have : β * ↑(Fintype.card Y) ≤ univ.expect f := by
+  have : β * (Fintype.card Y) ≤ univ.expect f := by
     rw [expect_eq_sum_div_card, card_univ, card_sum, ← le_div_iff₀ (Nat.cast_pos.mpr Fintype.card_pos),
       ← div_mul_eq_div_div, ← Nat.cast_mul, ← Fintype.card_prod]
     exact bound
@@ -361,9 +441,9 @@ open Real
 
 lemma sum_sqrt_le {r : ℕ} {X : Type*} [Fintype X] [nenr: Nonempty (Fin r)] {τ : X → Fin r → ℝ} {x : X} :
     let M := fun x ↦ (Finset.image (τ x) (Finset.univ : Finset (Fin r))).max' (Finset.Nonempty.image Finset.univ_nonempty (τ x))
-    ∑ i, √(3 * ↑r * τ x i + 3 * ↑r) ≤ ↑r * (√3 * √↑r) * √((M x) + 1) := by
+    ∑ i, √(3 * r * τ x i + 3 * r) ≤ r * (√3 * √r) * √((M x) + 1) := by
   intro M
-  have (i : Fin r) : √(3 * ↑r * τ x i + 3 * ↑r) ≤ √(3 * ↑r * (M x) + 3 * ↑r) := by
+  have (i : Fin r) : √(3 * r * τ x i + 3 * r) ≤ √(3 * r * (M x) + 3 * r) := by
     apply Real.sqrt_le_sqrt
     have : τ x i ≤ M x := by
       apply Finset.le_max'
