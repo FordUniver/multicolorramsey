@@ -2,35 +2,7 @@ import Mathlib.Combinatorics.SimpleGraph.Basic
 
 import Mathlib.Probability.Distributions.Uniform
 
-import Mathlib.LinearAlgebra.TensorProduct.Basic
-
-import Mathlib.Data.ENNReal.Basic
-
-import Mathlib.Algebra.Order.GroupWithZero.Unbundled.Basic
-import Mathlib.Algebra.Order.GroupWithZero.Unbundled.Defs
-
-import Mathlib.MeasureTheory.MeasurableSpace.Basic
-
-import Mathlib.Analysis.Calculus.Deriv.Basic
-
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
-
-import Mathlib.MeasureTheory.Integral.Average
-
-import Mathlib.Probability.ProbabilityMassFunction.Integrals
-
-import Mathlib.MeasureTheory.Integral.Prod
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import Mathlib.Analysis.Calculus.Deriv.Basic
-import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Algebra.Group.Indicator
-import Mathlib.MeasureTheory.Integral.IntegralEqImproper
-import Mathlib.MeasureTheory.Integral.IntegrableOn
-import Mathlib.Topology.ContinuousOn
-import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
-import Mathlib.MeasureTheory.Integral.ExpDecay
-
 
 ----------------------------------------------------------------------------------------------------
 --  edge colorings
