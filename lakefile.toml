@@ -10,7 +10,6 @@ pp.unicode.fun = true # pretty-prints `fun a ↦ b`
 name = "mathlib"
 scope = "leanprover-community"
 
-
 [[require]]
 name = "checkdecls"
 git = "https://github.com/PatrickMassot/checkdecls.git"
@@ -19,5 +18,10 @@ git = "https://github.com/PatrickMassot/checkdecls.git"
 name = "«doc-gen4»"
 git = "https://github.com/leanprover/doc-gen4"
 rev = "main"
+
 [[lean_lib]]
 name = "MulticolorRamsey"
+
+[[require]]
+name = "Canonical"
+scope = "chasenorman"

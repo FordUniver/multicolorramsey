@@ -170,10 +170,25 @@ cosh(\sqrt{x})= \overunderset{\infty}{n=0}{\sum}\frac{x^n}{(2n)!}= \overunderset
 \begin{proof} 
   \begin{equation*}
     f(x_1,\dots,x_r)= \Bigl(\overunderset{r}{i=1}{\prod}(2+cosh\sqrt{x_i})\Bigr)\overunderset{r}{j=1}{\sum}\frac{x_j}{2+cosh \sqrt{x_j}}
-    \overset{*}{\leq} \Bigl(\overunderset{r}{i=1}{\prod}(2+cosh\sqrt{x_i +3r})\Bigr)\overunderset{r}{j=1}{\sum}1 \overset{**}{\leq}r\Bigl(\overunderset{r}{i=1}{\prod} 3e^{\sqrt{x_i+3r}}\Bigr),
+     \overset{**}{\leq}r\Bigl(\overunderset{r}{i=1}{\prod} 3e^{\sqrt{x_i+3r}}\Bigr),
   \end{equation*}
-  Where (*) follows since $cosh(\sqrt{x})$ is increasing on the positive reals, that $cosh(x)\leq 1$ for negative $x$, and point (1) of the above remark.
-  (**) follows from point (1) of the above remark.
+  % justification of inequality (**)
+    % bounding the factors with x_i>0
+To see (**), we write down upper bounds for all the factors of the LHS of (**).
+First, for every $i \in [r]$, such that $x_i \geq 0$, we note that $cosh(\sqrt{x_i} )\leq cosh(\sqrt{x_i+3r})$ (which follows since all
+the coefficients in the taylor expansion of $cosh(\sqrt{y}))$ are non-negative and thus $cosh(\sqrt{y})$ is non-decreasing on the positive reals.
+In turn, $2+cosh(\sqrt{x_i+3r}) \leq 3e^{\sqrt{x_i+3r}}$ by point 1 of the above remark. We conculde that if $x_i \geq 0$, 
+$2 + cosh{\sqrt{x_i}} \leq 3 e^{\sqrt{x_i+3r}}$.
+
+% bounding the factors with x_i<0
+Next, we condiser the indices $i \in [r]$ such that $x_i<0$. In this case \begin{equation*}
+  2+cosh(\sqrt{x_i})= 2 + cos(\sqrt{-x_i}) \leq 3 \leq 3 e^{\sqrt{x_i+3r}},
+\end{equation*} 
+since $x_i \geq -3r$. 
+%justification of the sum factor
+It remains to show that $\frac{x_j}{2+cosh(\sqrt{x_j})} \leq 1$ for every $j \in [r]$. If $x_j\geq 0$ this follows directly from point (1) in the above remark.
+If $x_j<0$, note that the numerator of the fraction is negative while the denominator is a positive number between 1 and 3 by point(2) of the remark above.
+ 
 \end{proof}
 
 
@@ -236,8 +251,7 @@ since the sum in the last term is $\leq -1$ while the product is at least $1$ (e
 
   Observe that, since $x \le 2 + \cosh\sqrt{x}$ (Lemma~\ref{lem:le-coshsqrt}) and using Lemma~\ref{lem:moments} and linearity of expectation,
   \[
-    \Ex\big[ f\big( Z_1,\ldots,Z_r \big) \big] = \Ex\left[ \sum_{j = 1}^r Z_j \prod_{i \ne j} \left( 2 + \cosh(\sqrt{Z_i}) \right) \right]
-    \ge \sum_{j = 1}^r \Ex\left[ \prod_{i \in [r]} Z_i \right] = \sum_{j = 1}^r (3r)^r \Ex\left[ \prod_{i \in [r]} \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \right] \ge 0
+    \Ex\big[ f\big( Z_1,\ldots,Z_r \big) \big] \ge 0
   \]
 
   We hence have
