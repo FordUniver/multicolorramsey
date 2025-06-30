@@ -1,38 +1,8 @@
-import Mathlib.Combinatorics.SimpleGraph.Basic
-
 import Mathlib.Probability.Distributions.Uniform
-
-import Mathlib.LinearAlgebra.TensorProduct.Basic
-
-import Mathlib.Data.ENNReal.Basic
-
-import Mathlib.Algebra.Order.GroupWithZero.Unbundled.Basic
-import Mathlib.Algebra.Order.GroupWithZero.Unbundled.Defs
-
-import Mathlib.MeasureTheory.MeasurableSpace.Basic
-
-import Mathlib.Analysis.Calculus.Deriv.Basic
-
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
-
-import Mathlib.MeasureTheory.Integral.Average
-
-import Mathlib.Probability.ProbabilityMassFunction.Integrals
-
-import Mathlib.MeasureTheory.Integral.Prod
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import Mathlib.Analysis.Calculus.Deriv.Basic
-import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Algebra.Group.Indicator
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
-import Mathlib.MeasureTheory.Integral.IntegrableOn
-import Mathlib.Topology.ContinuousOn
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.MeasureTheory.Integral.ExpDecay
-
-
-import Canonical
 
 section
 
@@ -62,8 +32,9 @@ lemma bounded_thingy_on_s {f g h : ℝ → ℝ} (ms : MeasurableSet s) (Ih : Int
 lemma integrableOn_one_div_two_mul_sqrt_plus (m : ℝ) (c : ℝ) : IntegrableOn (fun x ↦ 1 / (2 * √(x + c))) (Icc (-c) m) := by
   have : (∀ x ∈ Ioo (-c) m, HasDerivAt (fun x ↦ √(x + c)) ((fun x ↦ 1 / (2 * √(x + c))) x) x) := by
     intros x xi
-    have := ((hasDerivAt_id' x).add (hasDerivAt_const x c)).sqrt (by linarith [mem_Ioo.mp xi])
+    have := ((hasDerivAt_id' x).add (hasDerivAt_const x c)).sqrt (by simp; linarith [mem_Ioo.mp xi])
     simpa only [one_div, mul_inv_rev, add_zero]
+
   apply integrableOn_Icc_iff_integrableOn_Ioc.mpr
 
   exact intervalIntegral.integrableOn_deriv_of_nonneg ((continuousOn_id' _).add continuousOn_const).sqrt this (by intros; positivity)

@@ -1,12 +1,12 @@
 import MulticolorRamsey.Basic
 import MulticolorRamsey.Integrals
 
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+
+
 open MeasureTheory ProbabilityTheory Real ENNReal Set Fin
 
 variable {r : ℕ}
-
-
-
 
 lemma fundamental (c m : ℝ) (mp : -1 ≤ m) :
     let ecsq (c : ℝ) := fun y ↦ rexp (c * √(y + 1))
@@ -128,7 +128,7 @@ lemma exp_ineq {r : ℕ} (rpos : 0 < r) {V : Type} [Fintype V] {X : Finset V} [N
   have : 0 ≤ 𝔼exp + (- 1 + (ℙᵤ E).toReal) :=
     le_trans (le_trans exPos (add_le_add_right Eb _)) (add_le_add_left Ecb _)
   simp [add_assoc, add_comm] at this
-  simpa [zero_le, add_comm]
+  simpa [Fin.zero_le, add_comm]
 
 
 lemma exp_ineq_ENN {r : ℕ} (rpos : 0 < r) {V : Type} [Fintype V] {X : Finset V} [Nonempty X]
@@ -331,7 +331,6 @@ lemma expPos {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Fins
 
     (0 ≤ ℙᵤ[ fun xx => f (fun i => (Z i xx)) ]) := by sorry -- big sorry. issue #8
 
-
 --------------------------------------------------------------------------------------------------
 
 lemma juicy {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Finset V} [Nonempty X]
@@ -395,8 +394,11 @@ lemma juicy {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Finse
           field_simp
           apply (div_le_div_iff₀ (by positivity) (by positivity)).mpr
           gcongr
-          · exact Nat.one_le_ofNat
-          · simp only [Nat.ofNat_pos, le_mul_iff_one_le_right, Nat.one_le_cast.mpr rpos]
+          trans 3 ^ (4 * (1 : ℝ))
+          simp
+          gcongr
+          linarith
+          exact Nat.one_le_cast.mpr rpos
         linarith
 
       exact (lt_self_iff_false _).mp (lt_of_le_of_lt ca this)
