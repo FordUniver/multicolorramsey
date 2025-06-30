@@ -48,6 +48,9 @@ lemma indicator_one_mul {x : X} [MulZeroOneClass Y] (f : X → Y) [MeasurableSpa
     f x * E.indicator 1 x = E.indicator f x := by
   by_cases hx : x ∈ E <;> simp [hx]
 
+lemma IntegrableFin {X : Type} [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X] {ℙᵤ : Measure X} [IsFiniteMeasure ℙᵤ] {f : X → ℝ} :
+  Integrable f ℙᵤ := ⟨ AEStronglyMeasurable.of_discrete , HasFiniteIntegral.of_finite ⟩
+
 
 ----------------------------------------------------------------------------------------------------
 -- integral of rexp (-√x) * (1 / (2 * √x))

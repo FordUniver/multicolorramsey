@@ -89,7 +89,7 @@ lemma exp_indicator (m : X × X → ℝ) (E : Set (X × X)) (mp : ∀ x, m x < -
     simp [this]
 
 
-lemma exp_ineq {r : ℕ} {V : Type} [Fintype V] {X : Finset V} [Nonempty X]
+lemma exp_ineq {r : ℕ} (rpos : 0 < r) {V : Type} [Fintype V] {X : Finset V} [Nonempty X]
     [MeasurableSpace X] [MeasurableSingletonClass (X × X)] [dm: DiscreteMeasurableSpace (X × X)] [DecidableEq X]
     {ℙᵤ : Measure (X × X)} [IsProbabilityMeasure ℙᵤ] (Z : Fin r → X × X → ℝ) (exPos : 0 ≤ ℙᵤ[ fun xx => f (fun i => Z i xx) ]) :
 
@@ -108,13 +108,13 @@ lemma exp_ineq {r : ℕ} {V : Type} [Fintype V] {X : Finset V} [Nonempty X]
     have : ∀ x ∈ Eᶜ, (f fun i ↦ Z i x) ≤ -1 := by
       intros x xinEc
       simp only [E, mem_compl_iff, mem_setOf_eq, not_forall, not_le] at xinEc
-      exact specialFunctionEc (fun i ↦ Z i x) xinEc
+      exact specialFunctionEc rpos (fun i ↦ Z i x) xinEc
     exact setIntegral_mono_on IntegrableFin.integrableOn (by simp) mEc this
 
   have Eb : ∫ x in E, f fun i ↦ Z i x ∂ℙᵤ ≤ 𝔼exp :=
     setIntegral_mono_on
       IntegrableFin.integrableOn IntegrableFin measE
-      (fun x xinE => specialFunctionE (fun i ↦ Z i x) xinE)
+      (fun x _ => specialFunctionE (fun i ↦ Z i x))
 
   have : ∫ x in Eᶜ, -1 ∂ℙᵤ = - 1 + (ℙᵤ E).toReal := by
     simp [integral_const_mul, Measure.real, prob_compl_eq_one_sub measE]
@@ -131,7 +131,7 @@ lemma exp_ineq {r : ℕ} {V : Type} [Fintype V] {X : Finset V} [Nonempty X]
   simpa [zero_le, add_comm]
 
 
-lemma exp_ineq_ENN {r : ℕ} {V : Type} [Fintype V] {X : Finset V} [Nonempty X]
+lemma exp_ineq_ENN {r : ℕ} (rpos : 0 < r) {V : Type} [Fintype V] {X : Finset V} [Nonempty X]
     [MeasurableSpace X] [MeasurableSingletonClass (X × X)] [dm: DiscreteMeasurableSpace (X × X)] [DecidableEq X]
     {ℙᵤ : Measure (X × X)} [IsProbabilityMeasure ℙᵤ] (Z : Fin r → X × X → ℝ) (exPos : 0 ≤ ℙᵤ[ fun xx => f (fun i => Z i xx) ]) :
 
@@ -148,7 +148,7 @@ lemma exp_ineq_ENN {r : ℕ} {V : Type} [Fintype V] {X : Finset V} [Nonempty X]
   simp_rw [← this]
   apply (toReal_le_toReal (by simp) (by simp)).mp
   rw [toReal_ofReal, toReal_sub_of_le prob_le_one one_ne_top, toReal_one]
-  exact exp_ineq Z exPos
+  exact exp_ineq rpos Z exPos
   positivity
 
 
@@ -375,7 +375,7 @@ lemma juicy {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Finse
 
       have ca := calc 1 - (ENNReal.ofReal β)
         _ ≤ 1 - (ℙᵤ E) := by gcongr
-        _ ≤ 𝔼exp := exp_ineq_ENN Z expPos
+        _ ≤ 𝔼exp := exp_ineq_ENN rpos Z expPos
         _ = (3 ^ r * r ) * ∫⁻ x in E, ENNReal.ofReal (rexp (∑ i, √(Z i x + 3 * r))) ∂ℙᵤ
             := by simp [𝔼exp, exp];
                   simp_rw [ENNReal.ofReal_mul' (exp_nonneg _)];
