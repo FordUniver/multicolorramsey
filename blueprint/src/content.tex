@@ -36,6 +36,7 @@
 \begin{definition}
   \label{def:p}
   \uses{def:colour-neighborhood}
+  \lean{p}
   Let $r, n\in\N$. Given sets $X,Y \subset V(K_n)$ and a colour $i \in [r]$, define
   $$p_i(X,Y) = \min\bigg\{ \frac{|N_i(x) \cap Y|}{|Y|} : x \in X \bigg\},$$
 \end{definition}
@@ -71,7 +72,8 @@
 \begin{lemma}
   \label{lem:le-coshsqrt}
   \uses{def:coshsqrt}
-  \lean{le_coshsqrt}
+  \lean{one_le_coshsqrt}
+  \leanok
   For all $x \in \R$, it is $1 \le 2 + \cosh\sqrt{x}$.
 \end{lemma}
 \begin{proof}
@@ -81,6 +83,8 @@
 \begin{lemma}
   \label{lem:coshsqrt-bd-pos}
   \uses{def:coshsqrt}
+  \lean{lt_coshsqrt}
+  \leanok
   $x \le 2 + \cosh \sqrt{x} \le 3 e^{\sqrt{x}}$ for every $x > 0$.
 \end{lemma}
 \begin{proof}
@@ -98,6 +102,8 @@ Finally, $2e^{\sqrt{x}}\ge 2$ when $x>0$.
 \begin{lemma}
   \label{lem:coshsqrt-bd-neg}
   \uses{def:coshsqrt}
+  \lean{icc_coshsqrt_neg}
+  \leanok
   $-1 \le \cosh \sqrt{x} \le 1$ for every $x < 0$.
 \end{lemma}
 \begin{proof}
@@ -108,6 +114,7 @@ Finally, $2e^{\sqrt{x}}\ge 2$ when $x>0$.
   \label{def:f}
   \uses{def:coshsqrt, lem:coshsqrt-bd-neg, lem:coshsqrt-bd-pos}
   \lean{f}
+  \leanok
   Let $r \in \N$.
   \begin{equation}\label{eq:f}
     f(x_1,\dots,x_r) = \sum_{j = 1}^r x_j \prod_{i \ne j} \big( 2 + \cosh\sqrt{x_i} \big).
@@ -160,10 +167,12 @@ cosh(\sqrt{x})= \overunderset{\infty}{n=0}{\sum}\frac{x^n}{(2n)!}= \overunderset
 \end{equation*}
 (2) then follows by noting that $cos(\sqrt{-x}) \in [-1,1]$ for all $x<0$. 
 \end{proof}
+
 \begin{lemma}[Special-function lemma (Part 1 of Lemma 3.3 in Balister et al.)]
   \label{lem:special-function-e}
   \uses{def:f}
   \lean{specialFunctionE}
+  \leanok
   Let $r \in \N$. If $x_i \ge - 3r$ for all $i \in [r]$, the function $f \colon \R^r \to \R$ defined in~\eqref{eq:f} satisfies 
   $$ f(x_1,\dots,x_r) \le 3^r r \exp\bigg( \displaystyle\sum_{i = 1}^r \sqrt{ x_i + 3r } \bigg)$$
 \end{lemma}
@@ -196,6 +205,7 @@ If $x_j<0$, note that the numerator of the fraction is negative while the denomi
   \label{lem:special-function-ec}
   \uses{def:f}
   \lean{specialFunctionEc}
+  \leanok
   Let $r \in \N$. If there exists an $i \in [r]$ with $x_i \le - 3r$, the function $f \colon \R^r \to \R$ defined in~\eqref{eq:f} satisfies
   $$
   f(x_1,\dots,x_r) \le -1$$
@@ -218,8 +228,10 @@ Finally we write
 \end{equation*}
 since the sum in the last term is $\leq -1$ while the product is at least $1$ (each factor in the product is at least 1).
 \end{proof}
+
 \begin{lemma}[Geometric lemma (Lemma 3.1 in Balister et al.)]
   \label{lem:geometric}
+  \lean{geometric}
   Let $r, n\in\N$. Set $\beta = 3^{-4r}$ and $C = 4r^{3/2}$.
 
   Let\/ $U$ and\/ $U'$ be i.i.d.~random variables taking values in a finite set~$X$, and let $\sigma_1,\ldots,\sigma_r \colon X \to \R^n$ be arbitrary functions. There exists $\lambda\ge-1$ and\/ $i\in[r]$ such that
@@ -308,6 +320,7 @@ since the sum in the last term is $\leq -1$ while the product is at least $1$ (e
 
 \begin{lemma}[Key lemma (Lemma 2.2 in Balister et al.)]
   \label{lem:key-lemma}
+  \lean{key}
   \uses{def:p}
 
   Let $r, n\in\N$. Set $\beta = 3^{-4r}$ and $C = 4r^{3/2}$.
@@ -404,7 +417,7 @@ since the sum in the last term is $\leq -1$ while the product is at least $1$ (e
 \end{algorithm} 
 
 \begin{lemma}[Lemma 4.1 in Balister et al.]\label{lem:pi:lower:bound}
-  \uses{alg:book}
+  \uses{alg:book, lem:key}
   For each $i \in [r]$ and $s \in \N$, 
   \begin{equation}\label{eq:pi:lower:bound}
     p_i(s) - p_0 + \delta \, \ge \, \delta \cdot \bigg( 1 - \frac{1}{t} \bigg)^{t} \prod_{j \in \cB_i(s)} \bigg( 1 + \frac{\lambda(j)}{t} \bigg).

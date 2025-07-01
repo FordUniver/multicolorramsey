@@ -153,14 +153,14 @@ lemma coshsqrt_mono {x y : ℝ} (xnn : 0 ≤ x) (xly : x ≤ y) : coshsqrt x ≤
   intros; positivity
   intros; positivity
 
-lemma tt (x : ℝ) : 1 ≤ 2 + coshsqrt x := by
+lemma one_le_coshsqrt (x : ℝ) : 1 ≤ 2 + coshsqrt x := by
   by_cases h : 0 < x
   · have : 1 ≤ coshsqrt x := by
       trans 1 + ∑' (i : ℕ), x ^ (i + 1) / ↑(2 * (i + 1)).factorial
       simp; positivity
       simp [coshsqrt, ← Summable.sum_add_tsum_nat_add 1 (mew (le_of_lt h)), Finset.sum, add_comm]
     linarith
-  · have := (Set.mem_Icc.mp (icc_coshsqrt_neg x (le_of_not_lt h))).left
+  · have := (Set.mem_Icc.mp (icc_coshsqrt_neg x (le_of_not_gt h))).left
     linarith
 
 -- TODO hmmm. mathlib? there is a version with [IsOrderedMonoid R] but not requiring zero
@@ -258,7 +258,7 @@ lemma specialFunctionEc (rpos : 0 < r) (x : Fin r → ℝ) (h : ∃ i, x i < -3 
 
   have t4 : 1 ≤ ∏ i, (2 + coshsqrt (x i)) := by
     refine Finset.one_le_prod''' ?_
-    intros i _; expose_names; exact tt (x i)
+    intros i _; expose_names; exact one_le_coshsqrt (x i)
 
   simp only [f, mul_comm _  (∏ i, (2 + coshsqrt (x i))), ← Finset.mul_sum]
   trans (∏ i, (2 + coshsqrt (x i))) * (-1)
@@ -296,7 +296,7 @@ lemma Finset.exists_le_expect.{u_1, u_2} {ι : Type u_1} {α : Type u_2} [AddCom
   push_neg at h
   obtain ⟨m, ⟨ms, mmin⟩⟩ := exists_max_image s f hs
   obtain ⟨z, ⟨zs, mltz⟩⟩ := exists_lt_of_lt_expect hs (h m ms)
-  exact not_lt_of_le (mmin z zs) mltz
+  exact not_lt_of_ge (mmin z zs) mltz
 
 open scoped ENNReal
 
@@ -466,7 +466,9 @@ end
 --   ring_nf; linarith
 
 
-lemma three_ineq_ENN {r : ℕ} (rpos: 0 < r) : r * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 +       r ^ 2 * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * ENNReal.ofReal (r * √3 * √r) * 3 ^ r * 3 ≤     1 := by sorry
+lemma three_ineq_ENN {r : ℕ} (rpos: 0 < r) :
+    r * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 + r ^ 2 * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * ENNReal.ofReal (r * √3 * √r) * 3 ^ r * 3 ≤ 1 := by
+  sorry
 
 -- TODO i just put here everything that annoyed me
 lemma omg {a b : ℝ} (p : b ≠ 0) : a = a / b * b := by
