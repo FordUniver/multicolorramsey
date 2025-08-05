@@ -4,6 +4,8 @@ import Mathlib.Probability.Distributions.Uniform
 
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 
+import Mathlib.Data.Finset.SDiff
+
 ----------------------------------------------------------------------------------------------------
 --  edge colorings
 
@@ -19,6 +21,10 @@ colored with `c` under the edge coloring `EC`. -/
 def EdgeColoring.coloredNeighborSet {EC : G.EdgeColoring C} (c : C) (v : V) : Set V :=
   {w | ∃ p : G.Adj v w, EC ⟨s(v,w), p⟩ = c}
 
+lemma coloredNeighborSet_not_mem {EC : G.EdgeColoring C} (c : C) (v : V) :
+    v ∉ EC.coloredNeighborSet c v := by
+  simp [EdgeColoring.coloredNeighborSet]
+
 instance EdgeColoring.coloredNeighborSetFintype [Fintype V] [DecidableRel G.Adj] [DecidableEq C]
     {EC : G.EdgeColoring C} : Fintype (EC.coloredNeighborSet c v) := by
   simp [EdgeColoring.coloredNeighborSet]
@@ -30,6 +36,32 @@ instance EdgeColoring.coloredNeighborSetFintype [Fintype V] [DecidableRel G.Adj]
 def EdgeColoring.coloredNeighborFinset {EC : G.EdgeColoring C} (c : C) (v : V)
     [Fintype (EC.coloredNeighborSet c v)] : Finset V :=
   (EC.coloredNeighborSet c v).toFinset
+
+lemma EdgeColoring.color_coloredNeighborSet {EC : G.EdgeColoring C} (c : C) (v w : V) :
+    w ∈ EC.coloredNeighborSet c v ↔ ∃ (p : G.Adj v w), EC ⟨s(v,w), p⟩ = c := by
+  simp [EdgeColoring.coloredNeighborSet]
+
+lemma EdgeColoring.coloredNeighborSet.symm {EC : G.EdgeColoring C} (c : C) (v w : V) :
+    w ∈ EC.coloredNeighborSet c v ↔ v ∈ EC.coloredNeighborSet c w := by
+  simp [EdgeColoring.coloredNeighborSet]
+  sorry
+
+lemma EdgeColoring.coloredNeighborFinset.symm {EC : G.EdgeColoring C} (c : C) (v w : V)
+     [Fintype (EC.coloredNeighborSet c v)]  [Fintype (EC.coloredNeighborSet c w)]
+ :
+    w ∈ EC.coloredNeighborFinset c v ↔ v ∈ EC.coloredNeighborFinset c w := by
+  simp [EdgeColoring.coloredNeighborFinset]
+  sorry
+
+/-- `EC.monochromatic c T` if all edges within `T` are given color `c` by `EC`. -/
+def EdgeColoring.monochromatic {EC : G.EdgeColoring C} (c : C) (T : Finset V) : Prop :=
+  ∀ x ∈ T, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
+
+/-- `EC.monochromatic c T Y` if `T` and `Y` are disjoint, all edges within `T` and all edges between
+ `T` and `Y`are given color `c` by `EC`. -/
+def EdgeColoring.monochromaticBook {EC : G.EdgeColoring C} (c : C) (T Y : Finset V) :=
+  Disjoint T Y ∧ EC.monochromatic c T ∧ ∀ x ∈ Y, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
+
 
 end SimpleGraph
 
@@ -366,7 +398,6 @@ lemma pidgeon_thing {X Y : Type} [Nonempty X] [Fintype X] [Nonempty Y] [Fintype 
 
   · have nz : (Fintype.card X : ENNReal) * (Fintype.card Y) ≠ 0 := by simp
     exact ne_of_lt (ENNReal.div_lt_top (ENNReal.natCast_ne_top _) nz)
-
 
 
 ----------------------------------------------------------------------------------------------------

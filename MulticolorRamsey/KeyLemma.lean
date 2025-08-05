@@ -8,6 +8,11 @@ import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
 abbrev N {C} {V} {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeColoring C) (i : C) x :=
   χ.coloredNeighborFinset i x
 
+lemma N_not_mem {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeColoring C) (i : C) x :
+    x ∉ N χ i x := by
+  simp [N, SimpleGraph.EdgeColoring.coloredNeighborFinset]
+  exact SimpleGraph.coloredNeighborSet_not_mem i x
+
 ----------------------------------------------------------------------------------------------------
 -- p
 -- TODO maybe mathlib wants some of this.
@@ -15,7 +20,7 @@ abbrev N {C} {V} {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Finty
 def mymin {V W : Type} [LinearOrder W] (f : V → W) (X : Finset V) [nen: Nonempty X] : W :=
   Finset.min' (Finset.image f X) (Finset.image_nonempty.mpr (Finset.nonempty_coe_sort.mp nen))
 
-lemma min_const {f : V → ℝ} {X : Finset V} (cn : ∀ x ∈ X, f x = c) [nen: Nonempty X] :
+lemma min_const  [LinearOrder T] {f : V → T} {X : Finset V} (cn : ∀ x ∈ X, f x = c) [nen: Nonempty X] :
     c = mymin f X := by
   obtain ⟨xg, ⟨xgm, xgn⟩⟩ := Finset.mem_image.mp (Finset.min'_mem (Finset.image f X) _)
   rw [cn xg xgm] at xgn
@@ -27,18 +32,42 @@ lemma min_le_ℕ {f : V → ℝ} {g : V → ℕ} {X : Finset V} [nen: Nonempty X
   convert le_trans (Finset.min'_le _ (f xg) (Finset.mem_image_of_mem f xgm)) (le xg xgm)
   exact xgn.symm
 
-lemma min_le_mem_ℕ {f : V → ℕ} {X : Finset V} {v : X} [Nonempty X] : mymin f X ≤ f v :=
+-- lemma min_le_mem_ℕ {f : V → ℕ} {X : Finset V} {v : X} [Nonempty X] : mymin f X ≤ f v :=
+--   Finset.min'_le _ _ (Finset.mem_image_of_mem f (Finset.coe_mem v))
+
+lemma min_le_mem [LinearOrder T] {f : V → T} {X : Finset V} [Nonempty X] (v : X) : mymin f X ≤ f v :=
   Finset.min'_le _ _ (Finset.mem_image_of_mem f (Finset.coe_mem v))
 
 
 -- this is pᵢ|Yᵢ| in the text
-def pY {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nen: Nonempty X] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
+def pY {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nenX: Nonempty X] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
     (i : Fin r) : ℕ :=
   mymin (fun x => ((N χ i x) ∩ Y).card) X
 
 -- this is pᵢ in the text
-noncomputable def p {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [Nonempty X] (EC : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
+noncomputable def p {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nenX : Nonempty X] (EC : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
     (i : Fin r) : ℝ := (pY X Y EC i) / (Y.card : ℝ)
+
+lemma p_subset {V : Type} [Fintype V] [DecidableEq V] {χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)} {X X' Y : Finset V} [nenX : Nonempty X] [Nonempty X'] : X' ⊆ X → (p X Y χ i) ≤ (p X' Y χ i) := sorry
+
+lemma p_nonneg {V : Type} [Fintype V] [DecidableEq V] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (X Y : Finset V) [nenX : Nonempty X] :
+    0 ≤ (p X Y χ i) := by unfold p; positivity
+
+lemma pY_pos {V : Type} [Fintype V] [DecidableEq V] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (X Y : Finset V) [nenX : Nonempty X] (nen : ∀ x, (N χ i x) ∩ Y ≠ ∅):
+    0 < (pY X Y χ i) := by
+  unfold pY mymin; refine (Finset.lt_min'_iff (Finset.image (fun x ↦ (N χ i x ∩ Y).card) X) _).mpr ?_
+  intros c cc
+  have : ∀ x, 0 < (N χ i x ∩ Y).card := by intro xx; simp only [Finset.card_pos]; exact Finset.nonempty_iff_ne_empty.mpr (nen xx)
+  obtain ⟨z, ⟨zl, zc⟩⟩ := Finset.mem_image.mp cc
+  rw [← zc]
+  exact this z
+
+lemma p_pos {V : Type} [Fintype V] [DecidableEq V] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (X Y : Finset V) [nenX : Nonempty X] (_ : ∀ x, (N χ i x) ∩ Y ≠ ∅):
+    0 < (p X Y χ i) := by unfold p; sorry
+
+lemma p_le_one {V : Type} [Fintype V] [DecidableEq V] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (X Y : Finset V) [nenX : Nonempty X] :
+    (p X Y χ i) ≤ 1 := by
+  sorry
 
 
 ----------------------------------------------------------------------------------------------------
@@ -50,6 +79,15 @@ instance lift.Nonempty {X : Finset V} (X' : Finset { x // x ∈ X }) [nen : None
  obtain ⟨x', x'X'⟩ := nen
  refine ⟨(Function.Embedding.subtype fun x => x ∈ X) x', ?_⟩
  simp [lift, x'X']
+
+lemma lift_subset {X : Finset V} (X' : Finset { x // x ∈ X }) : (lift X') ⊆ X := by
+  simp [lift]
+  intro _ xl
+  simp at xl
+  exact xl.1
+
+lemma lift_card {X : Finset V} (X' : Finset { x // x ∈ X }) : X'.card = (lift X').card := by
+  simp [lift]
 
 lemma tr {X : Finset V} {X' : Finset { x // x ∈ X }} {p : V → Prop} (e : ∀ a ∈ X', p a) :
     ∀ x ∈ lift X', p x  := by
@@ -65,13 +103,12 @@ open MeasureTheory ProbabilityTheory Finset Real
 
 open scoped ENNReal
 
-lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [Fintype V] {cardV : Fintype.card V = n}
+lemma key [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [Fintype V]-- {cardV : Fintype.card V = n}
   (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
-  (X : Finset V) [nenX : Nonempty X]-- TODO strict subset!
-  (Y : Fin r → (Finset V)) (Ypos : ∀ i, 0 < #(Y i)) -- TODO here too
+  (X : Finset V) [nenX : Nonempty X]
+  (Y : Fin r → (Finset V)) -- TODO here too
   (α : Fin r → ℝ) (αpos : ∀ i, 0 < α i)
   (ppos : ∀ i, 0 < pY X (Y i) χ i) :
-
 
   let β := (3 ^ (-(4 : ℝ) * r) : ℝ)
   let C := 4 * (↑r : ℝ) * √r
@@ -81,7 +118,7 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
     (∀ i, ↑(Y' i) ⊆ (N χ i x) ∩ (Y i)) ∧ -- same
 
     β * Real.exp (-C * Real.sqrt (Λ + 1)) * ↑X.card ≤ ↑X'.card ∧
-    (∀ i ≠ l, ((Y' i).card = (p X (Y i) χ i) * (Y i).card)) ∧
+    (∀ i, (Y' i).card = (p X (Y i) χ i) * (Y i).card) ∧
 
     p X (Y l) χ l + Λ * (α l) ≤ p (lift X') (Y' l) χ l ∧
 
@@ -89,7 +126,7 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
 
   intros β C
 
-  let p' (i : Fin r) (x : X) : (pY X (Y i) χ i) ≤ #(N χ i x ∩ Y i) := min_le_mem_ℕ
+  let p' (i : Fin r) (x : X) : (pY X (Y i) χ i) ≤ #(N χ i x ∩ Y i) := min_le_mem _
 
   -- "for each 𝑥 ∈ 𝑋, choose a set N′i (x) ⊂ 𝑁i(x) ∩ Yi of size exactly 𝑝𝑖(𝑋, 𝑌𝑖)|Yi|"
   let N' (i : Fin r) (x : X) : (Finset V) := Classical.choose (Finset.exists_subset_card_eq (p' i x))
@@ -144,7 +181,11 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
 
   have Y'card {i : Fin r} : #(Y' i) = (p X (Y i) χ i) * #(Y i) := by
     simp_rw [Y', N'card, p]
-    exact omg (ne_of_gt (Nat.cast_pos.mpr (Ypos i)))
+    by_cases h : (Y i).card = 0
+    · simp [pY, card_eq_zero.mp h]
+      exact (min_const (fun x a ↦ rfl)).symm
+    · have : Invertible (#(Y i) : ℝ) := invertibleOfNonzero (ne_of_gt (Nat.cast_pos.mpr (Nat.zero_lt_of_ne_zero h)))
+      exact (div_mul_cancel_of_invertible _ _).symm
 
   let lX' := lift X'
 
