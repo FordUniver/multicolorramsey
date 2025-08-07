@@ -6,12 +6,11 @@ import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
 
 -- "Given an edge colouring, we write $N_i(u)$ to denote the neighbourhood of vertex $u$ in colour $i$."
 abbrev N {C} {V} {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeColoring C) (i : C) x :=
-  χ.coloredNeighborFinset i x
+  (χ.coloredNeighborSet i x).toFinset
 
 lemma N_not_mem {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeColoring C) (i : C) x :
     x ∉ N χ i x := by
-  simp [N, SimpleGraph.EdgeColoring.coloredNeighborFinset]
-  exact SimpleGraph.coloredNeighborSet_not_mem i x
+  simp [N, SimpleGraph.EdgeColoring.coloredNeighborSet]
 
 ----------------------------------------------------------------------------------------------------
 -- p
@@ -38,7 +37,8 @@ lemma min_le_ℕ {f : V → ℝ} {g : V → ℕ} {X : Finset V} [nen: Nonempty X
 lemma min_le_mem [LinearOrder T] {f : V → T} {X : Finset V} [Nonempty X] (v : X) : mymin f X ≤ f v :=
   Finset.min'_le _ _ (Finset.mem_image_of_mem f (Finset.coe_mem v))
 
-
+lemma min_ge [LinearOrder T] {f : V → T} {X : Finset V} [Nonempty X] (v : X) (c : T) (le : ∀ v, c ≤ f v) : c ≤ mymin f X :=
+sorry
 -- this is pᵢ|Yᵢ| in the text
 def pY {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nenX: Nonempty X] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
     (i : Fin r) : ℕ :=

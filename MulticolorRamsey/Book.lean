@@ -23,6 +23,12 @@ lemma Finset.card_le_card_insert {α : Type u_1} [DecidableEq α] (a : α) (s : 
 lemma erm {R : Type u_1} [CommMonoidWithZero R] [PartialOrder R] [ZeroLEOneClass R] [PosMulMono R] {L : Type u_3} {f : L→ R} {r : R} {t : List L} (hf0 : ∀ x ∈ t, 0 ≤ f x) (hf : ∀ x ∈ t, r ≤ f x) : r ^ t.length ≤ (List.map f t).prod := by
   sorry
 
+
+
+lemma reh (Y : Finset V) : Membership.mem Y.val = Y.toSet := by ext; simp only [mem_val]; exact Eq.to_iff rfl
+
+
+
 ----------------------------------------------------------------------------------------------------
 
 variable {V : Type} {r : ℕ} [Fintype V] [DecidableEq V] [Nonempty V] [Nonempty (Fin r)]
@@ -53,6 +59,9 @@ noncomputable def book_params.δp (pp : book_params (V := V) (r := r)) := pp.p�
 
 lemma p₀pos (pp : book_params (V := V) (r := r)) : 0 ≤ pp.p₀ := by unfold book_params.p₀; sorry
 lemma p₀le (pp : book_params (V := V) (r := r)) : pp.p₀ ≤ p pp.X₀ (pp.Y₀ i) pp.χ i := sorry
+
+lemma δppos (pp : book_params (V := V) (r := r)) : 0 ≤ pp.δp := by unfold book_params.δp; sorry
+
 
 lemma tpos (pp : book_params (V := V) (r := r)) : 0 ≤ (1 - 1 / (pp.t : ℝ)) := by
       have : 1 ≤ (pp.t : ℝ) := by norm_cast; exact pp.tpos
@@ -161,8 +170,8 @@ structure book_nip (pp : book_params (V := V) (r := r)) where
     pp.δ * ((1 - 1/(pp.t : ℝ)) ^ (#(T i)) * ((Λs i).map (λ Λ ↦ 1 + (Λ / (pp.t : ℝ)))).prod) ≤ inp.p' i - pp.p₀ + pp.δ)
   (l44 (i : Fin r) : pp.δp ^ (#(T i) + (Λs i).length) * #(pp.Y₀ i) ≤ #(inp.Y i))
   (l45 (i : Fin r) : Xb pp Λs T i ≤ #inp.X)
-  (inv : ∀ i, ∀ y ∈ T i, ∀ x ∈ inp.X, x ∈ N pp.χ i y)
-  (mbook (i : Fin r) : pp.χ.monochromaticBook i (T i) (inp.Y i))
+  (rainbow : ∀ i, ∀ y ∈ T i, ∀ x ∈ inp.X, x ∈ N pp.χ i y) -- a nice invariant
+  (mbook (i : Fin r) : pp.χ.monochromaticBook i (T i) (inp.Y i)) -- the relevant bit
 
 -- get input from params (for first call)
 noncomputable def book_params.nip (pp : book_params (V := V) (r := r)) : book_nip pp := by
@@ -170,7 +179,7 @@ noncomputable def book_params.nip (pp : book_params (V := V) (r := r)) : book_ni
    λ _ ↦ ∅, by simp, by simp,
    λ _ ↦ [], by simp, by simp [key_in.p', p₀le],
    by simp, by simp [Xb],
-   by simp, by simp [SimpleGraph.EdgeColoring.monochromaticBook, SimpleGraph.EdgeColoring.monochromatic]⟩
+   by simp, by simp [SimpleGraph.EdgeColoring.monochromaticBook, SimpleGraph.EdgeColoring.monochromatic, SimpleGraph.EdgeColoring.monochromaticBetween]⟩
 
 def book_nip.maxB {pp : book_params (V := V) (r := r)} (nip : book_nip pp) : ℕ := univ.sum λ i ↦ (nip.Λs i).length
 
@@ -188,9 +197,6 @@ noncomputable def book_nip.Xbound (nip : book_nip pp (V := V) (r := r)) (T : Fin
 -- this somehow follows from the choice of Λ₀ and μ says yamaan
 lemma Xbound_pos (nip : book_nip pp (V := V) (r := r)) (T : Fin r → Finset V) (i : Fin r) :
     0 < nip.Xbound T i := sorry
-
-
-
 
 ----------------------------------------------------------------------------------------------------
 -- output structure for book "algo"
@@ -221,6 +227,7 @@ lemma l42p (nip : book_nip pp (V := V) (r := r)) (i : Fin r) : pp.δp ≤ nip.in
 lemma pl1 (nip : book_nip pp (V := V) (r := r)) (i : Fin r) : pp.δp ≤ 1 :=
   le_trans (l42p nip i) (p'_le_one _ _)
 
+-- α is bounded below
 lemma l42α (nip : book_nip pp (V := V) (r := r)) (i : Fin r) : pp.δ / (4 * pp.t) ≤ nip.inp.α i := by
     unfold key_in.α
     trans 1 / ↑pp.t * (pp.δ * ((1 - 1 / ↑pp.t) ^ (nip.T i).card * (List.map (fun Λ ↦ 1 + Λ / (pp.t : ℝ)) (nip.Λs i)).prod))
@@ -230,9 +237,13 @@ lemma l42α (nip : book_nip pp (V := V) (r := r)) (i : Fin r) : pp.δ / (4 * pp.
     · gcongr
       exact nip.l41 i
 
+-- the upper bound on the number of boost steps
+noncomputable def book_params.B {pp : book_params (V := V) (r := r)} : ℕ :=
+  ⌈↑pp.t * (4 * Real.log (1 / pp.δ)) / pp.Λ₀⌉₊
+
 -- "number of boost steps is bounded by a constant"
 lemma l43 (nip : book_nip pp (V := V) (r := r)) (i : Fin r):
-    nip.B i ≤ Nat.ceil (pp.t * (4 * Real.log (1 / pp.δ)) / pp.Λ₀) := by
+    nip.B i ≤ pp.B := by
   have posl (Λ : ℝ) (l : -1 ≤ Λ): 0 < (1 + Λ / pp.t) := sorry
   have pos : 0 < (1 + pp.Λ₀ / pp.t) := posl pp.Λ₀ pp.Λ₀ge
   let c := (nip.T i).card
@@ -258,7 +269,7 @@ lemma l43 (nip : book_nip pp (V := V) (r := r)) (i : Fin r):
   simp at this
   sorry
 
--- card of Y is bounded below by something terrible
+-- card of Y after color step is bounded below by something terrible
 lemma l44color {pp : book_params} {nip : book_nip pp (V := V) (r := r)}
   (ky : key_out nip.inp) (j : Fin r) (ghrm : x ∉ nip.T j)
   :
@@ -291,7 +302,7 @@ lemma l44color {pp : book_params} {nip : book_nip pp (V := V) (r := r)}
         refine Real.pow_le_rpow_of_exponent_ge pp.pnn (pl1 nip i) (by rfl)
       · exact nip.l44 i
 
--- card of Y is bounded below by something terrible
+-- card of Y after boost step is bounded below by something terrible
 lemma l44boost {pp : book_params} {nip : book_nip pp (V := V) (r := r)} {ky : key_out nip.inp} :
       let newY (i : Fin r) := if i = ky.l then ky.Y' i else nip.inp.Y i
       let newΛs (i : Fin r) := if i = ky.l then ky.Λ :: (nip.Λs i) else nip.Λs i
@@ -311,7 +322,7 @@ lemma l44boost {pp : book_params} {nip : book_nip pp (V := V) (r := r)} {ky : ke
       exact l42p nip i
     · exact nip.l44 i
 
--- card of X is bounded below
+-- card of X after boost step is bounded below
 lemma l45boost {pp : book_params} {nip : book_nip pp (V := V) (r := r)} {ky : key_out nip.inp} :
     let newΛs (i : Fin r) := if i = ky.l then ky.Λ :: (nip.Λs i) else nip.Λs i
 
@@ -333,6 +344,7 @@ lemma l45boost {pp : book_params} {nip : book_nip pp (V := V) (r := r)} {ky : ke
     gcongr; exact Nat.cast_inv_le_one r
     simp
 
+-- card of X after color step is bounded below
 lemma l45color {pp : book_params} {nip : book_nip pp (V := V) (r := r)}
     (ky : key_out nip.inp) (j : Fin r) (jn : j ≠ ky.l) :
     let X'' := N pp.χ j ky.x ∩ (lift ky.X')
@@ -354,116 +366,137 @@ lemma l45color {pp : book_params} {nip : book_nip pp (V := V) (r := r)}
     simp
     sorry
 
-lemma l41 {pp : book_params} {nip : book_nip pp (V := V) (r := r)}
-  (ky : key_out nip.inp) (j : Fin r) (Tne : ky.x ∉ nip.T j)
-  :
-    let X'' := if j = ky.l then lift ky.X' else N pp.χ j ky.x ∩ (lift ky.X')
-    let newY (i : Fin r) := if i = j then ky.Y' i else nip.inp.Y i
-    let newT (i : Fin r) := if j = ky.l then nip.T i else (if i = j then insert ky.x (nip.T i) else nip.T i)
-    let newΛs (i : Fin r) := if j = ky.l then (if i = j then ky.Λ :: (nip.Λs i) else nip.Λs i) else nip.Λs i
-∀ (i : Fin r), pp.δ * ((1 - 1 / ↑pp.t) ^ (newT i).card * (List.map (fun Λ ↦ 1 + Λ / (pp.t : ℝ)) (newΛs i)).prod) ≤
-    p (nenX := sorry) X'' (newY i) pp.χ i - pp.p₀ + pp.δ := by
-  intro X'' newY newT newΛs i
-
-  have X'sub : X'' ⊆ nip.inp.X := by
-    unfold X''
-    split
-    exact (lift_subset ky.X')
-    exact Subset.trans inter_subset_right (lift_subset ky.X')
-
-  have nenX'' : Nonempty { x // x ∈ X'' } := sorry
-
-  have pos : 0 ≤ 1 - 1 / (pp.t : ℝ) := tpos pp
-
-  have grm : 0 ≤ 1 + ky.Λ / pp.t := sorry
-
-  have grm2 (j : Fin r) (L : List ℝ) : 0 ≤ (List.map (fun Λ ↦ 1 + Λ / (pp.t : ℝ)) L).prod := by
-    apply List.prod_nonneg; intros a am;
-    obtain ⟨b, ⟨bp, bpp⟩⟩ := List.mem_map.mp am
-    trans 1 + b / (pp.t : ℝ)
-    sorry -- is ok
-    exact le_of_eq bpp
-
-  unfold newT
-  · by_cases h : i = j -- cases i = j vs i ≠ j
-    · -- case i = j: this is the color we chose
-      simp only [h]
-      unfold X'' newY newΛs
-      by_cases jn : j ≠ ky.l -- color or boost
-      · -- color step
-        simp only [jn, ↓reduceIte, ge_iff_le]
-        trans nip.inp.p' j - nip.inp.α j - pp.p₀ + pp.δ
-        · trans (1 - 1 / (pp.t : ℝ)) * (nip.inp.p' j - pp.p₀ + pp.δ)
-          have thi (k : ℝ) (m : ℕ) : k ^ (m + 1) = (k ^ m * k) := rfl
-          have tha (k s t : ℝ) (m : ℕ) : t * (s ^ m * s * k) = s * (t * (s ^ m * k)) := by ring
-          rw [card_insert_of_notMem Tne, thi, tha]
-          gcongr
-          · exact nip.l41 j
-          · unfold key_in.α; refine le_of_eq (by ring)
-        · gcongr
-          trans p (lift ky.X') (ky.Y' j) pp.χ j
-          exact ky.g j jn
-          have : Nonempty { x // x ∈ N pp.χ j ky.x ∩ lift ky.X' } := sorry
-          exact p_subset inter_subset_right
-
-      · -- boost step
-        push_neg at jn
-        simp only [jn, ↓reduceIte, ge_iff_le]
-        trans nip.inp.p' ky.l + ky.Λ * nip.inp.α ky.l - pp.p₀ + pp.δ
-        · trans (1 + ky.Λ / (pp.t : ℝ)) * (nip.inp.p' ky.l - pp.p₀ + pp.δ) -- color step
-          have (k s t u : ℝ) : k * (t * (s * u)) = s * (k * (t * u)) := by linarith
-          rw [List.map_cons, List.prod_cons, this]
-          gcongr
-          · exact nip.l41 ky.l
-          · unfold key_in.α
-            ring_nf
-            exact le_of_eq rfl
-        · gcongr; exact ky.f
-
-    · -- case i ≠ j: nothing happened with this color
-      have : nip.inp.Y i = newY i := by expose_names; simp [newY, h]
-      trans nip.inp.p' i - pp.p₀ + pp.δ
-      · unfold key_in.p'
-        trans pp.δ * ((1 - 1 / (pp.t : ℝ)) ^ (nip.T i).card * (List.map (fun Λ ↦ 1 + Λ / (pp.t : ℝ)) (nip.Λs i)).prod)
-        · gcongr pp.δ * ?_
-          exact le_of_lt pp.δpos
-          simp only [newΛs, ↓reduceIte, h]; split
-          · exact le_of_eq rfl
-          · exact le_of_eq rfl
-        · convert nip.l41
-          sorry
-      · gcongr
-        simp_rw [key_in.p', this]
-        have : Nonempty { x // x ∈ nip.inp.X } := nip.inp.nenX
-        exact p_subset X'sub
+lemma l41nothing {pp : book_params} {nip : book_nip pp (V := V) (r := r)}
+    (X'' : Finset V) [nenX'' : Nonempty { x // x ∈ X'' }] (X'sub : X'' ⊆ nip.inp.X) (i : Fin r) :
+    pp.δ * ((1 - 1 / ↑pp.t) ^ (nip.T i).card * (List.map (fun Λ ↦ 1 + Λ / (pp.t : ℝ)) (nip.Λs i)).prod) ≤
+    p X'' (nip.inp.Y i) pp.χ i - pp.p₀ + pp.δ := by
+  trans nip.inp.p' i - pp.p₀ + pp.δ
+  · refine le_trans ?_ ( nip.l41 i)
+    gcongr pp.δ * ?_
+    exact le_of_lt pp.δpos
+    exact le_of_eq rfl
+  · gcongr
+    exact p_subset X'sub
 
 lemma l41color {pp : book_params} {nip : book_nip pp (V := V) (r := r)}
-  {ky : key_out nip.inp} (j : Fin r) (Tne : ky.x ∉ nip.T j) (jnn : j ≠ ky.l)
-  :
+  {ky : key_out nip.inp} (j : Fin r) (Tne : ky.x ∉ nip.T j) (jnn : j ≠ ky.l) [Nonempty {x // x ∈ N pp.χ j ky.x ∩ (lift ky.X')}]:
     let X'' := N pp.χ j ky.x ∩ (lift ky.X')
     let newY (i : Fin r) := if i = j then ky.Y' i else nip.inp.Y i
     let newT (i : Fin r) := if i = j then insert ky.x (nip.T i) else nip.T i
-    let newΛs (i : Fin r) := nip.Λs i
-∀ (i : Fin r), pp.δ * ((1 - 1 / ↑pp.t) ^ (newT i).card * (List.map (fun Λ ↦ 1 + Λ / (pp.t : ℝ)) (newΛs i)).prod) ≤
-    p (nenX := sorry) X'' (newY i) pp.χ i - pp.p₀ + pp.δ := by
-    have := l41 ky j Tne
-    simp only [↓reduceIte, jnn] at this
-    exact this
+∀ (i : Fin r), pp.δ * ((1 - 1 / ↑pp.t) ^ (newT i).card * (List.map (fun Λ ↦ 1 + Λ / (pp.t : ℝ)) (nip.Λs i)).prod) ≤
+    p X'' (newY i) pp.χ i - pp.p₀ + pp.δ := by
+  intro X'' newY newT i
 
-lemma l41boost {pp : book_params} {nip : book_nip pp (V := V) (r := r)}
-  {ky : key_out nip.inp} (Tne : ky.x ∉ nip.T ky.l)
-  :
-    let X'' := (lift ky.X')
+  have pos : 0 ≤ 1 - 1 / (pp.t : ℝ) := tpos pp
+
+  unfold newT newY
+  · by_cases h : i = j -- cases i = j vs i ≠ j
+    · -- case i = j: this is the color we chose
+      simp only [h]
+      unfold X''
+      simp only [↓reduceIte, ge_iff_le]
+      trans nip.inp.p' j - nip.inp.α j - pp.p₀ + pp.δ
+      · trans (1 - 1 / (pp.t : ℝ)) * (nip.inp.p' j - pp.p₀ + pp.δ)
+        have thi (k : ℝ) (m : ℕ) : k ^ (m + 1) = (k ^ m * k) := rfl
+        have tha (k s t : ℝ) (m : ℕ) : t * (s ^ m * s * k) = s * (t * (s ^ m * k)) := by ring
+        rw [card_insert_of_notMem Tne, thi, tha]
+        gcongr
+        · exact nip.l41 j
+        · unfold key_in.α; refine le_of_eq (by ring)
+      · gcongr
+        trans p (lift ky.X') (ky.Y' j) pp.χ j
+        exact ky.g j jnn
+        exact p_subset inter_subset_right
+
+    · simp only [h, ↓reduceIte, ite_self]
+      exact l41nothing X'' (Subset.trans inter_subset_right (lift_subset ky.X')) i
+
+lemma l41boost {pp : book_params} {nip : book_nip pp (V := V) (r := r)} {ky : key_out nip.inp} :
     let newY (i : Fin r) := if i = ky.l then ky.Y' i else nip.inp.Y i
     let newΛs (i : Fin r) := if i = ky.l then ky.Λ :: (nip.Λs i) else nip.Λs i
-∀ (i : Fin r), pp.δ * ((1 - 1 / ↑pp.t) ^ (nip.T i).card * (List.map (fun Λ ↦ 1 + Λ / (pp.t : ℝ)) (newΛs i)).prod) ≤
-    p (nenX := sorry) X'' (newY i) pp.χ i - pp.p₀ + pp.δ := by
-    have := l41 ky ky.l sorry
-    simp only [↓reduceIte] at this
-    exact this
+    ∀ (i : Fin r), pp.δ * ((1 - 1 / ↑pp.t) ^ (nip.T i).card * (List.map (fun Λ ↦ 1 + Λ / (pp.t : ℝ)) (newΛs i)).prod) ≤
+    p (lift ky.X') (newY i) pp.χ i - pp.p₀ + pp.δ := by
+  intro newY newΛs i
+
+  have grm : 0 ≤ 1 + ky.Λ / pp.t := by
+    suffices h : -1 ≤ ky.Λ / pp.t by linarith
+    trans -1 / pp.t
+    rw [neg_div, neg_le_neg_iff, div_le_one]
+    norm_cast; exact le_trans NeZero.one_le pp.tge
+    norm_cast; exact pp.tpos
+    apply div_le_div_of_nonneg_right
+    exact ky.Λge
+    norm_cast; exact le_of_lt pp.tpos
+
+  unfold newΛs newY
+  · by_cases h : i = ky.l
+    · -- case i = ky.l: this is the color we chose
+      simp only [h, ↓reduceIte, ge_iff_le]
+      trans nip.inp.p' ky.l + ky.Λ * nip.inp.α ky.l - pp.p₀ + pp.δ
+      · trans (1 + ky.Λ / (pp.t : ℝ)) * (nip.inp.p' ky.l - pp.p₀ + pp.δ)
+        have (k s t u : ℝ) : k * (t * (s * u)) = s * (k * (t * u)) := by linarith
+        rw [List.map_cons, List.prod_cons, this]
+        gcongr
+        · exact nip.l41 ky.l
+        · unfold key_in.α
+          ring_nf
+          exact le_of_eq rfl
+      · gcongr; exact ky.f
+
+    · simp only [h, ↓reduceIte, ite_self]
+      exact l41nothing (lift ky.X') (lift_subset ky.X') i
 
 lemma l46 {pp : book_params} {nip : book_nip pp (V := V) (r := r)} :
     ((nip.Λs i).map (λ Λ ↦ √(1 + Λ))).sum ≤ pp.t * 7 * r * Real.log (1 / pp.δ) / √pp.Λ₀ := sorry
+
+----------------------------------------------------------------------------------------------------
+-- correctness: the output T and Y always form a monochromatic book
+
+lemma mau {pp : book_params (V := V) (r := r)} {nip : book_nip pp} {ky : key_out nip.inp} (i : Fin r) :
+    Disjoint (nip.T i) (ky.Y' i) :=
+  Finset.disjoint_coe.mp (Set.disjoint_of_subset_right (trans (ky.Y'sub i) inter_subset_right) (nip.mbook i).1)
+
+lemma mono_boost  {pp : book_params (V := V) (r := r)} {nip : book_nip pp} {ky : key_out nip.inp} (i : Fin r) :
+    let newY (i : Fin r) := if i = j then ky.Y' i else nip.inp.Y i
+    pp.χ.monochromaticBook i (nip.T i) (newY i) := by
+  apply pp.χ.monochromaticBook_subset (nip.mbook i)
+  simp; split_ifs; exact (Subset.trans (ky.Y'sub i) inter_subset_right); simp
+
+
+lemma mono  {pp : book_params} {nip : book_nip pp (V := V) (r := r)} {ky : key_out nip.inp} (i : Fin r) :
+    let newY (i : Fin r) := if i = j then ky.Y' i else nip.inp.Y i
+    let newT (i : Fin r) := if i = j then insert ky.x (nip.T i) else nip.T i
+    pp.χ.monochromaticBook i (newT i) (newY i) := by
+  intros newY newT
+  unfold newT newY
+  split
+  · repeat any_goals constructor
+    · -- disjoint
+      simp [Set.disjoint_insert_left]
+      constructor
+      · apply Set.notMem_subset ?_ (SimpleGraph.coloredNeighborSet_not_mem (EC := pp.χ) i ky.x)
+        convert (Subset.trans (ky.Y'sub i) inter_subset_left)
+        simp [disjoint_coe, reh]
+      · exact mau i
+    · --newT monochromatic
+      convert pp.χ.monochromatic_insert i ky.x (nip.T i) (nip.mbook i).2.1 _
+      · simp
+      · refine pp.χ.monochromaticBetween_neighbors ?_
+        convert λ y yy ↦ nip.rainbow i y yy ky.x ky.xX
+        ext; simp
+    · -- mono between newT and newY
+      convert pp.χ.monochromaticBetween_insert i ky.x (nip.T i) (ky.Y' i) _ _
+      simp only [coe_insert]
+      exact pp.χ.monochromaticBetween_subset (trans (ky.Y'sub i) inter_subset_right) (nip.mbook i).2.2
+      refine (pp.χ.monochromaticBetween_neighbors ?_).symm
+      intros y yY
+      rw [SimpleGraph.EdgeColoring.coloredNeighborSet.symm]
+      convert Finset.mem_of_subset (Subset.trans (ky.Y'sub i) inter_subset_left) yY
+      ext; simp
+  exact nip.mbook i
+
+----------------------------------------------------------------------------------------------------
+-- big holes in the "algo"
 
 -- TODO yamaan says this is ok issue #15
 lemma pyposcolor  {pp : book_params} {nip : book_nip pp (V := V) (r := r)} {ky : key_out nip.inp} :
@@ -480,13 +513,15 @@ lemma pypos  {pp : book_params} {nip : book_nip pp (V := V) (r := r)} {ky : key_
   sorry
 
 -- TODO issue #25
-lemma choice_j {pp : book_params} {nip : book_nip pp (V := V) (r := r)} (ky : key_out nip.inp) :
+lemma choice_j {pp : book_params (V := V) (r := r)} {nip : book_nip pp} (ky : key_out nip.inp) :
     ∃ j, j ≠ ky.l ∧ (N pp.χ j ky.x ∩ (lift ky.X')).card ≤ (ky.X'.card - 1) / r := sorry -- issue #25
-
 
 ----------------------------------------------------------------------------------------------------
 -- here comes the action
 
+-- one good (color) step of the "algorithm". we recurse upon encountering a boost situation, and
+-- return only after we did one color step. termination is guaranteed by lemma 4.3 (l43) which
+-- bounds the number of boost steps.
 noncomputable def step {pp : book_params (V := V) (r := r)}
     (nip : book_nip pp (V := V) (r := r))
     (Tlt : ∀ i, (nip.T i).card < pp.t)
@@ -527,12 +562,12 @@ noncomputable def step {pp : book_params (V := V) (r := r)}
       have : Disjoint (N pp.χ j ky.x ∩ lift ky.X') _ := disjoint_of_subset_left inter_subset_right this
       unfold X'' newT
       split
-      · simp [disjoint_insert_right, N_not_mem, this]
+      · simp [disjoint_insert_right, N_not_mem, this, SimpleGraph.coloredNeighborSet_not_mem]
       · exact this
 
-    have inv : ∀ i, ∀ x ∈ newT i, ∀ y ∈ X'', y ∈ N pp.χ i x := by
+    have rainbow : ∀ i, ∀ x ∈ newT i, ∀ y ∈ X'', y ∈ N pp.χ i x := by
       intros i x xT y yX
-      have (h : x ∈ nip.T i) := nip.inv _ _ h _ (lift_subset ky.X' (mem_inter.mp yX).2)
+      have (h : x ∈ nip.T i) := nip.rainbow _ _ h _ (lift_subset ky.X' (mem_inter.mp yX).2)
       unfold newT at xT
       split at xT
       · cases mem_insert.mp xT
@@ -541,42 +576,10 @@ noncomputable def step {pp : book_params (V := V) (r := r)}
         · expose_names; exact this h_2
       · exact this xT
 
-
-    have mono (i : Fin r) :  pp.χ.monochromaticBook i (newT i) (newY i) := by sorry
-      -- have := nip.mbook i
-      -- unfold SimpleGraph.EdgeColoring.monochromaticBook SimpleGraph.EdgeColoring.monochromatic newT newY
-      -- unfold SimpleGraph.EdgeColoring.monochromaticBook SimpleGraph.EdgeColoring.monochromatic at this
-      -- -- split
-      -- · constructor
-      --   · -- T and Y disjoint
-      --     have : newY i ⊆ nip.inp.Y i := sorry
-      --     sorry
-      --   · constructor
-      --     · -- T j-monochromatic
-      --       intros x xT y yT xny
-      --       -- simp at xny
-      --       wlog h : x = ky.x generalizing
-      --       · sorry -- exact this _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-      --       · expose_names
-      --         have : x ∈ X'' := by simp [h]; sorry
-      --         have : x ∈ N pp.χ i y := inv i y yT x this
-      --         unfold N at this
-      --         have : y ∈ N pp.χ i x := (SimpleGraph.EdgeColoring.coloredNeighborFinset.symm i x y).mpr this
-      --         unfold N at this
-      --         have := ((pp.χ).color_coloredNeighborSet i x y).mp this
-      --     · -- only j-mono edges between Y and T
-      --       intros v vT w wT vnw
-      --       wlog h : v = ky.x ∧ w ∈ (nip.T i) generalizing
-      --       · sorry
-      --       · --refine nip.xXmono i v ?_ w h.2 _
-      --         sorry
-
-      -- · exact nip.mbook i
-
     -- keep track of input for next iteration, state and inductive lemmata
     let newnip : book_nip pp := ⟨new_in,
       newT, newTle, Xsub, nip.Λs, nip.Λsge,
-      l41color j Tsub jn, l44color ky j Tsub, l45color ky j jn, inv, mono⟩
+      l41color j Tsub jn, l44color ky j Tsub, l45color ky j jn, rainbow, mono⟩
 
     -- to ensure termination we also give a proof that T grew
     have Tcard : ∑ i, (nip.T i).card < ∑ i, (newnip.T i).card := by
@@ -586,9 +589,8 @@ noncomputable def step {pp : book_params (V := V) (r := r)}
 
   · -- boost step!
     -- update our key sets
-    let X'' := lift ky.X'
     let newY (i : Fin r) := if i = ky.l then ky.Y' i else nip.inp.Y i
-    let new_in : key_in pp := ⟨X'', newY,  λ i ↦ pypos _⟩
+    let new_in : key_in pp := ⟨lift ky.X', newY,  λ i ↦ pypos _⟩
 
     -- keep track of the Λs used for boost steps
     let newΛs (i : Fin r) := if i = ky.l then ky.Λ :: (nip.Λs i) else nip.Λs i
@@ -597,16 +599,20 @@ noncomputable def step {pp : book_params (V := V) (r := r)}
       · exact List.forall_mem_cons.mpr ⟨lt_of_not_ge h, nip.Λsge i⟩
       · exact nip.Λsge i
 
-    have disjn := (λ i ↦ disjoint_of_subset_left (lift_subset ky.X') (nip.Tdisj i))
+    have disjn (i : Fin r) := disjoint_of_subset_left (lift_subset ky.X') (nip.Tdisj i)
+
+    have rainbow (i : Fin r) : ∀ y ∈ nip.T i, ∀ x ∈ lift ky.X', x ∈ N pp.χ i y := by
+      intros y yT x xX
+      refine (nip.rainbow i y yT x) (Finset.mem_of_subset (lift_subset ky.X') xX)
 
     let newnip : book_nip pp := ⟨new_in,
       nip.T, nip.Tle, disjn,
       newΛs, newΛslt,
-      l41boost ((nip.Tdisj _).notMem_of_mem_left_finset ky.xX), l44boost, l45boost, sorry, sorry⟩
+      l41boost, l44boost, l45boost, rainbow, mono_boost⟩
 
     exact step newnip Tlt
 
-termination_by r * Nat.ceil (pp.t * (4 * Real.log (1 / pp.δ)) / pp.Λ₀) + 1 - nip.maxB
+termination_by r * pp.B + 1 - nip.maxB
 decreasing_by -- this uses boundedness of number of boost steps (l43)
   refine Nat.sub_lt_sub_left ?_ ?_
   · simp only [book_nip.maxB]
@@ -621,20 +627,18 @@ decreasing_by -- this uses boundedness of number of boost steps (l43)
     apply this
 
 
-noncomputable def book_params.m (pp : book_params (V := V) (r := r)) (j : Fin r) :=
-  pp.δp ^ (pp.t + ⌈↑pp.t * (4 * Real.log (1 / pp.δ)) / pp.Λ₀⌉₊) * #(pp.Y₀ j)
-
+-- recurse and do another step unless one of the Ts has appropriate size. termination is guaranteed
+-- since the output type of each step includes a proof that some T has grown in size.
 noncomputable def stepper {pp : book_params (V := V) (r := r)} (nip : book_nip pp) :
-    ∃ sn : book_nip pp, ∃ j, pp.t = #(sn.T j) ∧ pp.m j ≤ #(sn.inp.Y j) := by
+    ∃ sn : book_nip pp, ∃ j, pp.t = #(sn.T j) ∧ pp.δp ^ (pp.t + pp.B) * #(pp.Y₀ j) ≤ #(sn.inp.Y j) := by
   by_cases h : ∀ i, #(nip.T i) < pp.t
-  · exact stepper (step nip h).nip
+  · exact stepper (step nip h).nip -- book not big enough yet. take another step
   · push_neg at h
     obtain ⟨j, jp⟩ := h
     have teqT := jp.antisymm (nip.Tle j)
     refine ⟨nip, j, ⟨teqT, ?_⟩⟩
     trans pp.δp ^ (#(nip.T j) + (nip.Λs j).length) * #(pp.Y₀ j)
     · rw [← teqT]
-      unfold book_params.m
       gcongr ?_ * #(pp.Y₀ j)
       exact Real.pow_le_rpow_of_exponent_ge pp.pnn (pl1 nip j) (by gcongr; exact l43 nip j)
     · exact nip.l44 j
@@ -645,10 +649,66 @@ decreasing_by
   apply Nat.sub_lt_sub_left
   refine Nat.lt_of_lt_of_le (m :=  ∑ _ : Fin r, pp.t) ?_ ?_
   gcongr with i
-  · (expose_names; exact univ_nonempty_iff.mpr inst_3)
+  · expose_names; exact univ_nonempty_iff.mpr inst_3
   · exact h i
   simp
   convert (step nip h).step_inc
+
+
+-- thm 2.1
+lemma book (t m : ℕ) (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (c : Fin r)
+  (tpos : 0 < t) (mpos : 0 < m)
+  (X : Finset V) [nenX : Nonempty X]
+  (Y : Fin r → (Finset V))
+  (p : ℝ) (ppos : 0 < p)
+  (μ : ℝ) (μge : 2^10 * r^3 ≤ μ)
+  (tge : μ^5 / p ≤ t)
+  (Ycard : ∀ i x, (p * ((Y i).card : ℝ) ≤ #((N χ i x) ∩ (Y i))))
+  (Xge : (μ^2 / p)^(μ * r * t) ≤ #X)
+  (Yge : ∀ i, (Real.exp (2^13 * r^3 / μ^2)) ^ t * m ≤ #(Y i))
+  :
+  ∃ c : Fin r, ∃ T M : Finset V, t = #T ∧ m ≤ #M ∧ χ.monochromaticBook c T M := by
+  let δ := p / μ^2
+  have δpos : 0 < δ := by sorry
+  let inp : book_params (V := V) (r := r) :=
+    ⟨t, tpos,
+     (μ * Real.log (1 / δ) / 8 * (C r))^2, le_trans (by simp) (sq_nonneg _),
+     δ, by sorry,
+     χ, X, Y,
+     sorry, -- issue #15
+     sorry, sorry, sorry, sorry⟩
+
+  -- run the "algorithm" and use its book
+  obtain ⟨sn, ⟨j, ⟨a, b⟩⟩⟩ := stepper inp.nip
+
+  use j
+  use sn.T j
+  use sn.inp.Y j
+  refine ⟨a, ⟨?_, sn.mbook j⟩⟩
+
+  -- now we need to bound size of Y to prove our book has the required size
+  have : 0 ≤ inp.δp := δppos inp
+  apply (Nat.cast_le (α := ℝ)).mp
+  trans Real.exp (-2 * δ * ↑t / p) * Real.exp (2 ^ 12 * ↑r ^ 3 / μ ^ 2) ^ (t : ℝ) * ↑m
+  · apply le_mul_of_one_le_left (Nat.cast_nonneg' m)
+    simp_rw [← Real.exp_mul, ← Real.exp_add]
+    simp only [neg_mul, Real.one_le_exp_iff]
+    sorry -- apparently follows from δ/p = 1/μ^2, as claimed on p12
+  · trans Real.exp (-2 * δ * ↑t / p) * (p ^ inp.B * Real.exp (2 ^ 13 * ↑r ^ 3 / μ ^ 2) ^ (t : ℝ)) * ↑m
+    · gcongr Real.exp (-2 * δ * ↑t / p) * ?_ * m
+      trans Real.exp (-2 ^ 12 * ↑r ^ 3 / μ ^ 2) * Real.exp (2 ^ 13 * ↑r ^ 3 / μ ^ 2) ^ (t : ℝ)
+      · sorry -- no idea but paper says so
+      · gcongr
+        sorry -- eq (16) somehow
+    · trans inp.δp ^ (inp.t + inp.B) * ↑(#(inp.Y₀ j))
+      · trans inp.δp ^ (inp.t + inp.B) * ((Real.exp (2^13 * r^3 / μ^2)) ^ t * m)
+        · rw [show ∀ a b c d, a * (b * c) * d = (a * b) * (c * d) by sorry]
+          gcongr
+          sorry -- idk!
+          norm_num
+        · gcongr; exact Yge j
+      · exact b
+
 
 
 

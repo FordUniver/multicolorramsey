@@ -30,12 +30,12 @@ instance EdgeColoring.coloredNeighborSetFintype [Fintype V] [DecidableRel G.Adj]
   simp [EdgeColoring.coloredNeighborSet]
   exact Subtype.fintype _
 
-/-- `EC.coloredNeighborFinset c v` is the Finset of vertices that have `c`-colored edge to `v` in
-`G` under the edge coloring `EC`, in case the `c`-colored subgraph of `G` is locally finite at `v`.
--/
-def EdgeColoring.coloredNeighborFinset {EC : G.EdgeColoring C} (c : C) (v : V)
-    [Fintype (EC.coloredNeighborSet c v)] : Finset V :=
-  (EC.coloredNeighborSet c v).toFinset
+-- /-- `EC.coloredNeighborFinset c v` is the Finset of vertices that have `c`-colored edge to `v` in
+-- `G` under the edge coloring `EC`, in case the `c`-colored subgraph of `G` is locally finite at `v`.
+-- -/
+-- def EdgeColoring.coloredNeighborFinset {EC : G.EdgeColoring C} (c : C) (v : V)
+--     [Fintype (EC.coloredNeighborSet c v)] : Finset V :=
+--   (EC.coloredNeighborSet c v).toFinset
 
 lemma EdgeColoring.color_coloredNeighborSet {EC : G.EdgeColoring C} (c : C) (v w : V) :
     w ∈ EC.coloredNeighborSet c v ↔ ∃ (p : G.Adj v w), EC ⟨s(v,w), p⟩ = c := by
@@ -46,21 +46,45 @@ lemma EdgeColoring.coloredNeighborSet.symm {EC : G.EdgeColoring C} (c : C) (v w 
   simp [EdgeColoring.coloredNeighborSet]
   sorry
 
-lemma EdgeColoring.coloredNeighborFinset.symm {EC : G.EdgeColoring C} (c : C) (v w : V)
-     [Fintype (EC.coloredNeighborSet c v)]  [Fintype (EC.coloredNeighborSet c w)]
- :
-    w ∈ EC.coloredNeighborFinset c v ↔ v ∈ EC.coloredNeighborFinset c w := by
-  simp [EdgeColoring.coloredNeighborFinset]
-  sorry
+-- lemma EdgeColoring.coloredNeighborFinset.symm {EC : G.EdgeColoring C} (c : C) (v w : V)
+--      [Fintype (EC.coloredNeighborSet c v)]  [Fintype (EC.coloredNeighborSet c w)]
+--  :
+--     w ∈ EC.coloredNeighborFinset c v ↔ v ∈ EC.coloredNeighborFinset c w := by
+--   simp [EdgeColoring.coloredNeighborFinset]
+--   sorry
 
 /-- `EC.monochromatic c T` if all edges within `T` are given color `c` by `EC`. -/
-def EdgeColoring.monochromatic {EC : G.EdgeColoring C} (c : C) (T : Finset V) : Prop :=
+def EdgeColoring.monochromatic {EC : G.EdgeColoring C} (c : C) (T : Set V) : Prop :=
   ∀ x ∈ T, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
+
+/-- `EC.monochromatic c T` if all edges between `T` and Y are given color `c` by `EC`. -/
+def EdgeColoring.monochromaticBetween {EC : G.EdgeColoring C} (c : C) (T Y : Set V) : Prop :=
+  ∀ x ∈ Y, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
 
 /-- `EC.monochromatic c T Y` if `T` and `Y` are disjoint, all edges within `T` and all edges between
  `T` and `Y`are given color `c` by `EC`. -/
-def EdgeColoring.monochromaticBook {EC : G.EdgeColoring C} (c : C) (T Y : Finset V) :=
-  Disjoint T Y ∧ EC.monochromatic c T ∧ ∀ x ∈ Y, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
+def EdgeColoring.monochromaticBook {EC : G.EdgeColoring C} (c : C) (T Y : Set V) :=
+  Disjoint T Y ∧ EC.monochromatic c T ∧ EC.monochromaticBetween c T Y
+
+lemma EdgeColoring.monochromatic_insert {EC : G.EdgeColoring C} (c : C) (y : V) (T : Set V) :
+  EC.monochromatic c T → EC.monochromaticBetween c T {y} → EC.monochromatic c (insert y T) := sorry
+
+lemma EdgeColoring.monochromaticBetween_neighbors {EC : G.EdgeColoring C} {c : C} {y : V} {T : Set V} :
+  (∀ x ∈ T, y ∈ EC.coloredNeighborSet c x) →  EC.monochromaticBetween c T {y} := sorry
+
+lemma EdgeColoring.monochromaticBetween_insert {EC : G.EdgeColoring C} (c : C) (t : V) (T Y : Set V) :
+  EC.monochromaticBetween c T Y → EC.monochromaticBetween c {t} Y → EC.monochromaticBetween c (insert t T) Y := sorry
+
+lemma EdgeColoring.monochromaticBetween_subset {EC : G.EdgeColoring C} {c : C} {T S Y : Set V} :
+  S ⊆ Y → EC.monochromaticBetween c T Y → EC.monochromaticBetween c T S := sorry
+
+lemma EdgeColoring.monochromaticBetween.symm {EC : G.EdgeColoring C} (c : C) (T Y : Set V) :
+  EC.monochromaticBetween c T Y → EC.monochromaticBetween c Y T := sorry
+
+lemma EdgeColoring.monochromaticBook_subset {EC : G.EdgeColoring C} {A B D : Finset V}
+    (b : EC.monochromaticBook i A B) (s : D ⊆ B) : EC.monochromaticBook i A D :=
+  ⟨(Set.disjoint_of_subset_right s b.1), b.2.1, EC.monochromaticBetween_subset s b.2.2⟩
+
 
 
 end SimpleGraph
