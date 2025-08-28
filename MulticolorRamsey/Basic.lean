@@ -4,6 +4,8 @@ import Mathlib.Probability.Distributions.Uniform
 
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 
+import Mathlib.Combinatorics.SimpleGraph.Subgraph
+
 import Mathlib.Data.Finset.SDiff
 
 ----------------------------------------------------------------------------------------------------
@@ -56,6 +58,9 @@ lemma EdgeColoring.coloredNeighborSet.symm {EC : G.EdgeColoring C} (c : C) (v w 
 /-- `EC.monochromatic c T` if all edges within `T` are given color `c` by `EC`. -/
 def EdgeColoring.monochromatic {EC : G.EdgeColoring C} (c : C) (T : Set V) : Prop :=
   ∀ x ∈ T, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
+
+lemma EdgeColoring.monochromatic_subset {EC : G.EdgeColoring C} {c : C} {S Y : Set V} :
+  S ⊆ Y → EC.monochromatic c Y → EC.monochromatic c S := sorry
 
 /-- `EC.monochromatic c T` if all edges between `T` and Y are given color `c` by `EC`. -/
 def EdgeColoring.monochromaticBetween {EC : G.EdgeColoring C} (c : C) (T Y : Set V) : Prop :=
@@ -112,17 +117,14 @@ end
 ----------------------------------------------------------------------------------------------------
 --idk mathlib?
 
-theorem tsum_even_nat [TopologicalSpace T] [AddCommMonoid T] (f : Nat → T) :
-    ∑' (x : {n : ℕ | Even n}), f x = ∑' (x : ℕ), f (2 * x) := by
-  rw [← Equiv.tsum_eq (Equiv.ofBijective (fun n : {n : ℕ | Even n} => (n : ℕ) / 2) ?_)]
-  · congr; ext x; congr; simp; exact (Nat.two_mul_div_two_of_even (x.prop)).symm
-  · constructor
-    · rintro ⟨_, hn⟩ ⟨_, hm⟩ h
-      simp_all [Nat.even_iff, Nat.div_eq_of_lt]
-      exact (Nat.div_left_inj (even_iff_two_dvd.mp hn) (even_iff_two_dvd.mp hm)).mp h
-    · intro n
-      exact ⟨⟨2 * n, (by simp)⟩, by simp⟩
+def evenEquivNat : {n : ℕ // Even n} ≃ ℕ where
+  toFun := fun ⟨n, _⟩ => n / 2
+  invFun n := ⟨2 * n, even_two_mul n⟩
+  left_inv := fun ⟨_, en⟩ => by simp [Nat.mul_div_cancel' en.two_dvd]
+  right_inv n := by simp
 
+theorem tsum_double_eq_tsum_even [AddCommMonoid T] [TopologicalSpace T] (f : ℕ → T) :
+    ∑' x : ℕ, f (2 * x) = ∑' x : {n : ℕ | Even n}, f x := evenEquivNat.symm.tsum_eq (fun x ↦ f ↑x)
 
 ----------------------------------------------------------------------------------------------------
 -- coshsqrt0
@@ -156,7 +158,7 @@ lemma ge_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : 2 + coshsqrt x ≤ 3 * Real.exp �
     -- "compare coefficients"
     have : ∑' (a : ℕ), ENNReal.ofReal (x ^ a / (2 * a).factorial) ≤ ∑' (a : ℕ), ENNReal.ofReal (√x ^ a / a.factorial) := by
       nth_rw 2 [← Summable.tsum_add_tsum_compl (s := { n : ℕ | Even n}) (by simp) (by simp)]
-      rw [tsum_even_nat (fun n ↦ ENNReal.ofReal (√x ^ n / (n : ℕ).factorial))]
+      rw [← tsum_double_eq_tsum_even (fun n ↦ ENNReal.ofReal (√x ^ n / (n : ℕ).factorial))]
       simp_rw [pow_mul, Real.sq_sqrt xnn]
       exact le_self_add
     rw [← ENNReal.ofReal_tsum_of_nonneg] at this
@@ -224,12 +226,11 @@ lemma one_le_coshsqrt (x : ℝ) : 1 ≤ 2 + coshsqrt x := by
 theorem Finset.one_le_prod''' {ι : Type u_1}
     [CommMonoidWithZero R] [PartialOrder R] [ZeroLEOneClass R] [PosMulMono R] {f : ι → R} {s : Finset ι}
     (h : ∀ i ∈ s, 1 ≤ f i) :
-1 ≤ ∏ i ∈ s, f i := by
-  trans ∏ i ∈ s, 1
-  · simp
-  · gcongr
-    exact fun i a ↦ zero_le_one' R
-    (expose_names; exact h i h_1)
+    1 ≤ ∏ i ∈ s, f i := by
+  apply le_trans (le_of_eq prod_const_one.symm)
+  gcongr
+  exact fun i a ↦ zero_le_one' R
+  (expose_names; exact h i h_1)
 
 ----------------------------------------------------------------------------------------------------
 -- special function lemma

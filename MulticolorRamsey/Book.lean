@@ -156,6 +156,13 @@ noncomputable def Xb (pp : book_params (V := V) (r := r)) (Λs : Fin r → List 
 
 lemma εpos (pp : book_params (V := V) (r := r)) (t : Nat) : 0 ≤ ε pp t := by unfold ε; apply mul_nonneg; exact sorry; positivity
 lemma εle1 (pp : book_params (V := V) (r := r)) (t : Nat) : ε pp t ≤ 1 := sorry
+lemma εleβ (pp : book_params (V := V) (r := r)) (t : Nat) : ε pp r ≤ β r := by
+    unfold ε; trans β r / 1 * 1; gcongr; simp
+    · exact le_of_lt βpos
+    · exact le_of_lt βpos
+    · sorry
+    · exact Real.exp_le_one_iff.mpr sorry
+    · simp
 
 
 structure book_nip (pp : book_params (V := V) (r := r)) where
@@ -328,14 +335,15 @@ lemma l45boost {pp : book_params} {nip : book_nip pp (V := V) (r := r)} {ky : ke
 
     ∀ (i : Fin r), Xb pp newΛs nip.T i ≤ (lift ky.X').card := by
   intro newΛs i
-  have εleβ : ε pp r ≤ β r := sorry
   have kc := ky.βcard
   have := nip.l45 i
   trans (β r * Real.exp (-C r * √(ky.Λ + 1))) / r * ↑nip.inp.X.card
   · trans ((#nip.inp.X) : ℝ)
     sorry
 
+    trans 1 * (#nip.inp.X); simp; gcongr
     sorry
+
   trans 1 / (r : ℝ) * (ky.X'.card : ℝ)
   · suffices 1 / (r : ℝ) * (β r * Real.exp (-C r * √(ky.Λ + 1)) * ↑nip.inp.X.card) ≤ 1 / (r : ℝ) * ↑ky.X'.card by sorry
     gcongr 1 / (r : ℝ) * ?_
@@ -352,14 +360,12 @@ lemma l45color {pp : book_params} {nip : book_nip pp (V := V) (r := r)}
     ∀ (i : Fin r), nip.Xbound newT i ≤ X''.card := by
   intro X'' newT i
   unfold X''
-  have εleβ : ε pp r ≤ β r := sorry
-  have := ky.βcard
   trans (β r * Real.exp (-C r * √(ky.Λ + 1))) / r * ↑nip.inp.X.card
   · sorry
   trans 1 / (r : ℝ) * (ky.X'.card : ℝ)
   · suffices 1 / (r : ℝ) * (β r * Real.exp (-C r * √(ky.Λ + 1)) * ↑nip.inp.X.card) ≤ 1 / (r : ℝ) * ↑ky.X'.card by sorry
     gcongr 1 / (r : ℝ) * ?_
-
+    exact ky.βcard
   · simp [lift_card]
     trans 1 * (lift ky.X').card
     gcongr; exact Nat.cast_inv_le_one r
@@ -656,7 +662,7 @@ decreasing_by
 
 
 -- thm 2.1
-lemma book (t m : ℕ) (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (c : Fin r)
+lemma book (t m : ℕ) (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
   (tpos : 0 < t) (mpos : 0 < m)
   (X : Finset V) [nenX : Nonempty X]
   (Y : Fin r → (Finset V))
@@ -667,7 +673,7 @@ lemma book (t m : ℕ) (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (c : Fi
   (Xge : (μ^2 / p)^(μ * r * t) ≤ #X)
   (Yge : ∀ i, (Real.exp (2^13 * r^3 / μ^2)) ^ t * m ≤ #(Y i))
   :
-  ∃ c : Fin r, ∃ T M : Finset V, t = #T ∧ m ≤ #M ∧ χ.monochromaticBook c T M := by
+  ∃ c : Fin r, ∃ T M : Finset V, #T = t ∧ m ≤ #M ∧ χ.monochromaticBook c T M := by
   let δ := p / μ^2
   have δpos : 0 < δ := by sorry
   let inp : book_params (V := V) (r := r) :=
@@ -684,7 +690,7 @@ lemma book (t m : ℕ) (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (c : Fi
   use j
   use sn.T j
   use sn.inp.Y j
-  refine ⟨a, ⟨?_, sn.mbook j⟩⟩
+  refine ⟨a.symm, ⟨?_, sn.mbook j⟩⟩
 
   -- now we need to bound size of Y to prove our book has the required size
   have : 0 ≤ inp.δp := δppos inp
@@ -708,14 +714,3 @@ lemma book (t m : ℕ) (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (c : Fi
           norm_num
         · gcongr; exact Yge j
       · exact b
-
-
-
-
-theorem erdos_szekeres (m : ℕ) (μ p : ℝ) (μge : 2 ^ 10 * r ^ 3 ≤ μ):
-  ∃ χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r),
-  ∃ (X : Finset V),
-  ∃ (Y : Fin r → (Finset V)),
-  ((μ ^ 2 / p) ^ (μ * r * t) < X.card) ∧
-  ∀ i, (m * (Real.exp (2 ^ 13 * r ^ 3 / μ ^ 2)) ^ t < (Y i).card) ∧
-  (∀ i, ∀ x ∈ X, (Y i) ⊆ (N χ i x) ∩ (Y i)) := sorry
