@@ -1,8 +1,10 @@
 import MulticolorRamsey.KeyLemma
+import ExponentialRamsey.Prereq.Ramsey
+
 
 import Mathlib.Algebra.Order.BigOperators.GroupWithZero.List
 
-open Finset
+open Finset SimpleGraph
 
 ----------------------------------------------------------------------------------------------------
 -- maybe mathlib. check if they are still actually used tho
@@ -39,7 +41,7 @@ structure book_params where
     (t : ℕ) (tpos : 0 < t)
     (Λ₀ : ℝ) (Λ₀ge : -1 ≤ Λ₀)
     (δ : ℝ) (δpos : 0 < δ)
-    χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)
+    χ : TopEdgeLabelling V (Fin r)
     X₀ : Finset V
     [nenX : Nonempty X₀]
     Y₀ : Fin r → Finset V
@@ -178,7 +180,7 @@ structure book_nip (pp : book_params (V := V) (r := r)) where
   (l44 (i : Fin r) : pp.δp ^ (#(T i) + (Λs i).length) * #(pp.Y₀ i) ≤ #(inp.Y i))
   (l45 (i : Fin r) : Xb pp Λs T i ≤ #inp.X)
   (rainbow : ∀ i, ∀ y ∈ T i, ∀ x ∈ inp.X, x ∈ N pp.χ i y) -- a nice invariant
-  (mbook (i : Fin r) : pp.χ.monochromaticBook i (T i) (inp.Y i)) -- the relevant bit
+  (mbook (i : Fin r) : pp.χ.MonochromaticBook i (T i) (inp.Y i)) -- the relevant bit
 
 -- get input from params (for first call)
 noncomputable def book_params.nip (pp : book_params (V := V) (r := r)) : book_nip pp := by
@@ -186,7 +188,7 @@ noncomputable def book_params.nip (pp : book_params (V := V) (r := r)) : book_ni
    λ _ ↦ ∅, by simp, by simp,
    λ _ ↦ [], by simp, by simp [key_in.p', p₀le],
    by simp, by simp [Xb],
-   by simp, by simp [SimpleGraph.EdgeColoring.monochromaticBook, SimpleGraph.EdgeColoring.monochromatic, SimpleGraph.EdgeColoring.monochromaticBetween]⟩
+   by simp, by simp [TopEdgeLabelling.MonochromaticBook, TopEdgeLabelling.MonochromaticOf, TopEdgeLabelling.MonochromaticBetween]⟩
 
 def book_nip.maxB {pp : book_params (V := V) (r := r)} (nip : book_nip pp) : ℕ := univ.sum λ i ↦ (nip.Λs i).length
 
@@ -377,10 +379,7 @@ lemma l41nothing {pp : book_params} {nip : book_nip pp (V := V) (r := r)}
     pp.δ * ((1 - 1 / ↑pp.t) ^ (nip.T i).card * (List.map (fun Λ ↦ 1 + Λ / (pp.t : ℝ)) (nip.Λs i)).prod) ≤
     p X'' (nip.inp.Y i) pp.χ i - pp.p₀ + pp.δ := by
   trans nip.inp.p' i - pp.p₀ + pp.δ
-  · refine le_trans ?_ ( nip.l41 i)
-    gcongr pp.δ * ?_
-    exact le_of_lt pp.δpos
-    exact le_of_eq rfl
+  · exact nip.l41 i
   · gcongr
     exact p_subset X'sub
 
@@ -459,12 +458,14 @@ lemma l46 {pp : book_params} {nip : book_nip pp (V := V) (r := r)} :
 -- correctness: the output T and Y always form a monochromatic book
 
 lemma mau {pp : book_params (V := V) (r := r)} {nip : book_nip pp} {ky : key_out nip.inp} (i : Fin r) :
-    Disjoint (nip.T i) (ky.Y' i) :=
-  Finset.disjoint_coe.mp (Set.disjoint_of_subset_right (trans (ky.Y'sub i) inter_subset_right) (nip.mbook i).1)
+    Disjoint (nip.T i) (ky.Y' i) := by
+  refine disjoint_coe.mp (Set.disjoint_of_subset_right (trans (ky.Y'sub i) inter_subset_right) ?_)
+  exact disjoint_coe.mpr (nip.mbook i).1
+
 
 lemma mono_boost  {pp : book_params (V := V) (r := r)} {nip : book_nip pp} {ky : key_out nip.inp} (i : Fin r) :
     let newY (i : Fin r) := if i = j then ky.Y' i else nip.inp.Y i
-    pp.χ.monochromaticBook i (nip.T i) (newY i) := by
+    pp.χ.MonochromaticBook i (nip.T i) (newY i) := by
   apply pp.χ.monochromaticBook_subset (nip.mbook i)
   simp; split_ifs; exact (Subset.trans (ky.Y'sub i) inter_subset_right); simp
 
@@ -472,33 +473,35 @@ lemma mono_boost  {pp : book_params (V := V) (r := r)} {nip : book_nip pp} {ky :
 lemma mono  {pp : book_params} {nip : book_nip pp (V := V) (r := r)} {ky : key_out nip.inp} (i : Fin r) :
     let newY (i : Fin r) := if i = j then ky.Y' i else nip.inp.Y i
     let newT (i : Fin r) := if i = j then insert ky.x (nip.T i) else nip.T i
-    pp.χ.monochromaticBook i (newT i) (newY i) := by
+    pp.χ.MonochromaticBook i (newT i) (newY i) := by
   intros newY newT
   unfold newT newY
   split
   · repeat any_goals constructor
     · -- disjoint
-      simp [Set.disjoint_insert_left]
+      simp only [disjoint_insert_left]
       constructor
-      · apply Set.notMem_subset ?_ (SimpleGraph.coloredNeighborSet_not_mem (EC := pp.χ) i ky.x)
+      · apply Set.notMem_subset ?_ (EdgeLabelling.coloredNeighborSet_not_mem (EC := pp.χ) i ky.x)
         convert (Subset.trans (ky.Y'sub i) inter_subset_left)
-        simp [disjoint_coe, reh]
+        simp only [reh, Set.subset_toFinset]
       · exact mau i
     · --newT monochromatic
-      convert pp.χ.monochromatic_insert i ky.x (nip.T i) (nip.mbook i).2.1 _
-      · simp
+      push_cast
+      apply (pp.χ.monochromaticOf_monochromaticBetween_insert i ky.x (nip.T i)).mpr
+      constructor
+      · exact (nip.mbook i).2.1
       · refine pp.χ.monochromaticBetween_neighbors ?_
         convert λ y yy ↦ nip.rainbow i y yy ky.x ky.xX
         ext; simp
     · -- mono between newT and newY
-      convert pp.χ.monochromaticBetween_insert i ky.x (nip.T i) (ky.Y' i) _ _
-      simp only [coe_insert]
-      exact pp.χ.monochromaticBetween_subset (trans (ky.Y'sub i) inter_subset_right) (nip.mbook i).2.2
-      refine (pp.χ.monochromaticBetween_neighbors ?_).symm
-      intros y yY
-      rw [SimpleGraph.EdgeColoring.coloredNeighborSet.symm]
-      convert Finset.mem_of_subset (Subset.trans (ky.Y'sub i) inter_subset_left) yY
-      ext; simp
+      rw [insert_eq]
+      apply TopEdgeLabelling.monochromaticBetween_union_left.mpr ⟨?_, ?_⟩
+      · refine (pp.χ.monochromaticBetween_neighbors ?_).symm
+        intros y yY
+        rw [EdgeLabelling.coloredNeighborSet.symm]
+        convert Finset.mem_of_subset (Subset.trans (ky.Y'sub i) inter_subset_left) yY
+        ext; simp
+      · exact (nip.mbook i).2.2.subset_right (Trans.trans (ky.Y'sub i) inter_subset_right)
   exact nip.mbook i
 
 ----------------------------------------------------------------------------------------------------
@@ -568,7 +571,7 @@ noncomputable def step {pp : book_params (V := V) (r := r)}
       have : Disjoint (N pp.χ j ky.x ∩ lift ky.X') _ := disjoint_of_subset_left inter_subset_right this
       unfold X'' newT
       split
-      · simp [disjoint_insert_right, N_not_mem, this, SimpleGraph.coloredNeighborSet_not_mem]
+      · simp [disjoint_insert_right, this, EdgeLabelling.coloredNeighborSet_not_mem]
       · exact this
 
     have rainbow : ∀ i, ∀ x ∈ newT i, ∀ y ∈ X'', y ∈ N pp.χ i x := by
@@ -662,7 +665,7 @@ decreasing_by
 
 
 -- thm 2.1
-lemma book (t m : ℕ) (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
+lemma book (t m : ℕ) (χ : TopEdgeLabelling V (Fin r))
   (tpos : 0 < t) (mpos : 0 < m)
   (X : Finset V) [nenX : Nonempty X]
   (Y : Fin r → (Finset V))
@@ -673,13 +676,15 @@ lemma book (t m : ℕ) (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
   (Xge : (μ^2 / p)^(μ * r * t) ≤ #X)
   (Yge : ∀ i, (Real.exp (2^13 * r^3 / μ^2)) ^ t * m ≤ #(Y i))
   :
-  ∃ c : Fin r, ∃ T M : Finset V, #T = t ∧ m ≤ #M ∧ χ.monochromaticBook c T M := by
+  ∃ c : Fin r, ∃ T M : Finset V, #T = t ∧ m ≤ #M ∧ χ.MonochromaticBook c T M := by
   let δ := p / μ^2
-  have δpos : 0 < δ := by sorry
+  have : 0 < r := Fin.pos'
+  have : 0 < μ := lt_of_lt_of_le (by positivity) μge
+  have δpos : 0 < δ := by simp [δ, ppos, sq_pos_of_pos this]
   let inp : book_params (V := V) (r := r) :=
     ⟨t, tpos,
      (μ * Real.log (1 / δ) / 8 * (C r))^2, le_trans (by simp) (sq_nonneg _),
-     δ, by sorry,
+     δ, δpos,
      χ, X, Y,
      sorry, -- issue #15
      sorry, sorry, sorry, sorry⟩

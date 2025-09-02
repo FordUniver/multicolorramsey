@@ -1,16 +1,18 @@
 import MulticolorRamsey.GeometricLemma
 import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
 
+open SimpleGraph
+
 ----------------------------------------------------------------------------------------------------
 -- N
 
 -- "Given an edge colouring, we write $N_i(u)$ to denote the neighbourhood of vertex $u$ in colour $i$."
-abbrev N {C} {V} {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeColoring C) (i : C) x :=
+abbrev N {C} {V} {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeLabelling C) (i : C) x :=
   (χ.coloredNeighborSet i x).toFinset
 
-lemma N_not_mem {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeColoring C) (i : C) x :
+lemma N_not_mem {G : SimpleGraph V} [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeLabelling C) (i : C) x :
     x ∉ N χ i x := by
-  simp [N, SimpleGraph.EdgeColoring.coloredNeighborSet]
+  simp [N, SimpleGraph.EdgeLabelling.coloredNeighborSet]
 
 ----------------------------------------------------------------------------------------------------
 -- p
@@ -40,20 +42,20 @@ lemma min_le_mem [LinearOrder T] {f : V → T} {X : Finset V} [Nonempty X] (v : 
 lemma min_ge [LinearOrder T] {f : V → T} {X : Finset V} [Nonempty X] (v : X) (c : T) (le : ∀ v, c ≤ f v) : c ≤ mymin f X :=
 sorry
 -- this is pᵢ|Yᵢ| in the text
-def pY {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nenX: Nonempty X] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
+def pY {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nenX: Nonempty X] (χ : SimpleGraph.TopEdgeLabelling V (Fin r))
     (i : Fin r) : ℕ :=
   mymin (fun x => ((N χ i x) ∩ Y).card) X
 
 -- this is pᵢ in the text
-noncomputable def p {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nenX : Nonempty X] (EC : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
+noncomputable def p {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nenX : Nonempty X] (EC : SimpleGraph.TopEdgeLabelling V (Fin r))
     (i : Fin r) : ℝ := (pY X Y EC i) / (Y.card : ℝ)
 
-lemma p_subset {V : Type} [Fintype V] [DecidableEq V] {χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)} {X X' Y : Finset V} [nenX : Nonempty X] [Nonempty X'] : X' ⊆ X → (p X Y χ i) ≤ (p X' Y χ i) := sorry
+lemma p_subset {V : Type} [Fintype V] [DecidableEq V] {χ : SimpleGraph.TopEdgeLabelling V (Fin r)} {X X' Y : Finset V} [nenX : Nonempty X] [Nonempty X'] : X' ⊆ X → (p X Y χ i) ≤ (p X' Y χ i) := sorry
 
-lemma p_nonneg {V : Type} [Fintype V] [DecidableEq V] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (X Y : Finset V) [nenX : Nonempty X] :
+lemma p_nonneg {V : Type} [Fintype V] [DecidableEq V] (χ : SimpleGraph.TopEdgeLabelling V (Fin r)) (X Y : Finset V) [nenX : Nonempty X] :
     0 ≤ (p X Y χ i) := by unfold p; positivity
 
-lemma pY_pos {V : Type} [Fintype V] [DecidableEq V] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (X Y : Finset V) [nenX : Nonempty X] (nen : ∀ x, (N χ i x) ∩ Y ≠ ∅):
+lemma pY_pos {V : Type} [Fintype V] [DecidableEq V] (χ : SimpleGraph.TopEdgeLabelling V (Fin r)) (X Y : Finset V) [nenX : Nonempty X] (nen : ∀ x, (N χ i x) ∩ Y ≠ ∅):
     0 < (pY X Y χ i) := by
   unfold pY mymin; refine (Finset.lt_min'_iff (Finset.image (fun x ↦ (N χ i x ∩ Y).card) X) _).mpr ?_
   intros c cc
@@ -62,10 +64,10 @@ lemma pY_pos {V : Type} [Fintype V] [DecidableEq V] (χ : (⊤ : SimpleGraph V).
   rw [← zc]
   exact this z
 
-lemma p_pos {V : Type} [Fintype V] [DecidableEq V] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (X Y : Finset V) [nenX : Nonempty X] (_ : ∀ x, (N χ i x) ∩ Y ≠ ∅):
+lemma p_pos {V : Type} [Fintype V] [DecidableEq V] (χ : SimpleGraph.TopEdgeLabelling V (Fin r)) (X Y : Finset V) [nenX : Nonempty X] (_ : ∀ x, (N χ i x) ∩ Y ≠ ∅):
     0 < (p X Y χ i) := by unfold p; sorry
 
-lemma p_le_one {V : Type} [Fintype V] [DecidableEq V] (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r)) (X Y : Finset V) [nenX : Nonempty X] :
+lemma p_le_one {V : Type} [Fintype V] [DecidableEq V] (χ : SimpleGraph.TopEdgeLabelling V (Fin r)) (X Y : Finset V) [nenX : Nonempty X] :
     (p X Y χ i) ≤ 1 := by
   sorry
 
@@ -104,7 +106,7 @@ open MeasureTheory ProbabilityTheory Finset Real
 open scoped ENNReal
 
 lemma key [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [Fintype V]-- {cardV : Fintype.card V = n}
-  (χ : (⊤ : SimpleGraph V).EdgeColoring (Fin r))
+  (χ : SimpleGraph.TopEdgeLabelling V (Fin r))
   (X : Finset V) [nenX : Nonempty X]
   (Y : Fin r → (Finset V)) -- TODO here too
   (α : Fin r → ℝ) (αpos : ∀ i, 0 < α i)

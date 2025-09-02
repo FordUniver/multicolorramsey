@@ -6,90 +6,160 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 
 import Mathlib.Combinatorics.SimpleGraph.Subgraph
 
+import ExponentialRamsey.Prereq.Ramsey
+
 import Mathlib.Data.Finset.SDiff
+import Mathlib.Data.Finset.Insert
 
 ----------------------------------------------------------------------------------------------------
 --  edge colorings
 
-namespace SimpleGraph
 
-variable {V : Type α} {G : SimpleGraph V}
-
-/-- An edge coloring maps each member of the graph's edge set to a colour in `C` --/
-abbrev EdgeColoring (C : Type) := G.edgeSet → C
-
-/-- `EC.coloredNeighborSet c v` is the set of vertices that have an edge to `v` in `G` which is
-colored with `c` under the edge coloring `EC`. -/
-def EdgeColoring.coloredNeighborSet {EC : G.EdgeColoring C} (c : C) (v : V) : Set V :=
-  {w | ∃ p : G.Adj v w, EC ⟨s(v,w), p⟩ = c}
-
-lemma coloredNeighborSet_not_mem {EC : G.EdgeColoring C} (c : C) (v : V) :
-    v ∉ EC.coloredNeighborSet c v := by
-  simp [EdgeColoring.coloredNeighborSet]
-
-instance EdgeColoring.coloredNeighborSetFintype [Fintype V] [DecidableRel G.Adj] [DecidableEq C]
-    {EC : G.EdgeColoring C} : Fintype (EC.coloredNeighborSet c v) := by
-  simp [EdgeColoring.coloredNeighborSet]
-  exact Subtype.fintype _
 
 -- /-- `EC.coloredNeighborFinset c v` is the Finset of vertices that have `c`-colored edge to `v` in
 -- `G` under the edge coloring `EC`, in case the `c`-colored subgraph of `G` is locally finite at `v`.
 -- -/
--- def EdgeColoring.coloredNeighborFinset {EC : G.EdgeColoring C} (c : C) (v : V)
+-- def EdgeLabelling.coloredNeighborFinset {EC : G.EdgeLabelling C} (c : K) (v : V)
 --     [Fintype (EC.coloredNeighborSet c v)] : Finset V :=
 --   (EC.coloredNeighborSet c v).toFinset
 
-lemma EdgeColoring.color_coloredNeighborSet {EC : G.EdgeColoring C} (c : C) (v w : V) :
-    w ∈ EC.coloredNeighborSet c v ↔ ∃ (p : G.Adj v w), EC ⟨s(v,w), p⟩ = c := by
-  simp [EdgeColoring.coloredNeighborSet]
+-- lemma EdgeLabelling.color_coloredNeighborSet {EC : G.EdgeLabelling C} (c : K) (v w : V) :
+--     w ∈ EC.coloredNeighborSet c v ↔ ∃ (p : G.Adj v w), EC ⟨s(v,w), p⟩ = c := by
+--   simp [EdgeLabelling.coloredNeighborSet]
 
-lemma EdgeColoring.coloredNeighborSet.symm {EC : G.EdgeColoring C} (c : C) (v w : V) :
-    w ∈ EC.coloredNeighborSet c v ↔ v ∈ EC.coloredNeighborSet c w := by
-  simp [EdgeColoring.coloredNeighborSet]
-  sorry
 
--- lemma EdgeColoring.coloredNeighborFinset.symm {EC : G.EdgeColoring C} (c : C) (v w : V)
+-- lemma EdgeLabelling.coloredNeighborFinset.symm {EC : G.EdgeLabelling C} (c : K) (v w : V)
 --      [Fintype (EC.coloredNeighborSet c v)]  [Fintype (EC.coloredNeighborSet c w)]
 --  :
 --     w ∈ EC.coloredNeighborFinset c v ↔ v ∈ EC.coloredNeighborFinset c w := by
---   simp [EdgeColoring.coloredNeighborFinset]
+--   simp [EdgeLabelling.coloredNeighborFinset]
 --   sorry
 
-/-- `EC.monochromatic c T` if all edges within `T` are given color `c` by `EC`. -/
-def EdgeColoring.monochromatic {EC : G.EdgeColoring C} (c : C) (T : Set V) : Prop :=
-  ∀ x ∈ T, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
+-- /-- `EC.monochromatic c T` if all edges within `T` are given color `c` by `EC`. -/
+-- def EdgeLabelling.monochromatic {EC : G.EdgeLabelling C} (c : K) (T : Set V) : Prop :=
+--   ∀ x ∈ T, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
 
-lemma EdgeColoring.monochromatic_subset {EC : G.EdgeColoring C} {c : C} {S Y : Set V} :
-  S ⊆ Y → EC.monochromatic c Y → EC.monochromatic c S := sorry
+-- lemma EdgeLabelling.monochromatic_subset {EC : G.EdgeLabelling C} {c : K} {S Y : Set V} :
+--   S ⊆ Y → EC.monochromatic c Y → EC.monochromatic c S := sorry
 
-/-- `EC.monochromatic c T` if all edges between `T` and Y are given color `c` by `EC`. -/
-def EdgeColoring.monochromaticBetween {EC : G.EdgeColoring C} (c : C) (T Y : Set V) : Prop :=
-  ∀ x ∈ Y, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
+-- /-- `EC.monochromatic c T` if all edges between `T` and Y are given color `c` by `EC`. -/
+-- def EdgeLabelling.monochromaticBetween {EC : G.EdgeLabelling C} (c : K) (T Y : Set V) : Prop :=
+--   ∀ x ∈ Y, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
+
+-- /-- `EC.monochromatic c T Y` if `T` and `Y` are disjoint, all edges within `T` and all edges between
+--  `T` and `Y`are given color `c` by `EC`. -/
+-- def EdgeLabelling.monochromaticBook {EC : TopEdgeLabelling V C} (c : K) (T Y : Set V) :=
+--   Disjoint T Y ∧ EC.monochromatic c T ∧ EC.monochromaticBetween c T Y
+
+
+
+-- lemma EdgeLabelling.monochromaticBetween_neighbors {EC : G.EdgeLabelling C} {c : K} {y : V} {T : Set V} :
+--   (∀ x ∈ T, y ∈ EC.coloredNeighborSet c x) →  EC.monochromaticBetween c T {y} := sorry
+
+-- lemma EdgeLabelling.monochromaticBetween_insert {EC : G.EdgeLabelling C} (c : K) (t : V) (T Y : Set V) :
+--   EC.monochromaticBetween c T Y → EC.monochromaticBetween c {t} Y → EC.monochromaticBetween c (insert t T) Y := sorry
+
+-- lemma EdgeLabelling.monochromaticBetween_subset {EC : G.EdgeLabelling C} {c : K} {T S Y : Set V} :
+--   S ⊆ Y → EC.monochromaticBetween c T Y → EC.monochromaticBetween c T S := sorry
+
+-- lemma EdgeLabelling.monochromaticBetween.symm {EC : G.EdgeLabelling C} (c : K) (T Y : Set V) :
+--   EC.monochromaticBetween c T Y → EC.monochromaticBetween c Y T := sorry
+
+-- lemma EdgeLabelling.monochromaticBook_subset {EC : TopEdgeLabelling V C} {A B D : Set V}
+--     (b : EC.monochromaticBook i A B) (s : D ⊆ B) : EC.monochromaticBook i A D :=
+--   ⟨(Set.disjoint_of_subset_right s b.1), b.2.1, EC.monochromaticBetween_subset s b.2.2⟩
+
+-- TODO adjusted to work with b-mehta labellings. could generalize to non top labellings and non fin sets
+
+-- lemma EdgeLabelling.monochromatic_subset {EC : TopEdgeLabelling V C} {c : K} {S Y : Set V} :
+--   S ⊆ Y → EC.MonochromaticOf Y c → EC.MonochromaticOf S c := sorry
+
+-- lemma EdgeLabelling.monochromatic_insert {EC : TopEdgeLabelling V C} (c : K) (y : V) (T : Finset V) :
+--   EC.MonochromaticOf T c → EC.MonochromaticBetween T {y} c → EC.MonochromaticOf (insert y T) c := sorry
+
+-- lemma EdgeLabelling.monochromaticBetween_insert [DecidableEq V] {EC : TopEdgeLabelling V C} (c : K) (t : V) (T Y : Finset V) :
+--   EC.MonochromaticBetween T Y c → EC.MonochromaticBetween {t} Y c → EC.MonochromaticBetween (insert t T) Y c := sorry
+
+-- lemma EdgeLabelling.monochromaticBetween_subset {EC : TopEdgeLabelling V C} {c : K} {T S Y : Finset V} :
+--   S ⊆ Y → EC.MonochromaticBetween T Y c → EC.MonochromaticBetween T S c := sorry
+
+
+open Finset
+open Fintype (card)
+
+namespace SimpleGraph
+
+variable {V V' : Type*} {G : SimpleGraph V} {K K' : Type*} {c : K} {EC : G.EdgeLabelling K}
+
+namespace EdgeLabelling
+
+/-- `EC.coloredNeighborSet c v` is the set of vertices that have an edge to `v` in `G` which is
+colored with `c` under the edge coloring `EC`. -/
+def coloredNeighborSet {EC : G.EdgeLabelling K} (c : K) (v : V) : Set V :=
+  {w | ∃ p : G.Adj v w, EC ⟨s(v,w), p⟩ = c}
+
+lemma coloredNeighborSet_not_mem (c : K) (v : V) :
+    v ∉ EC.coloredNeighborSet c v := by
+  simp [EdgeLabelling.coloredNeighborSet]
+
+instance coloredNeighborSetFintype [Fintype V] [DecidableRel G.Adj] [DecidableEq K] :
+    Fintype (EC.coloredNeighborSet c v) := by
+  simp [coloredNeighborSet]
+  exact Subtype.fintype _
+
+lemma coloredNeighborSet.symm (c : K) (v w : V) :
+    w ∈ EC.coloredNeighborSet c v ↔ v ∈ EC.coloredNeighborSet c w := by
+  simp [EdgeLabelling.coloredNeighborSet]
+  sorry
+
+end EdgeLabelling
+
+namespace TopEdgeLabelling
+
+open EdgeLabelling
+
+variable {m : Finset V} {c : K} {EC : TopEdgeLabelling V K}
+
+lemma monochromaticBetween_neighbors {c : K} {y : V} {T : Finset V}
+    (h : ∀ x ∈ T, y ∈ EC.coloredNeighborSet c x) : EC.MonochromaticBetween T {y} c := by
+  simp only [MonochromaticBetween, mem_singleton, ne_eq, forall_eq]
+  intros v vT vny
+  exact (h v vT).2
+
+theorem MonochromaticBetween.image {C : TopEdgeLabelling V' K} {f : V ↪ V'}
+    (h : (C.pullback f).MonochromaticBetween m n c) : C.MonochromaticBetween (m.map f)  (n.map f) c := by
+  simpa [MonochromaticBetween]
+
+lemma monochromaticOf_monochromaticBetween_insert [DecidableEq V] (c : K) (y : V) (T : Finset V) :
+    EC.MonochromaticOf (insert y T) c ↔ EC.MonochromaticOf T c ∧ EC.MonochromaticBetween T {y} c := by
+  rw [Set.insert_eq, ← coe_singleton, Set.union_comm]
+  convert monochromaticOf_union
+  simp
+
 
 /-- `EC.monochromatic c T Y` if `T` and `Y` are disjoint, all edges within `T` and all edges between
  `T` and `Y`are given color `c` by `EC`. -/
-def EdgeColoring.monochromaticBook {EC : G.EdgeColoring C} (c : C) (T Y : Set V) :=
-  Disjoint T Y ∧ EC.monochromatic c T ∧ EC.monochromaticBetween c T Y
+def MonochromaticBook (c : K) (T Y : Finset V) :=
+  Disjoint T Y ∧ EC.MonochromaticOf T c ∧ EC.MonochromaticBetween T Y c
 
-lemma EdgeColoring.monochromatic_insert {EC : G.EdgeColoring C} (c : C) (y : V) (T : Set V) :
-  EC.monochromatic c T → EC.monochromaticBetween c T {y} → EC.monochromatic c (insert y T) := sorry
+lemma monochromaticBook_subset {A B D : Finset V}
+    (b : EC.MonochromaticBook i A B) (s : D ⊆ B) : EC.MonochromaticBook i A D :=
+  ⟨(Finset.disjoint_of_subset_right s b.1), b.2.1, b.2.2.subset_right s ⟩
 
-lemma EdgeColoring.monochromaticBetween_neighbors {EC : G.EdgeColoring C} {c : C} {y : V} {T : Set V} :
-  (∀ x ∈ T, y ∈ EC.coloredNeighborSet c x) →  EC.monochromaticBetween c T {y} := sorry
+lemma monochromaticBook_pullback {V : Type u_1} {V' : Type u_2} {K : Type u_3}
+  {EC : TopEdgeLabelling V K} (f : V' ↪ V) (c : K) (T Y : Finset V') (B : (EC.pullback f).MonochromaticBook c T Y)
+   : EC.MonochromaticBook c (T.map f) (Y.map f) := by
+  simp [MonochromaticBook] at B ⊢
+  refine ⟨B.1, ⟨?_, ?_⟩⟩
+  exact MonochromaticOf.image B.2.1
+  exact MonochromaticBetween.image B.2.2
 
-lemma EdgeColoring.monochromaticBetween_insert {EC : G.EdgeColoring C} (c : C) (t : V) (T Y : Set V) :
-  EC.monochromaticBetween c T Y → EC.monochromaticBetween c {t} Y → EC.monochromaticBetween c (insert t T) Y := sorry
+lemma monochromaticBook_empty {A : Finset V}
+ : EC.MonochromaticBook i ∅ A := by constructor <;> simp
 
-lemma EdgeColoring.monochromaticBetween_subset {EC : G.EdgeColoring C} {c : C} {T S Y : Set V} :
-  S ⊆ Y → EC.monochromaticBetween c T Y → EC.monochromaticBetween c T S := sorry
 
-lemma EdgeColoring.monochromaticBetween.symm {EC : G.EdgeColoring C} (c : C) (T Y : Set V) :
-  EC.monochromaticBetween c T Y → EC.monochromaticBetween c Y T := sorry
 
-lemma EdgeColoring.monochromaticBook_subset {EC : G.EdgeColoring C} {A B D : Finset V}
-    (b : EC.monochromaticBook i A B) (s : D ⊆ B) : EC.monochromaticBook i A D :=
-  ⟨(Set.disjoint_of_subset_right s b.1), b.2.1, EC.monochromaticBetween_subset s b.2.2⟩
-
+end TopEdgeLabelling
 
 
 end SimpleGraph
