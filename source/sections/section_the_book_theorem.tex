@@ -1,0 +1,26 @@
+\section{The Book Theorem}\label{sec:book:thm}
+
+The book $(A,B)$ is the graph formed by removing the clique with vertex set $B$ from the clique with vertex set $A \cup B$; that is, it is the graph $H$ with vertex set $A \cup B$ and edge set
+$$E(H) = \big\{ uv : \{u,v\} \not\subset B \big\},$$
+We say that $H$ is a \emph{$(t,m)$-book} if $|A| = t$ and $|B|= m$, and the sets $A$ and $B$ are disjoint. Our plan is to find a monochromatic copy of $K_k$ (in an arbitrary $r$-colouring $\chi$ of $E(K_n)$) by first finding a monochromatic $(t,m)$-book, where
+$$t = \eps k \qquad \text{and} \qquad m \ge e^{-t^2/8k} \, r^{-t} \cdot n \ge R_r(k,\ldots,k,k-t),$$
+for some constant $\eps = \eps(r) > 0$, where $R_r(k_1,\ldots,k_r)$ is the minimum $N$ such that every $r$-colouring of $E(K_N)$ contains a monochromatic copy of $K_{k_i}$ in colour $i$ for some $i \in [r]$. Since we have
+$$R_r(k,\ldots,k,k-t) \le {kr - t \choose k,\ldots,k,k-t} \le e^{-t^2/6k} r^{rk-t},$$
+by the method of Erd\H{o}s and Szekeres~\cite{ESz35}, this will suffice to prove Theorem~\ref{thm:Ramsey:multicolour}. 
+
+We will find a monochromatic $(t,m)$-book by constructing $r$ monochromatic books, one in each colour. The first step is to find a large subset of the vertices in which the colouring is almost regular, and every colour has density close to $1/r$. To do so, we simply run the Erd\H{o}s--Szekeres algorithm until we find such a subset: since we `win' a factor of $1 + \eps$ in each step (see Lemma~\ref{lem:ESz:steps}), either we find a suitable set within $\eps k$ steps, or we are already done. We then (randomly) partition\footnote{In fact, this is unnecessary: we can simply take $X = Y_1 = \cdots = Y_r$ all equal to the set of remaining vertices. However, the reader may find it easier to picture the sets as disjoint.} the remaining vertices into $r+1$ sets: a `reservoir' set $X$, and sets $Y_1,\ldots,Y_r$ that we will use to construct our books. We will find a set $T \subset X$ of size $t = \eps k$ such that $T$ induces a monochromatic clique in some colour $i \in [r]$, and 
+$$\bigg| \bigcap_{u \in T} N_i(u) \cap Y_i \bigg| \ge m,$$
+where we write $N_i(u)$ to denote the neighbourhood of $u$ in colour $i$. 
+
+We are now ready to state our main technical theorem about finding monochromatic books in $r$-colourings. With an eye to potential future applications, we will state a more general version than we need for Theorem~\ref{thm:Ramsey:multicolour}. In particular, the parameter $\mu$ (which in our application will be $\Theta(r^3)$) allows us to control the loss in the size of the book (relative to $p^t |Y_i|$) in terms of the size of the reservoir set $X$. To avoid repetition, let us fix $n,r \in \N$.
+
+\begin{theorem}\label{thm:book}
+Let\/ $\chi$ be an\/ $r$-colouring of\/ $E(K_n)$, and let\/ $X,Y_1,\ldots,Y_r \subset V(K_n)$. % be disjoint sets. 
+For every $p > 0$ and $\mu \ge 2^{10} r^3$, and every $t,m \in \N$ with $t \ge \mu^5 / p$, the following holds. If 
+$$|N_i(x) \cap Y_i| \ge p|Y_i|$$
+for every $x \in X$ and $i \in [r]$, and moreover
+$$|X| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t} \qquad \text{and} \qquad |Y_i| \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m,$$ 
+then $\chi$ contains a monochromatic $(t,m)$-book.
+\end{theorem}
+
+%

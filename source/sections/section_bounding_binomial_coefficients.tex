@@ -1,0 +1,101 @@
+\section{Bounding binomial coefficients}\label{app:binomial}
+
+In this short appendix we will prove the following bound, which was used in Section~\ref{sec:final:proof}. 
+
+\begin{lemma}\label{lem:multibounds}
+For each $k,t,r \in \N$ with $3 \le t \le k$, we have
+$$\binom{rk-t}{k,\dots,k,k-t} \le e^{-(r-1)t^2/3rk} r^{rk-t}.$$
+\end{lemma}
+ 
+\begin{proof}
+To prove this, observe that 
+%To prove this, we just need to observe that $\binom{rk}{k,\dots,k} \le r^{rk}$, and that 
+$$\binom{rk-t}{k,\dots,k,k-t} \binom{rk}{k,\dots,k}^{-1} = \, \prod_{i = 0}^{t - 1} \frac{k - i}{rk - i} = r^{-t} \,\prod_{i = 0}^{t-1} \bigg( 1 - \frac{(r-1)i}{rk - i} \bigg) \le r^{-t} \cdot e^{-(r-1)t^2/3rk}.$$
+Since $\binom{rk}{k,\dots,k} \le r^{rk}$, the claimed bound follows.
+\end{proof}
+
+\begin{thebibliography}{9}
+
+%\bibitem{AR} N. Alon and V. R\"odl, 
+%Sharp bounds for some multicolour Ramsey numbers, 
+%\emph{Combinatorica}, \bf 25 \rm (2005), 125--141.
+
+%\bibitem{AS} N.~Alon and J.~Spencer, 
+%The Probabilistic Method (4th edition), 
+%John Wiley \& Sons, 2016.
+
+\bibitem{CGMS} M. Campos, S. Griffiths, R.~Morris and J.~Sahasrabudhe, 
+An exponential improvement for diagonal Ramsey, arXiv:2303.09521
+
+\bibitem{C09} D.~Conlon, 
+A new upper bound for diagonal Ramsey numbers, 
+\emph{Ann. Math.},  \bf 170 \rm (2009), 941--960.
+
+\bibitem{CPhD} D.~Conlon, 
+Upper bounds for Ramsey numbers, 
+PhD thesis, University of Cambridge, 2009.
+
+%\bibitem{C19} D.~Conlon, 
+%The Ramsey number of books, 
+%\emph{Adv. Combin.}, 2019:3, 12pp.
+
+\bibitem{CF} D. Conlon and A. Ferber, 
+Lower bounds for multicolour Ramsey numbers, 
+\emph{Adv. Math.}, \bf 378 \rm (2021), Paper No. 107528, 5 pp.
+
+%\bibitem{CFS} D.~Conlon, J.~Fox and B.~Sudakov, 
+%Recent developments in graph Ramsey theory, 
+%Surveys in Combinatorics, \bf 424 \rm (2015), 49--118.
+
+%\bibitem{CFW22} D.~Conlon, J.~Fox and Y.~Wigderson, 
+%Ramsey numbers of books and quasirandomness, 
+%\emph{Combinatorica}, \bf 42 \rm (2022), 309-363.
+
+%\bibitem{CFW23} D.~Conlon, J.~Fox and Y.~Wigderson, 
+%Off-diagonal book Ramsey numbers, 
+%\emph{Combin. Probab. Computing}, to appear.
+
+\bibitem{E47} P.~Erd\H{o}s, 
+Some remarks on the theory of graphs, 
+\emph{Bull. Amer. Math. Soc.}, \textbf{53} (1947), 292--294,
+
+\bibitem{ESz35} P. Erd\H{o}s and G. Szekeres, 
+A combinatorial problem in geometry, 
+\emph{Compos.~Math.}, \bf 2 \rm (1935), 463--470.
+
+\bibitem{GR} R.L.~Graham and V.~R\"odl, 
+Numbers in Ramsey theory, 
+Surveys in Combinatorics, London Math. Soc. Lecture Note Series, \bf 123 \rm (1987), 111-153.
+
+\bibitem{GNNW} P. Gupta, N. Ndiaye, S. Norin and L. Wei, Optimizing the CGMS upper bound on Ramsey numbers, arXiv:2407.19026
+
+\bibitem{L87} H. Lefmann, A note on Ramsey numbers, 
+\emph{Studia Sci. Math. Hungar.} \textbf{22} (1987), 445--446.
+
+\bibitem{R30} F.P.~Ramsey, 
+On a Problem of Formal Logic, 
+\emph{Proc. London Math. Soc.}, \bf 30 \rm (1930), 264--286.
+
+\bibitem{S23} A.~Sah, 
+Diagonal Ramsey via effective quasirandomness, 
+\emph{Duke Math. J.}, \bf 172 \rm (2023), 545--567.
+
+\bibitem{S} W. Sawin, 
+An improved lower bound for multicolour Ramsey numbers and a problem of Erd\H{o}s, 
+\emph{J.~Combin.~Theory Ser.~A}, \bf 188 \rm (2022), Paper No. 105579, 11 pp.
+
+\bibitem{S77} J.~Spencer, 
+Asymptotic lower bounds for Ramsey functions, 
+\emph{Discrete Math.}, \bf 20 \rm (1977), 69--76. 
+
+\bibitem{T88} A. Thomason, 
+An upper bound for some Ramsey numbers, 
+\emph{J.~Graph Theory}, \bf 12 \rm (1988), 509--517.
+
+\bibitem{W} Y. Wigderson, 
+An improved lower bound on multicolour Ramsey numbers, 
+\emph{Proc. Amer. Math. Soc.}, \bf 149 \rm (2021), 2371--2374.
+
+\end{thebibliography}
+
+\end{document}

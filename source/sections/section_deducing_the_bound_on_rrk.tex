@@ -1,0 +1,97 @@
+\section{Deducing the bound on $R_r(k)$}\label{sec:final:proof}
+
+In this section we will deduce Theorem~\ref{thm:Ramsey:multicolour}, our bound on the Ramsey numbers $R_r(k)$, from Theorem~\ref{thm:book}. We will in fact prove the following quantitative version of the theorem.
+
+\begin{theorem}\label{thm:Ramsey:multicolour:quant}
+Let $r \ge 2$, and set $\delta = 2^{-160} r^{-12}$. Then
+$$R_r(k) \le e^{-\delta k} r^{rk}$$ 
+for every $k \in \N$ with $k \ge 2^{160} r^{16}$. 
+\end{theorem}
+
+In order to apply Theorem~\ref{thm:book}, we need to find a suitable collection of sets $X,Y_1,\ldots,Y_r$ in an arbitrary $r$-colouring of $E(K_n)$. To do so, we simply run the Erd\H{o}s--Szekeres process until we find a subset of the vertex set in which each colour has density close to $1/r$, and the colouring is close to regular in each colour. %and then partition these vertices randomly.  
+
+\begin{lemma}\label{lem:ESz:steps}
+Given\/ $n,r \in \N$ and\/ $\eps > 0$, and an $r$-colouring of $E(K_n)$, the following holds. There exist disjoint sets of vertices\/ $S_1,\dots,S_r$ and\/ $W$ such that, for every $i \in [r]$, 
+$$|W| \ge \bigg( \frac{1+\eps}{r} \bigg)^{\sum_{j = 1}^r |S_j|} n \qquad \text{and} \qquad |N_i(w) \cap W| \ge \bigg( \frac{1}{r} - \eps \bigg) |W| - 1$$ 
+for every $w \in W$, and $(S_i,W)$ is a monochromatic book in colour~$i$.
+\end{lemma}
+
+\begin{proof}
+We use induction on~$n$. Note that if $n \le r$ or $r = 1$, then the sets $S_1 = \cdots = S_r = \emptyset$ and $W = V(K_n)$ have the required properties. We may therefore assume that $n > r \ge 2$, and that there exists a vertex $x \in V(K_n)$ and a colour $\ell \in [r]$ such that
+$$|N_\ell(x)| < \bigg( \frac{1}{r} - \eps \bigg) n - 1,$$
+and hence there exists a different colour $j \ne \ell$ such that 
+$$|N_j(x)| \ge \frac{1}{r-1} \bigg( n - \bigg( \frac{1}{r} - \eps \bigg) n \bigg) \ge \bigg( \frac{1 + \eps}{r} \bigg) n.$$
+Applying the induction hypothesis to the colouring induced by the set $N_j(x)$, we obtain sets $S'_1,\ldots,S'_r$ and $W'$ satisfying the conclusion of the lemma with $n$ replaced by $|N_j(x)|$. Setting 
+$$W = W', \qquad S_j = S'_j \cup \{x\} \qquad \text{and} \qquad S_i = S'_i \qquad \text{for each } \, i \ne j,$$ 
+we see that $W$ satisfies the minimum degree condition (by the induction hypothesis), and
+$$|W| \ge \bigg( \frac{1+\eps}{r} \bigg)^{\sum_{i = 1}^r |S'_i|}|N_j(x)| \ge \bigg( \frac{1+\eps}{r} \bigg)^{\sum_{i=1}^r |S_i|}n.$$
+Since $(S_i,W)$ is a monochromatic book in colour~$i$ for each $i \in [r]$, it follows that $S_1,\dots,S_r$ and $W$ are sets with the claimed properties.
+\end{proof}
+
+The next lemma, which is an immediate consequence of the Erd\H{o}s--Szekeres bound on the $r$-colour Ramsey numbers, implies (roughly speaking) that either the sets $S_1,\dots,S_r$ given by Lemma~\ref{lem:ESz:steps} satisfy $|S_i| = o(k)$ for each $i \in [r]$, or we are already done.
+
+\begin{lemma}\label{lem:many:ESz:steps}
+Let\/ $k,r \ge 2$ and\/ $\eps \in (0,1)$. We have 
+$$R_r\big( k - s_1, \ldots, k - s_r \big) \le e^{-\eps^3 k / 2} \bigg( \frac{1+\eps}{r} \bigg)^s r^{rk}$$
+for every $s_1,\ldots,s_r \in [k]$ with\/ $s = s_1 + \cdots + s_r \ge \eps^2 k$.
+\end{lemma}
+
+\begin{proof}
+By the Erd\H{o}s--Szekeres bound, we have
+$$R_r\big( k - s_1, \ldots, k - s_r \big) \le r^{rk - s}.$$
+The claimed bound follows, since $( 1 + \eps )^{\eps^2 k} \ge e^{\eps^3 k/2}$ for every $\eps \in (0,1)$.
+\end{proof}
+
+%In other words, if the sets $S_1,\ldots,S_r$ given by Lemma~\ref{lem:ESz:steps} satisfy $|S_1| + \cdots + |S_r| \ge \eps^2 k$, then we can find a sufficiently large monochromatic copy of $K_k$ in $\chi$ simply by continuing to apply the Erd\H{o}s--Szekeres algorithm inside $W$. If not, then we will instead apply the multicolour book algorithm inside the set $W$, which is not too much smaller than $V(K_n)$.
+
+%The following lemma provides the initial partition of $W$ into sets $X$ and $Y_1,\ldots,Y_r$. 
+
+%\begin{lemma}\label{lem:random:partition}
+%Let\/ $r \in \N$,\/ $\eps > 0$ and $n \ge 2^{10} r^2/\eps^3$, and let $\chi$ be an $r$-colouring of $E(K_n)$. If
+%$$|N_i(w)| \ge \bigg( \frac{1}{r} - \eps \bigg) n - 1$$ 
+%for every $w \in V(K_n)$ and $i \in [r]$, then there exists a partition 
+%$$V(K_n) = X \cup Y_1 \cup \cdots \cup Y_r$$
+%of the vertex set such that $|X| \ge n/4$ and $|Y_i| \ge n/4r$ for each $i \in [r]$, and moreover
+%$$|N_i(x) \cap Y_i| \ge \bigg( \frac{1}{r} - 2\eps \bigg) |Y_i|$$ 
+%for every $x \in X$ and $i \in [r]$. 
+%\end{lemma}
+
+%\begin{proof}
+%We partition $V(K_n)$ randomly, by independently choosing one of the $r+1$ sets for each vertex $w \in V(K_n)$, with 
+%$$\Pr\big( w \in X \big) = \frac{1}{2} \qquad \text{and} \qquad \Pr\big( w \in Y_i \big) = \frac{1}{2r}$$
+%for each $i \in [r]$. By Chernoff's inequality, each of the claimed inequalities fails to hold with probability at most $n^{-2}$, and hence, by the union bound, there exists a partition with the claimed properties.
+%\end{proof} 
+
+Our bound on $R_r(k)$ now follows from a simple calculation. 
+
+\begin{proof}[Proof of Theorem~\ref{thm:Ramsey:multicolour:quant}]
+Given $r \ge 2$, set $\delta = 2^{-160} r^{-12}$, let $k \ge 2^{160} r^{16}$ and $n \ge e^{-\delta k} r^{rk}$, and let $\chi$ be an arbitrary $r$-colouring of $E(K_n)$. Set $\eps = 2^{-50} r^{-4}$, and let $S_1,\ldots,S_r$ and $W$ be the sets given by Lemma~\ref{lem:ESz:steps}. Suppose first that $|S_1| + \cdots + |S_r| \ge \eps^2 k$, and observe that, by Lemma~\ref{lem:many:ESz:steps} and our lower bounds on $n$ and $|W|$, we have 
+$$|W| \ge \bigg( \frac{1+\eps}{r} \bigg)^{\sum_{j = 1}^r |S_j|} e^{-\delta k} r^{rk} \ge R_r\big( k - |S_1|, \ldots, k - |S_r| \big).$$ 
+Since $(S_i,W)$ is a monochromatic book in colour~$i$ for each $i \in [r]$, it follows that there exists a monochromatic copy of $K_k$ in $\chi$, as required.
+
+We may therefore assume from now on that  $|S_1| + \cdots + |S_r| \le \eps^2 k$. 
+%Apply Lemma~\ref{lem:random:partition} to the colouring restricted to the set $W$, let $X$ and $Y_1,\ldots,Y_r$ be the sets given by the lemma 
+In this case we set $X = Y_1 = \cdots = Y_r = W$, and apply Theorem~\ref{thm:book} to the colouring restricted to $W$ with 
+$$p = \frac{1}{r} - 2\eps, \qquad \mu = 2^{30} r^3, \qquad t = 2^{-40} r^{-3} k \qquad \text{and} \qquad m = R\big( k, \ldots, k, k - t \big).$$
+In order to apply Theorem~\ref{thm:book}, we need to check that $t \ge \mu^5/p$, and that
+$$|X| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t} \qquad \text{and} \qquad |Y_i| \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m.$$
+The first two of these inequalities are both easy: the first holds because $k \ge 2^{160} r^{16}$, and for the second note that since $n \ge r^{rk/2}$ and $\sum_{j = 1}^r |S_j| \le rk/4$, we have
+$$|X| \ge \bigg( \frac{1+\eps}{r} \bigg)^{rk/4} r^{rk/2} \ge r^{rk/4} \ge \big( 2^{61} r^7 \big)^{2^{-10} r k} \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t},$$
+as required. The third inequality is more delicate: observe first\footnote{See Appendix~\ref{app:binomial} for a proof of the second inequality.} that 
+$$R\big( k, \ldots, k, k-t \big) \le \binom{rk-t}{k,\dots,k,k-t} \le e^{-(r-1)t^2/3rk} r^{rk-t} \le e^{-t^2/6k} r^{rk-t}.$$
+and therefore, since $\delta \le 2^{-10} t^2/k^2$ and $p = 1/r - 2\eps \ge e^{-3\eps r} / r$, we have 
+$$n \ge e^{-\delta k} r^{rk} \ge r^t e^{t^2/8k} \cdot R\big( k, \ldots, k, k-t \big) \ge \frac{m}{p^t} \cdot \exp\bigg( \frac{t^2}{8k} - 3\eps r t \bigg).$$
+Moreover, by our choice of $t$ and $\mu$, we have 
+$$\frac{t}{8k} = \frac{1}{2^{43} r^3} \ge \frac{1}{2^{47}r^3} + \frac{1}{2^{48}r^3} = \frac{2^{13} r^3}{\mu^2} + 4\eps r.$$
+Finally, since $\sum_{j = 1}^r |S_j| \le \eps^2 k \le \eps t$, it follows that
+$$|Y_i| = |W| \ge \bigg( \frac{1+\eps}{r} \bigg)^{\eps t} n \ge \frac{m}{p^t} \cdot \exp\bigg( \frac{t^2}{8k} - 4\eps r t \bigg) \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m,$$
+%$$|Y_i| \ge \frac{|W|}{4r} \ge \bigg( \frac{1+\eps}{r} \bigg)^{\eps^2 k} \frac{n}{4r} \ge \frac{m}{p^t} \cdot \exp\bigg( \frac{t^2}{8k} - 4\eps r t \bigg) \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m,$$
+as claimed. Thus $\chi$ contains a monochromatic $(t,m)$-book, and hence, by our choice of $m$, $\chi$ contains a monochromatic copy of $K_k$, as required.
+\end{proof}
+
+\section*{Acknowledgements}
+
+Important steps in the work described in this paper were carried out during visits by various subsets of the authors to the University of Cambridge, IMPA, PUC-Rio, the IAS, %Institute for Advanced Study, 
+and Sapienza Università di Roma. We thank each of these institutions for providing a wonderful working environment.
+
+\appendix
