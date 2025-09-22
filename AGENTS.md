@@ -10,6 +10,9 @@ Lean 4 formalization of "Upper bounds for multicolour Ramsey numbers" ([arXiv:24
   - `Integrals.lean`: Integral calculations
   - `GeometricLemma.lean`: Geometric lemma proofs
   - `KeyLemma.lean`: Key lemma formalization
+- **tools/texclean/**: LaTeX normalisation CLI
+  - `cli.py`, `core.py`
+  - `tests/cases/*/` holds per-case fixtures (`input.tex`, `expected.tex`, optional `arguments.json`)
 
 ## Links
 - [Blueprint Homepage](https://forduniver.github.io/multicolorramsey)
@@ -19,3 +22,4 @@ Lean 4 formalization of "Upper bounds for multicolour Ramsey numbers" ([arXiv:24
 - **Lean code**: `lake build`
 - **Blueprint PDF**: `leanblueprint pdf`
 - **Blueprint web**: `leanblueprint web`
+- We are doing one line per sentence in latx
