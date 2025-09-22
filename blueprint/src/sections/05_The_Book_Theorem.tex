@@ -138,7 +138,6 @@
 % TODO: Add main loop: while X ≠ ∅ and max|T_i| < t
 
 \begin{algorithm}
-  \caption{Select and boost algorithm}
   \label{alg:select-boost}
   \uses{lem:key-lemma, def:boost-parameters}
   % Source paper describes RBalg algorithm
@@ -154,7 +153,6 @@
 % TODO: Add extraction of vertex x, color ℓ, updated sets X', Y'_i, parameter λ
 
 \begin{algorithm}
-  \caption{Key lemma application step}
   \label{alg:key-lemma-step}
   \uses{lem:key-lemma, alg:select-boost}
   % Source paper applies key lemma in each iteration
@@ -171,7 +169,6 @@
 % TODO: Density-boost step: update all Y_i to Y'_i, set X to X'
 
 \begin{algorithm}
-  \caption{Decision rule for steps}
   \label{alg:step-decision}
   \uses{alg:key-lemma-step, def:boost-parameters}
   % Source paper compares λ vs λ_0
@@ -204,7 +201,6 @@
 % TODO: Add verification that m = |Y_i| satisfies required bounds
 
 \begin{algorithm}
-  \caption{Termination conditions}
   \label{alg:termination}
   \uses{alg:invariants, def:book, lem:X:lower:bound, lem:Y:lower:bound}
   % Source paper terminates when X empty or |T_i| = t
@@ -226,7 +222,6 @@
 % TODO: Add Step 3: Density-boost step if λ > λ_0, update X → X' and Y_ℓ → Y'_ℓ
 
 \begin{algorithm}
-  \caption{Multicolour book algorithm}
   \label{alg:multicolour-book}
   \uses{alg:select-boost, lem:key-lemma}
   % Source paper describes complete book algorithm

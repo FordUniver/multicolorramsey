@@ -24,22 +24,6 @@
   \uses{def:edge-colouring, def:colour-neighborhood, def:book}
 \end{lemma}
 
-% [LEMMA] Many Erdős-Szekeres steps bound
-% Source: blueprint/paper/sections/section_deducing_the_bound_on_rrk.tex line 33 (\begin{lemma}\label{lem:many:ESz:steps})
-% Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 22-33 (\begin{lemma}[Lemma 5.3])
-% Lean status: ✗ Not implemented
-% Label: lem:many:ESz:steps
-% Dependencies: lem:ESz:steps, def:ramsey-number-off-diagonal
-% TODO: Add bound for k,r ≥ 2 and ε ∈ (0,1)
-% TODO: Add R_r(k-s₁,...,k-sᵣ) ≤ e^{-ε³k/2} ((1+ε)/r)^s r^{rk}
-% TODO: Add condition s₁,...,sᵣ ∈ [k] with s = s₁ + ... + sᵣ ≥ ε²k
-
-\begin{lemma}[Many Erdős-Szekeres steps bound]
-  \label{lem:many:ESz:steps} % Source paper uses same label
-  \paperref{Lemma 5.3}
-  \uses{lem:ESz:steps, def:ramsey-number-off-diagonal}
-\end{lemma}
-
 % ============================================================================
 % QUANTITATIVE MAIN THEOREM
 % ============================================================================
@@ -60,6 +44,22 @@
   \uses{def:ramsey-number}
 \end{theorem}
 
+% [LEMMA] Many Erdős-Szekeres steps bound
+% Source: blueprint/paper/sections/section_deducing_the_bound_on_rrk.tex line 33 (\begin{lemma}\label{lem:many:ESz:steps})
+% Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 22-33 (\begin{lemma}[Lemma 5.3])
+% Lean status: ✗ Not implemented
+% Label: lem:many:ESz:steps
+% Dependencies: lem:ESz:steps, def:ramsey-number-off-diagonal
+% TODO: Add bound for k,r ≥ 2 and ε ∈ (0,1)
+% TODO: Add R_r(k-s₁,...,k-sᵣ) ≤ e^{-ε³k/2} ((1+ε)/r)^s r^{rk}
+% TODO: Add condition s₁,...,sᵣ ∈ [k] with s = s₁ + ... + sᵣ ≥ ε²k
+
+\begin{lemma}[Many Erdős-Szekeres steps bound]
+  \label{lem:many:ESz:steps} % Source paper uses same label
+  \paperref{Lemma 5.3}
+  \uses{lem:ESz:steps, def:ramsey-number-off-diagonal}
+\end{lemma}
+
 % ============================================================================
 % MAIN THEOREM PROOF
 % ============================================================================
@@ -77,8 +77,8 @@
 % TODO: Add bound verification: |X| and |Y_i| size conditions for book theorem
 % TODO: Add final assembly: (t,m)-book existence implies K_k existence
 
-\begin{proof}[Proof of quantitative main theorem]
-  \uses{thm:Ramsey:multicolour:quant, thm:book, lem:many:ESz:steps}
+\begin{proof}
+  \uses{thm:book, lem:many:ESz:steps}
   % Source paper combines book theorem with Erdős-Szekeres steps
 \end{proof}
 
@@ -99,6 +99,7 @@
 % TODO: Complete proof that R_r(k) ≤ e^{-δ(r)k} r^{rk} for large k
 
 \begin{proof}[Main theorem from quantitative version]
+  \label{proof:main-from-quant}
   \uses{thm:Ramsey:multicolour:quant}
   % Source paper deduces main result from quantitative theorem
 \end{proof}

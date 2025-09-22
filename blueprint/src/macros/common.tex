@@ -20,12 +20,16 @@
 \theoremstyle{plain}
 \newtheorem{invariant}[theorem]{Invariant}
 
+% Algorithm environment
+\theoremstyle{definition}
+\newtheorem{algorithm}[theorem]{Algorithm}
+
 
 % Paper reference command - highlights which paper lemma/theorem this corresponds to
 \usepackage{xcolor}
 \newcommand{\paperref}[1]{%
   \par\noindent%
-  \colorbox{blue!10}{\textcolor{blue!80!black}{\textbf{Paper reference:} #1}}%
+  \colorbox{blue!10}{\textcolor{blue!80!black}{#1}}%
   \par\vspace{0.5em}%
 }
 
