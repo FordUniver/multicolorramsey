@@ -38,3 +38,4 @@ Lean 4 formalization of "Upper bounds for multicolour Ramsey numbers" ([arXiv:24
 - **Dependencies need not be immediately adjacent** - topically connected small lemmas can be collected in preliminaries/appendices as long as they appear before their usage
 - The key principle is avoiding "vorgreifen" (forward references) - never reference something that hasn't been established yet
 - we always use \(x\) instead of $x$ in LaTeX files for easier debug.
+- **IMPORTANT**: Do not modify files in `blueprint/paper/` - these are original paper files that should remain unchanged
