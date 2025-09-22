@@ -111,6 +111,103 @@
 % Dependencies: def:edge-colouring, def:colour-neighborhood
 % TODO: Add definition of ε-regular coloring with density close to 1/r
 
+\subsection{Special functions for the geometric lemma}
+
+% [DEFINITION] Inner product on finite sets
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 5 (⟨·,·⟩ standard inner product on ℝⁿ)
+% No deprecated blueprint equivalent
+% Lean status: ✓ Uses Mathlib inner product
+% Label: def:inner-product-finite
+% Dependencies: None (standard linear algebra)
+% TODO: Add inner product ⟨·,·⟩: ℝⁿ × ℝⁿ → ℝ for finite-dimensional spaces
+
+\begin{definition}[Inner product on finite-dimensional spaces]
+  \label{def:inner-product-finite}
+  % Source paper uses standard inner product ⟨·,·⟩ on ℝⁿ
+\end{definition}
+
+% [DEFINITION] Uniform product measure on finite sets
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 8 (U, U' i.i.d. random variables on finite set X)
+% No deprecated blueprint equivalent
+% Lean status: ✓ Uses Mathlib probability theory
+% Label: def:uniform-product
+% Dependencies: None (standard probability)
+% TODO: Add product measure for i.i.d. uniform random variables on finite set
+
+\begin{definition}[Uniform product measure]
+  \label{def:uniform-product}
+  % Source paper uses U, U' i.i.d. uniform on finite set X
+\end{definition}
+
+% [DEFINITION] Hyperbolic cosine of square root
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 39-40 (cosh√x Taylor expansion)
+% Deprecated blueprint: deprecated/02_Preliminaries.tex line 76-89 (\begin{definition} \label{def:coshsqrt})
+% Lean status: ✓ Implemented as `coshSqrt` in Basic.lean
+% Label: def:coshsqrt
+% Dependencies: None (elementary functions)
+% TODO: Add definition cosh√x = ∑_{n=0}^∞ x^n/(2n)! via Taylor expansion
+
+\begin{definition}[Hyperbolic cosine of square root]
+  \label{def:coshsqrt}
+  % Source paper defines cosh√x = ∑_{n=0}^∞ x^n/(2n)!
+\end{definition}
+
+% [LEMMA] Bounds on cosh√x for positive arguments
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 54 (x ≤ 2 + cosh√x ≤ 3e^√x)
+% Deprecated blueprint: deprecated/02_Preliminaries.tex line 90-93 (\begin{lemma} \label{lem:coshsqrt-bd-pos})
+% Lean status: ✓ Implemented as `le_two_add_coshSqrt` and `coshSqrt_le` in Basic.lean
+% Label: lem:coshsqrt-bd-pos
+% Dependencies: def:coshsqrt
+% TODO: Add bounds x ≤ 2 + cosh√x ≤ 3e^√x for x ≥ 0
+
+\begin{lemma}[Bounds on $\cosh\sqrt{x}$ for positive arguments]
+  \label{lem:coshsqrt-bd-pos}
+  \uses{def:coshsqrt}
+  % Source paper uses x ≤ 2 + cosh√x ≤ 3e^√x for x ≥ 0
+\end{lemma}
+
+% [LEMMA] Bounds on cosh√x for negative arguments
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 58 (cosh√x = cos√(-x), -1 ≤ cosh√x ≤ 1)
+% Deprecated blueprint: deprecated/02_Preliminaries.tex line 94-97 (\begin{lemma} \label{lem:coshsqrt-bd-neg})
+% Lean status: ✓ Implemented as `coshSqrt_neg` in Basic.lean
+% Label: lem:coshsqrt-bd-neg
+% Dependencies: def:coshsqrt
+% TODO: Add bounds -1 ≤ cosh√x ≤ 1 for x < 0 via cosh√x = cos√(-x)
+
+\begin{lemma}[Bounds on $\cosh\sqrt{x}$ for negative arguments]
+  \label{lem:coshsqrt-bd-neg}
+  \uses{def:coshsqrt}
+  % Source paper uses cosh√x = cos√(-x) for x < 0
+\end{lemma}
+
+% [DEFINITION] Special function f for geometric lemma
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 36-37 (\begin{equation}\label{def:f})
+% Deprecated blueprint: deprecated/02_Preliminaries.tex line 95-104 (\begin{definition} \label{def:f})
+% Lean status: ✓ Implemented as `f` in Basic.lean
+% Label: def:f
+% Dependencies: def:coshsqrt
+% TODO: Add definition f(x₁,...,xᵣ) = ∑_{j=1}^r xⱼ ∏_{i≠j} (2 + cosh√xᵢ)
+
+\begin{definition}[Special function for geometric lemma]
+  \label{def:f}
+  \uses{def:coshsqrt}
+  % Source paper uses f(x₁,...,xᵣ) = ∑_{j=1}^r xⱼ ∏_{i≠j} (2 + cosh√xᵢ)
+\end{definition}
+
+% [LEMMA] Non-negative Taylor coefficients of f
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 41 (Taylor expansion coefficients are non-negative)
+% Deprecated blueprint: deprecated/02_Preliminaries.tex line 106-109 (\begin{lemma} \label{lem:taylor-nonneg})
+% Lean status: ✓ Used in Basic.lean proof of specialFunction
+% Label: lem:taylor-nonneg
+% Dependencies: def:f, def:coshsqrt
+% TODO: Add proof that all Taylor coefficients of f are non-negative
+
+\begin{lemma}[Non-negative Taylor coefficients]
+  \label{lem:taylor-nonneg}
+  \uses{def:f, def:coshsqrt}
+  % Source paper notes all Taylor coefficients are non-negative
+\end{lemma}
+
 \subsection{Algorithmic foundations}
 
 % [DEFINITION] Select and boost algorithm state

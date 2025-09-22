@@ -47,14 +47,14 @@
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 37-69 (\begin{lemma}[Special-function lemma (Part 1)])
 % Lean status: ✓ Implemented as `specialFunctionE` in Basic.lean
 % Label: lem:special:function:1
-% Dependencies: def:f, lem:coshsqrt-bd-pos
-% TODO: Add bound f(x) ≤ 3ʳ·r·exp(∑ᵢ √(xᵢ + 3r)) for all x
+% Dependencies: def:f, lem:coshsqrt-bd-pos, lem:taylor-nonneg
+% TODO: Add bound f(x) ≤ 3ʳ·r·exp(∑ᵢ √(xᵢ + 3r)) for xᵢ ≥ -3r ∀i
 
 \begin{lemma}[Special function upper bound]
   \label{lem:special:function:1}
-  \uses{def:f, lem:coshsqrt-bd-pos}
+  \uses{def:f, lem:coshsqrt-bd-pos, lem:taylor-nonneg}
   \lean{specialFunctionE}
-  % Source paper combines both parts into one lemma
+  % Source paper: f(x) ≤ 3ʳr exp(∑ᵢ √(xᵢ+3r)) if xᵢ ≥ -3r ∀i
 \end{lemma}
 
 % [LEMMA] Special function lemma part 2: lower bound when negative
@@ -63,18 +63,45 @@
 % Lean status: ✓ Implemented as `specialFunctionEc` in Basic.lean
 % Label: lem:special:function:2
 % Dependencies: def:f, lem:coshsqrt-bd-neg
-% TODO: Add bound f(x) ≥ 3^{-4r} for x with ∃i: xᵢ < -3r
+% TODO: Add bound f(x) ≤ -1 for x with ∃i: xᵢ ≤ -3r
 
 \begin{lemma}[Special function lower bound]
   \label{lem:special:function:2}
   \uses{def:f, lem:coshsqrt-bd-neg}
   \lean{specialFunctionEc}
-  % Source paper combines both parts into one lemma
+  % Source paper: f(x) ≤ -1 if ∃i: xᵢ ≤ -3r
 \end{lemma}
 
 % ============================================================================
 % INTEGRATION THEORY
 % ============================================================================
+
+% [LEMMA] Fubini theorem for finite measures
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof line 100-104)
+% No deprecated blueprint equivalent
+% Lean status: ✓ Uses Mathlib Fubini theorem
+% Label: lem:fubini-finite
+% Dependencies: def:uniform-product
+% TODO: Add Fubini theorem application for expectation computation
+
+\begin{lemma}[Fubini for finite measures]
+  \label{lem:fubini-finite}
+  \uses{def:uniform-product}
+  % Source paper uses Fubini in geometric lemma proof
+\end{lemma}
+
+% [LEMMA] Exponential function estimates
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 102-104 (integration bounds)
+% No deprecated blueprint equivalent
+% Lean status: ✓ Uses standard exponential estimates
+% Label: lem:exp-estimates
+% Dependencies: None (elementary analysis)
+% TODO: Add bounds for integrals involving exponentials
+
+\begin{lemma}[Exponential estimates]
+  \label{lem:exp-estimates}
+  % Source paper uses exponential decay estimates
+\end{lemma}
 
 % [LEMMA] Basic integral bounds for exponential decay
 % Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
@@ -88,7 +115,7 @@
   \label{lem:integral-exp-decay}
   \uses{lem:fubini-finite, lem:exp-estimates}
   \lean{integral_rpow_mul_exp_neg_rpow_le}
-  % Source paper uses these bounds implicitly
+  % Source paper uses these bounds implicitly in geometric lemma proof
 \end{lemma}
 
 % [LEMMA] Integration by parts for special functions
@@ -128,14 +155,14 @@
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 98-108 (\begin{lemma}[Geometric lemma])
 % Lean status: ✓ Implemented as `geometric` in GeometricLemma.lean
 % Label: lem:lambda (source) / lem:geometric (blueprint)
-% Dependencies: lem:moments, lem:special:function:1, lem:special:function:2, lem:integral-exp-decay
-% TODO: Add geometric lemma for i.i.d. random variables U, U' and functions σ₁,...,σᵣ
+% Dependencies: lem:moments, lem:special:function:1, lem:special:function:2, lem:taylor-nonneg, lem:integral-exp-decay
+% TODO: Add geometric lemma for i.i.d. random variables U, U' and functions σ₁,...,σᵣ: X → ℝⁿ
 % TODO: Add existence of λ ≥ -1 and i ∈ [r] with probability bound
 % TODO: Add Pr(⟨σᵢ(U),σᵢ(U')⟩ ≥ λ ∧ ∀j≠i: ⟨σⱼ(U),σⱼ(U')⟩ ≥ -1) ≥ β e^{-C√(λ+1)}
 
 \begin{lemma}[Geometric lemma]
   \label{lem:geometric}
-  \uses{lem:moments, lem:special:function:1, lem:special:function:2, lem:integral-exp-decay}
+  \uses{lem:moments, lem:special:function:1, lem:special:function:2, lem:taylor-nonneg, lem:integral-exp-decay}
   \lean{geometric}
   % Source paper uses label lem:lambda
 \end{lemma}

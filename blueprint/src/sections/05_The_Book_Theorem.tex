@@ -122,6 +122,89 @@
 \end{lemma}
 
 % ============================================================================
+% SELECT AND BOOST ALGORITHM
+% ============================================================================
+
+% [ALGORITHM] Select and boost algorithm (RBalg)
+% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 18-25 (algorithm description)
+% No direct deprecated blueprint equivalent (was scattered in proof)
+% Lean status: ✗ Not implemented (algorithmic description)
+% Label: alg:select-boost
+% Dependencies: lem:key-lemma, def:boost-parameters
+% TODO: Add algorithm RBalg with input parameters t, p_0, δ
+% TODO: Add initialization: T_i = ∅, X = reservoir, Y_i = vertex partitions
+% TODO: Add main loop: while X ≠ ∅ and max|T_i| < t
+
+\begin{algorithm}[Select and boost algorithm]
+  \label{alg:select-boost}
+  \uses{lem:key-lemma, def:boost-parameters}
+  % Source paper describes RBalg algorithm
+\end{algorithm}
+
+% [ALGORITHM STEP] Key lemma application
+% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex (each algorithm iteration)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: alg:key-lemma-step
+% Dependencies: lem:key-lemma, alg:select-boost
+% TODO: Add application of key lemma to current X, Y_i with parameters α_i
+% TODO: Add extraction of vertex x, color ℓ, updated sets X', Y'_i, parameter λ
+
+\begin{algorithmic}[Key lemma application step]
+  \label{alg:key-lemma-step}
+  \uses{lem:key-lemma, alg:select-boost}
+  % Source paper applies key lemma in each iteration
+\end{algorithmic}
+
+% [ALGORITHM STEP] Color step vs density-boost step
+% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex (λ vs λ_0 comparison)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: alg:step-decision
+% Dependencies: alg:key-lemma-step, def:boost-parameters
+% TODO: Add decision rule: if λ ≥ λ_0 then color step, else density-boost step
+% TODO: Color step: add x to T_ℓ, restrict Y_ℓ to Y'_ℓ
+% TODO: Density-boost step: update all Y_i to Y'_i, set X to X'
+
+\begin{algorithmic}[Decision rule for steps]
+  \label{alg:step-decision}
+  \uses{alg:key-lemma-step, def:boost-parameters}
+  % Source paper compares λ vs λ_0
+\end{algorithmic}
+
+% [ALGORITHM STEP] Invariant maintenance
+% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 19-20 (invariant conditions)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: alg:invariants
+% Dependencies: alg:step-decision, def:colour-neighborhood
+% TODO: Add maintenance of X ⊂ ∩_j ∩_{u∈T_j} N_j(u)
+% TODO: Add maintenance of Y_i ⊂ ∩_{u∈T_i} N_i(u) for each color i
+% TODO: Add density tracking: p_i(X,Y_i) ≥ p_0 - (εt) for algorithm progress
+
+\begin{invariant}[Algorithm invariants]
+  \label{alg:invariants}
+  \uses{alg:step-decision, def:colour-neighborhood}
+  % Source paper maintains neighborhood constraints
+\end{invariant}
+
+% [ALGORITHM STEP] Termination and output
+% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex (algorithm termination)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: alg:termination
+% Dependencies: alg:invariants, def:book, lem:X:lower:bound, lem:Y:lower:bound
+% TODO: Add termination conditions: X = ∅ or some |T_i| = t
+% TODO: Add output: (t,m)-book with vertex set T_i ∪ Y_i where |T_i| = t
+% TODO: Add verification that m = |Y_i| satisfies required bounds
+
+\begin{algorithmic}[Termination conditions]
+  \label{alg:termination}
+  \uses{alg:invariants, def:book, lem:X:lower:bound, lem:Y:lower:bound}
+  % Source paper terminates when X empty or |T_i| = t
+\end{algorithmic}
+
+% ============================================================================
 % MULTICOLOUR BOOK ALGORITHM
 % ============================================================================
 
@@ -160,7 +243,7 @@
 
 \begin{theorem}[Book theorem]
   \label{thm:book}
-  \uses{def:book, def:edge-colouring, def:colour-neighborhood}
+  \uses{def:book, def:edge-colouring, def:colour-neighborhood, alg:multicolour-book, lem:pi:lower:bound, lem:pi:min, lem:Bi:max, lem:Y:lower:bound, lem:X:lower:bound, lem:sum:of:lambdas}
   % Source paper uses same label
 \end{theorem}
 
@@ -180,6 +263,6 @@
 % TODO: Add final size bounds: |Y_i(s)| ≥ m and |X(s)| > 0 verification
 
 \begin{proof}[Proof of book theorem]
-  \uses{thm:book, alg:multicolour-book, lem:X:lower:bound, lem:Y:lower:bound}
-  % Source paper proves theorem using algorithm analysis
+  \uses{alg:multicolour-book, lem:pi:lower:bound, lem:pi:min, lem:Bi:max, lem:Y:lower:bound, lem:X:lower:bound, lem:sum:of:lambdas, def:density-boost-sets, def:algorithm-constants}
+  % Source paper proves theorem using all auxiliary lemmas for algorithm analysis
 \end{proof}
