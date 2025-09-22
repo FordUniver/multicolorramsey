@@ -3,14 +3,14 @@
 
 \section{Deducing the Bound on the Ramsey Number}
 
-In this section we will deduce Theorem~\ref{thm:Ramsey:multicolour}, the bound on the Ramsey numbers \(R_r(k)\), from Theorem~\ref{thm:book}.
-We will in fact prove a stronger quantitative version of the theorem in the form of Theorem~\ref{thm:Ramsey:multicolour:quant}.
+In this section we will deduce \autoref{thm:Ramsey:multicolour}, the bound on the Ramsey numbers \(R_r(k)\), from \autoref{thm:book}.
+We will in fact prove a stronger quantitative version of the theorem in the form of \autoref{thm:Ramsey:multicolour:quant}.
 
 % ============================================================================
 % ERDŐS-SZEKERES AUXILIARY LEMMAS
 % ============================================================================
 
-In order to apply Theorem~\ref{thm:book}, we need to find a suitable collection of sets \(X,Y_1,\ldots,Y_r\) in an arbitrary \(r\)-colouring of \(E(K_n)\). To do so, we simply run the Erd\H{o}s--Szekeres process until we find a subset of the vertex set in which each colour has density close to \(1/r\), and the colouring is close to regular in each colour.
+In order to apply \autoref{thm:book}, we need to find a suitable collection of sets \(X,Y_1,\ldots,Y_r\) in an arbitrary \(r\)-colouring of \(E(K_n)\). To do so, we simply run the Erd\H{o}s--Szekeres process until we find a subset of the vertex set in which each colour has density close to \(1/r\), and the colouring is close to regular in each colour.
 %
 \begin{lemma}[Single Erdős-Szekeres step]
   \label{lem:ESz:steps} % Source paper uses same label
@@ -54,7 +54,7 @@ In order to apply Theorem~\ref{thm:book}, we need to find a suitable collection 
   Since \((S_i,W)\) is a monochromatic book in colour~\(i\) for each \(i \in [r]\), it follows that \(S_1,\dots,S_r\) and \(W\) are sets with the claimed properties.
 \end{proof}
 
-The next lemma, which is an immediate consequence of the Erd\H{o}s--Szekeres bound on the \(r\)-colour Ramsey numbers, implies (roughly speaking) that either the sets \(S_1,\dots,S_r\) given by Lemma~\ref{lem:ESz:steps} satisfy \(|S_i| = o(k)\) for each \(i \in [r]\), or we are already done.
+The next lemma, which is an immediate consequence of the Erd\H{o}s--Szekeres bound on the \(r\)-colour Ramsey numbers, implies (roughly speaking) that either the sets \(S_1,\dots,S_r\) given by \autoref{lem:ESz:steps} satisfy \(|S_i| = o(k)\) for each \(i \in [r]\), or we are already done.
 %
 \begin{lemma}[Many Erdős-Szekeres steps bound]
   \label{lem:many:ESz:steps} % Source paper uses same label
@@ -95,7 +95,7 @@ The next lemma, which is an immediate consequence of the Erd\H{o}s--Szekeres bou
 \end{theorem}
 %
 \begin{proof}
-  Given \(r \ge 2\), set \(\delta = 2^{-160} r^{-12}\), let \(k \ge 2^{160} r^{16}\) and \(n \ge e^{-\delta k} r^{rk}\), and let \(\chi\) be an arbitrary \(r\)-colouring of \(E(K_n)\). Set \(\eps = 2^{-50} r^{-4}\), and let \(S_1,\ldots,S_r\) and \(W\) be the sets given by Lemma~\ref{lem:ESz:steps}. Suppose first that \(|S_1| + \cdots + |S_r| \ge \eps^2 k\), and observe that, by Lemma~\ref{lem:many:ESz:steps} and our lower bounds on \(n\) and \(|W|\), we have 
+  Given \(r \ge 2\), set \(\delta = 2^{-160} r^{-12}\), let \(k \ge 2^{160} r^{16}\) and \(n \ge e^{-\delta k} r^{rk}\), and let \(\chi\) be an arbitrary \(r\)-colouring of \(E(K_n)\). Set \(\eps = 2^{-50} r^{-4}\), and let \(S_1,\ldots,S_r\) and \(W\) be the sets given by \autoref{lem:ESz:steps}. Suppose first that \(|S_1| + \cdots + |S_r| \ge \eps^2 k\), and observe that, by \autoref{lem:many:ESz:steps} and our lower bounds on \(n\) and \(|W|\), we have 
   %
   \begin{equation*}
     |W| \ge \bigg( \frac{1+\eps}{r} \bigg)^{\sum_{j = 1}^r |S_j|} e^{-\delta k} r^{rk} \ge R_r\big( k - |S_1|, \ldots, k - |S_r| \big).
@@ -104,14 +104,14 @@ The next lemma, which is an immediate consequence of the Erd\H{o}s--Szekeres bou
   Since \((S_i,W)\) is a monochromatic book in colour~\(i\) for each \(i \in [r]\), it follows that there exists a monochromatic copy of \(K_k\) in \(\chi\), as required.
   
   We may therefore assume from now on that  \(|S_1| + \cdots + |S_r| \le \eps^2 k\). 
-  %Apply Lemma~\ref{lem:random:partition} to the colouring restricted to the set \(W\), let \(X\) and \(Y_1,\ldots,Y_r\) be the sets given by the lemma 
-  In this case we set \(X = Y_1 = \cdots = Y_r = W\), and apply Theorem~\ref{thm:book} to the colouring restricted to \(W\) with 
+  %Apply \autoref{lem:random:partition} to the colouring restricted to the set \(W\), let \(X\) and \(Y_1,\ldots,Y_r\) be the sets given by the lemma 
+  In this case we set \(X = Y_1 = \cdots = Y_r = W\), and apply \autoref{thm:book} to the colouring restricted to \(W\) with 
   %
   \begin{equation*}
     p = \frac{1}{r} - 2\eps, \qquad \mu = 2^{30} r^3, \qquad t = 2^{-40} r^{-3} k \qquad \text{and} \qquad m = R\big( k, \ldots, k, k - t \big).
   \end{equation*}
   %
-  In order to apply Theorem~\ref{thm:book}, we need to check that \(t \ge \mu^5/p\), and that
+  In order to apply \autoref{thm:book}, we need to check that \(t \ge \mu^5/p\), and that
   %
   \begin{equation*}
     |X| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t} \qquad \text{and} \qquad |Y_i| \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m.
