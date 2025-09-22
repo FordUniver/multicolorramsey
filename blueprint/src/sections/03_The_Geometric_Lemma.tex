@@ -16,6 +16,13 @@
 % TODO: Add statement E[⟨σ₁(U),σ₁(U')⟩^ℓ₁ ⋯ ⟨σᵣ(U),σᵣ(U')⟩^ℓᵣ] ≥ 0
 % TODO: Add proof using positive semidefiniteness
 
+\begin{lemma}[Moments lemma]
+  \label{lem:moments}
+  \uses{def:inner-product-finite, def:uniform-product}
+  \lean{moments}
+  % Source paper uses same label
+\end{lemma}
+
 % [LEMMA] Tensor product formulation for moments
 % Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (proof of moments lemma)
 % No deprecated blueprint equivalent
@@ -24,6 +31,12 @@
 % Dependencies: def:inner-product-finite, lem:moments
 % TODO: Add tensor product Z = σₐ₁(U) ⊗ ⋯ ⊗ σₐₗ(U') construction
 % TODO: Add E[ZZ*] ≥ 0 positive semidefiniteness result
+
+\begin{lemma}[Tensor product moments]
+  \label{lem:tensor-moments}
+  \uses{def:inner-product-finite, lem:moments}
+  % Source paper uses tensor products in moments proof
+\end{lemma}
 
 % ============================================================================
 % SPECIAL FUNCTION LEMMAS
@@ -37,6 +50,13 @@
 % Dependencies: def:f, lem:coshsqrt-bd-pos
 % TODO: Add bound f(x) ≤ 3ʳ·r·exp(∑ᵢ √(xᵢ + 3r)) for all x
 
+\begin{lemma}[Special function upper bound]
+  \label{lem:special:function:1}
+  \uses{def:f, lem:coshsqrt-bd-pos}
+  \lean{specialFunctionE}
+  % Source paper combines both parts into one lemma
+\end{lemma}
+
 % [LEMMA] Special function lemma part 2: lower bound when negative
 % Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 70-97 (\begin{lemma}[Special-function lemma (Part 2)])
@@ -44,6 +64,60 @@
 % Label: lem:special:function:2
 % Dependencies: def:f, lem:coshsqrt-bd-neg
 % TODO: Add bound f(x) ≥ 3^{-4r} for x with ∃i: xᵢ < -3r
+
+\begin{lemma}[Special function lower bound]
+  \label{lem:special:function:2}
+  \uses{def:f, lem:coshsqrt-bd-neg}
+  \lean{specialFunctionEc}
+  % Source paper combines both parts into one lemma
+\end{lemma}
+
+% ============================================================================
+% INTEGRATION THEORY
+% ============================================================================
+
+% [LEMMA] Basic integral bounds for exponential decay
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
+% No deprecated blueprint equivalent
+% Lean status: ✓ Implemented as `integral_rpow_mul_exp_neg_rpow_le` in Integrals.lean
+% Label: lem:integral-exp-decay
+% Dependencies: lem:fubini-finite, lem:exp-estimates
+% TODO: Add ∫₀^∞ x^a e^{-b√x} dx bounds for geometric lemma integration
+
+\begin{lemma}[Exponential decay integrals]
+  \label{lem:integral-exp-decay}
+  \uses{lem:fubini-finite, lem:exp-estimates}
+  \lean{integral_rpow_mul_exp_neg_rpow_le}
+  % Source paper uses these bounds implicitly
+\end{lemma}
+
+% [LEMMA] Integration by parts for special functions
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
+% No deprecated blueprint equivalent
+% Lean status: ✓ Partially implemented in Integrals.lean
+% Label: lem:integration-by-parts-special
+% Dependencies: lem:integral-bounds
+% TODO: Add integration techniques for ∫ f(x₁,...,xᵣ) dx₁...dxᵣ type integrals
+
+\begin{lemma}[Integration by parts for special functions]
+  \label{lem:integration-by-parts-special}
+  \uses{lem:integral-bounds}
+  % Source paper uses integration by parts implicitly
+\end{lemma}
+
+% [LEMMA] Substitution formulas for geometric lemma
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
+% No deprecated blueprint equivalent
+% Lean status: ✓ Used in GeometricLemma.lean proof
+% Label: lem:substitution-geometric
+% Dependencies: lem:fubini-finite
+% TODO: Add change of variables for probability density calculations
+
+\begin{lemma}[Substitution formulas]
+  \label{lem:substitution-geometric}
+  \uses{lem:fubini-finite}
+  % Source paper uses substitution in geometric proof
+\end{lemma}
 
 % ============================================================================
 % GEOMETRIC LEMMA
@@ -59,44 +133,14 @@
 % TODO: Add existence of λ ≥ -1 and i ∈ [r] with probability bound
 % TODO: Add Pr(⟨σᵢ(U),σᵢ(U')⟩ ≥ λ ∧ ∀j≠i: ⟨σⱼ(U),σⱼ(U')⟩ ≥ -1) ≥ β e^{-C√(λ+1)}
 
-% ============================================================================
-% INTEGRATION THEORY
-% ============================================================================
+\begin{lemma}[Geometric lemma]
+  \label{lem:geometric}
+  \uses{lem:moments, lem:special:function:1, lem:special:function:2, lem:integral-exp-decay}
+  \lean{geometric}
+  % Source paper uses label lem:lambda
+\end{lemma}
 
-% [LEMMA] Basic integral bounds for exponential decay
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Implemented as `integral_rpow_mul_exp_neg_rpow_le` in Integrals.lean
-% Label: lem:integral-exp-decay
-% Dependencies: lem:fubini-finite, lem:exp-estimates
-% TODO: Add ∫₀^∞ x^a e^{-b√x} dx bounds for geometric lemma integration
+\begin{proof}
+  % Proof uses all the supporting lemmas defined above
+\end{proof}
 
-% [LEMMA] Integration by parts for special functions
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Partially implemented in Integrals.lean
-% Label: lem:integration-by-parts-special
-% Dependencies: lem:integral-bounds
-% TODO: Add integration techniques for ∫ f(x₁,...,xᵣ) dx₁...dxᵣ type integrals
-
-% [LEMMA] Substitution formulas for geometric lemma
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Used in GeometricLemma.lean proof
-% Label: lem:substitution-geometric
-% Dependencies: lem:fubini-finite
-% TODO: Add change of variables for probability density calculations
-
-% ============================================================================
-% KEY LEMMA PROOF
-% ============================================================================
-
-% [PROOF] Proof of key lemma using geometric lemma
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (proof after geometric lemma)
-% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 22-101 (proof of key lemma)
-% Lean status: ✓ Implemented as `key` in KeyLemma.lean
-% Uses: lem:moments, lem:geometric
-% Dependencies: lem:geometric, def:p, def:colour-neighborhood
-% TODO: Add proof constructing functions σᵢ from neighborhood sets
-% TODO: Add application of geometric lemma to obtain vertex x and parameter λ
-% TODO: Add verification of key lemma bounds using geometric lemma output

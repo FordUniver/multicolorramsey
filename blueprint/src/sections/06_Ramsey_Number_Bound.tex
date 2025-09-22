@@ -16,6 +16,12 @@
 % TODO: Add |W| ≥ ((1+ε)/r)^{∑|Sⱼ|} n and |N_i(w) ∩ W| ≥ (1/r - ε)|W| - 1
 % TODO: Add (S_i,W) is monochromatic book in colour i for each i ∈ [r]
 
+\begin{lemma}[Single Erdős-Szekeres step]
+  \label{lem:ESz:steps}
+  \uses{def:edge-colouring, def:colour-neighborhood, def:book}
+  % Source paper uses same label
+\end{lemma}
+
 % [LEMMA] Many Erdős-Szekeres steps bound
 % Source: blueprint/paper/sections/section_deducing_the_bound_on_rrk.tex line 33 (\begin{lemma}\label{lem:many:ESz:steps})
 % Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 22-33 (\begin{lemma}[Lemma 5.3])
@@ -25,6 +31,12 @@
 % TODO: Add bound for k,r ≥ 2 and ε ∈ (0,1)
 % TODO: Add R_r(k-s₁,...,k-sᵣ) ≤ e^{-ε³k/2} ((1+ε)/r)^s r^{rk}
 % TODO: Add condition s₁,...,sᵣ ∈ [k] with s = s₁ + ... + sᵣ ≥ ε²k
+
+\begin{lemma}[Many Erdős-Szekeres steps bound]
+  \label{lem:many:ESz:steps}
+  \uses{lem:ESz:steps, def:ramsey-number-off-diagonal}
+  % Source paper uses same label
+\end{lemma}
 
 % ============================================================================
 % QUANTITATIVE MAIN THEOREM
@@ -39,6 +51,12 @@
 % TODO: Add quantitative theorem for r ≥ 2 with δ = 2^{-160} r^{-12}
 % TODO: Add bound R_r(k) ≤ e^{-δk} r^{rk} for k ≥ 2^{160} r^{16}
 % TODO: Add explicit constants showing exponential improvement
+
+\begin{theorem}[Quantitative main theorem]
+  \label{thm:Ramsey:multicolour:quant}
+  \uses{def:ramsey-number}
+  % Source paper uses same label
+\end{theorem}
 
 % ============================================================================
 % MAIN THEOREM PROOF
@@ -57,6 +75,11 @@
 % TODO: Add bound verification: |X| and |Y_i| size conditions for book theorem
 % TODO: Add final assembly: (t,m)-book existence implies K_k existence
 
+\begin{proof}[Proof of quantitative main theorem]
+  \uses{thm:Ramsey:multicolour:quant, thm:book, lem:many:ESz:steps}
+  % Source paper combines book theorem with Erdős-Szekeres steps
+\end{proof}
+
 % ============================================================================
 % FINAL ASSEMBLY
 % ============================================================================
@@ -72,3 +95,8 @@
 % TODO: Show δ(r) = 2^{-160}r^{-12} > 0 for each r ≥ 2
 % TODO: Verify "sufficiently large k" condition: k ≥ 2^{160}r^{16}
 % TODO: Complete proof that R_r(k) ≤ e^{-δ(r)k} r^{rk} for large k
+
+\begin{proof}[Main theorem from quantitative version]
+  \uses{thm:Ramsey:multicolour:quant}
+  % Source paper deduces main result from quantitative theorem
+\end{proof}

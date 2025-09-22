@@ -11,6 +11,11 @@
 % Dependencies: None (elementary combinatorics)
 % TODO: Add bound for multinomial coefficient with exponential decay
 
+\begin{lemma}[Multinomial coefficient bound]
+  \label{lem:multibounds}
+  % Source paper uses same label
+\end{lemma}
+
 \subsection{Graphs and colourings}
 
 % [DEFINITION] Complete graph K_n
@@ -21,6 +26,12 @@
 % Dependencies: None (standard graph theory)
 % TODO: Add definition of complete graph K_n on n vertices
 
+\begin{definition}[Complete graph]
+  \label{def:complete-graph}
+  \lean{CompleteGraph}
+  \leanok
+\end{definition}
+
 % [DEFINITION] Edge colouring of graphs
 % Source: implicit in paper (standard definition)
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 3-8 (\begin{definition} \label{def:edge-colouring})
@@ -29,6 +40,13 @@
 % Dependencies: def:complete-graph
 % TODO: Add definition of edge colouring as map from edge set to colours
 
+\begin{definition}[Edge colouring]
+  \label{def:edge-colouring}
+  \uses{def:complete-graph}
+  \lean{SimpleGraph.EdgeColoring}
+  \leanok
+\end{definition}
+
 % [DEFINITION] Colour neighbourhood
 % Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 4 (notation N_i(x))
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 10-16 (\begin{definition} \label{def:colour-neighborhood})
@@ -36,6 +54,13 @@
 % Label: def:colour-neighborhood
 % Dependencies: def:edge-colouring
 % TODO: Add definition N_i(u) for neighbourhood of vertex u in colour i
+
+\begin{definition}[Colour neighbourhood]
+  \label{def:colour-neighborhood}
+  \uses{def:edge-colouring}
+  \lean{SimpleGraph.EdgeColoring.coloredNeighborSet}
+  \leanok
+\end{definition}
 
 % [DEFINITION] Ramsey numbers R_r(k)
 % Source: blueprint/paper/sections/section_introduction.tex line 3-4 (informal definition)
@@ -192,6 +217,13 @@
 % Dependencies: None (standard analysis)
 % TODO: Add definition of cosh√x via Taylor expansion
 
+\begin{definition}[cosh√x function]
+  \label{def:coshsqrt}
+  \lean{coshsqrt}
+  \leanok
+  % Source paper uses same label
+\end{definition}
+
 % [LEMMA] Lower bound 1 ≤ 2 + cosh√x
 % Source: implicit (used in geometric lemma proof)
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 54-63 (\begin{lemma} \label{lem:le-coshsqrt})
@@ -199,6 +231,14 @@
 % Label: lem:le-coshsqrt
 % Dependencies: def:coshsqrt, lem:coshsqrt-bd-neg
 % TODO: Add proof that 1 ≤ 2 + cosh√x for all x
+
+\begin{lemma}[Lower bound for cosh√x]
+  \label{lem:le-coshsqrt}
+  \uses{def:coshsqrt, lem:coshsqrt-bd-neg}
+  \lean{one_le_coshsqrt}
+  \leanok
+  % Source paper uses same label
+\end{lemma}
 
 % [LEMMA] Bounds for positive x
 % Source: implicit (used in geometric lemma proof)

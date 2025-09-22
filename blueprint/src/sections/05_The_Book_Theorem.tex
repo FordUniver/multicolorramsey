@@ -13,6 +13,12 @@
 % Dependencies: def:algorithm-state, def:p
 % TODO: Add definitions p_0, p_i(s), α_i(s), X(s), Y_i(s) for algorithm analysis
 
+\begin{definition}[Algorithm state definitions]
+  \label{def:algorithm-state-book}
+  \uses{def:algorithm-state, def:p}
+  % Source paper uses algorithm step notation
+\end{definition}
+
 % [DEFINITION] Density-boost step sets
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 13 (ℬ_i(s) definition)
 % No deprecated blueprint equivalent
@@ -20,6 +26,12 @@
 % Label: def:density-boost-sets
 % Dependencies: def:algorithm-state-book, def:boost-parameters
 % TODO: Add definition ℬ_i(s) = {j : ℓ(j) = i and λ(j) > λ_0} for tracking boost steps
+
+\begin{definition}[Density-boost step sets]
+  \label{def:density-boost-sets}
+  \uses{def:algorithm-state-book, def:boost-parameters}
+  % Source paper uses ℬ_i(s) notation
+\end{definition}
 
 % ============================================================================
 % AUXILIARY LEMMAS FOR BOOK THEOREM PROOF
@@ -33,6 +45,12 @@
 % Dependencies: def:density-boost-sets, def:boost-parameters
 % TODO: Add bound p_i(s) - p_0 + δ ≥ δ(1-1/t)^t ∏_{j∈ℬ_i(s)}(1+λ(j)/t)
 
+\begin{lemma}[Lower bound for p_i during algorithm]
+  \label{lem:pi:lower:bound}
+  \uses{def:density-boost-sets, def:boost-parameters}
+  % Source paper uses same label
+\end{lemma}
+
 % [LEMMA] Minimum bounds on p_i and α_i
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 35 (\begin{lemma}\label{lem:pi:min})
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 123-136 (\begin{lemma}[Lemma 4.2])
@@ -40,6 +58,12 @@
 % Label: lem:pi:min
 % Dependencies: lem:pi:lower:bound
 % TODO: Add bounds p_i(s) ≥ p_0 - 3δ/4 and α_i(s) ≥ δ/(4t) for t ≥ 2
+
+\begin{lemma}[Minimum bounds on p_i and α_i]
+  \label{lem:pi:min}
+  \uses{lem:pi:lower:bound}
+  % Source paper uses same label
+\end{lemma}
 
 % [LEMMA] Upper bound on density-boost steps
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 47 (\begin{lemma}\label{lem:Bi:max})
@@ -49,6 +73,12 @@
 % Dependencies: lem:pi:min, def:density-boost-sets
 % TODO: Add bound |ℬ_i(s)| ≤ 4log(1/δ)/λ_0 · t for t ≥ λ_0 and δ ≤ 1/4
 
+\begin{lemma}[Upper bound on density-boost steps]
+  \label{lem:Bi:max}
+  \uses{lem:pi:min, def:density-boost-sets}
+  % Source paper uses same label
+\end{lemma}
+
 % [LEMMA] Lower bound for Y_i set sizes
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 61 (\begin{lemma}\label{lem:Y:lower:bound})
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 153-169 (\begin{lemma}[Lemma 4.4])
@@ -56,6 +86,12 @@
 % Label: lem:Y:lower:bound
 % Dependencies: lem:pi:min, lem:Bi:max
 % TODO: Add |Y_i(s)| ≥ (p_0 - 3δ/4)^{t+|ℬ_i(s)|} |Y_i(0)| bound
+
+\begin{lemma}[Lower bound for Y_i set sizes]
+  \label{lem:Y:lower:bound}
+  \uses{lem:pi:min, lem:Bi:max}
+  % Source paper uses same label
+\end{lemma}
 
 % [LEMMA] Lower bound for reservoir X size
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 75 (\begin{lemma}\label{lem:X:lower:bound})
@@ -65,6 +101,12 @@
 % Dependencies: def:algorithm-constants, lem:sum:of:lambdas
 % TODO: Add |X(s)| ≥ ε^{rt+|ℬ(s)|} exp(-C∑√(λ(j)+1)) |X(0)| - rt bound
 
+\begin{lemma}[Lower bound for reservoir X size]
+  \label{lem:X:lower:bound}
+  \uses{def:algorithm-constants, lem:sum:of:lambdas}
+  % Source paper uses same label
+\end{lemma}
+
 % [LEMMA] Sum of λ parameters bound
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 92 (\begin{lemma}\label{lem:sum:of:lambdas})
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 188-212 (\begin{lemma}[Lemma 4.6])
@@ -72,6 +114,12 @@
 % Label: lem:sum:of:lambdas
 % Dependencies: lem:Bi:max, def:density-boost-sets
 % TODO: Add ∑_{j∈ℬ(s)} √λ(j) ≤ 7r log(1/δ)/√λ_0 · t bound for algorithm analysis
+
+\begin{lemma}[Sum of λ parameters bound]
+  \label{lem:sum:of:lambdas}
+  \uses{lem:Bi:max, def:density-boost-sets}
+  % Source paper uses same label
+\end{lemma}
 
 % ============================================================================
 % MULTICOLOUR BOOK ALGORITHM
@@ -87,6 +135,12 @@
 % TODO: Add Step 1: Apply key lemma with α_i = (p_i(X,Y_i) - p_0 + δ)/t
 % TODO: Add Step 2: Colour step if λ ≤ λ_0, choose j with |N_j(x) ∩ X'| ≥ (|X'|-1)/r
 % TODO: Add Step 3: Density-boost step if λ > λ_0, update X → X' and Y_ℓ → Y'_ℓ
+
+\begin{algorithm}[Multicolour book algorithm]
+  \label{alg:multicolour-book}
+  \uses{alg:select-boost, lem:key-lemma}
+  % Source paper describes complete book algorithm
+\end{algorithm}
 
 % ============================================================================
 % BOOK THEOREM
@@ -104,6 +158,12 @@
 % TODO: Add size conditions: |X| ≥ (μ²/p)^{μrt} and |Y_i| ≥ (e^{2¹³r³/μ²}/p)^t · m
 % TODO: Add conclusion: χ contains monochromatic (t,m)-book
 
+\begin{theorem}[Book theorem]
+  \label{thm:book}
+  \uses{def:book, def:edge-colouring, def:colour-neighborhood}
+  % Source paper uses same label
+\end{theorem}
+
 % ============================================================================
 % BOOK THEOREM PROOF
 % ============================================================================
@@ -118,3 +178,8 @@
 % TODO: Add proof that algorithm terminates with max|T_i(s)| = t and min|Y_i(s)| ≥ m
 % TODO: Add bound analysis: |ℬ_i(s)| ≤ t using auxiliary lemmas
 % TODO: Add final size bounds: |Y_i(s)| ≥ m and |X(s)| > 0 verification
+
+\begin{proof}[Proof of book theorem]
+  \uses{thm:book, alg:multicolour-book, lem:X:lower:bound, lem:Y:lower:bound}
+  % Source paper proves theorem using algorithm analysis
+\end{proof}

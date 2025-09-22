@@ -13,6 +13,11 @@
 % Dependencies: None (elementary constants)
 % TODO: Add definitions β = 3^{-4r}, C = 4r^{3/2} for geometric lemma parameters
 
+\begin{definition}[Algorithm constants]
+  \label{def:algorithm-constants}
+  % Source paper uses β = 3^{-4r}, C = 4r^{3/2}
+\end{definition}
+
 % [DEFINITION] Algorithm threshold and boost parameters
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex (α_i, λ_0, δ parameters)
 % No deprecated blueprint equivalent
@@ -20,6 +25,12 @@
 % Label: def:boost-parameters
 % Dependencies: def:p (from section 02)
 % TODO: Add λ_0 threshold, α_i = (p_i(X,Y_i) - p_0 + δ)/t boost parameters
+
+\begin{definition}[Algorithm boost parameters]
+  \label{def:boost-parameters}
+  \uses{def:p}
+  % Source paper uses α_i and λ_0 notation
+\end{definition}
 
 % ============================================================================
 % KEY LEMMA STATEMENT
@@ -36,6 +47,17 @@
 % TODO: Add bounds |X'| ≥ β e^{-C√(λ+1)} |X| and p_ℓ(X',Y'_ℓ) ≥ p_ℓ(X,Y_ℓ) + λα_ℓ
 % TODO: Add conditions |Y'_i| = p_i(X,Y_i)|Y_i| and p_i(X',Y'_i) ≥ p_i(X,Y_i) - α_i
 
+\begin{lemma}[Key lemma]
+  \label{lem:key-lemma}
+  \uses{def:p, lem:geometric, def:algorithm-constants}
+  \lean{key}
+  % Source paper uses label key:lemma
+\end{lemma}
+
+\begin{proof}
+  % Proof uses geometric lemma from section 03
+\end{proof}
+
 % ============================================================================
 % AUXILIARY LEMMAS FOR ALGORITHM ANALYSIS
 % ============================================================================
@@ -48,6 +70,12 @@
 % Dependencies: def:boost-parameters, alg:select-boost
 % TODO: Add bound p_i(s) ≥ (1-ε)^s · p_0 for algorithm step s
 
+\begin{lemma}[Lower bound for p_i during algorithm]
+  \label{lem:pi:lower:bound}
+  \uses{def:boost-parameters, alg:select-boost}
+  % Source paper uses same label
+\end{lemma}
+
 % [LEMMA] Minimum bounds on p_i and α_i
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 35 (\begin{lemma}\label{lem:pi:min})
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 123-136 (\begin{lemma}[Lemma 4.2])
@@ -55,6 +83,12 @@
 % Label: lem:pi:min
 % Dependencies: def:boost-parameters, lem:pi:lower:bound
 % TODO: Add bounds min p_i(s) ≥ p_0/2 and α_i(s) ≥ δ/2t
+
+\begin{lemma}[Minimum bounds on p_i and α_i]
+  \label{lem:pi:min}
+  \uses{def:boost-parameters, lem:pi:lower:bound}
+  % Source paper uses same label
+\end{lemma}
 
 % [LEMMA] Upper bound on density-boost steps
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 47 (\begin{lemma}\label{lem:Bi:max})
@@ -64,6 +98,12 @@
 % Dependencies: def:boost-parameters, lem:pi:min
 % TODO: Add bound on total number of density-boost steps B_i ≤ 2t/δ
 
+\begin{lemma}[Upper bound on density-boost steps]
+  \label{lem:Bi:max}
+  \uses{def:boost-parameters, lem:pi:min}
+  % Source paper uses same label
+\end{lemma}
+
 % [LEMMA] Lower bound for Y_i set sizes
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 61 (\begin{lemma}\label{lem:Y:lower:bound})
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 153-169 (\begin{lemma}[Lemma 4.4])
@@ -71,6 +111,12 @@
 % Label: lem:Y:lower:bound
 % Dependencies: lem:pi:min, lem:Bi:max
 % TODO: Add |Y_i(s)| ≥ (p_0/2)^{B_i+C_i} |Y_i(0)| bound during algorithm
+
+\begin{lemma}[Lower bound for Y_i set sizes]
+  \label{lem:Y:lower:bound}
+  \uses{lem:pi:min, lem:Bi:max}
+  % Source paper uses same label
+\end{lemma}
 
 % [LEMMA] Lower bound for reservoir X size
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 75 (\begin{lemma}\label{lem:X:lower:bound})
@@ -80,6 +126,12 @@
 % Dependencies: def:algorithm-constants, lem:sum:of:lambdas
 % TODO: Add |X(s)| ≥ β^s exp(-C∑√(λⱼ+1)) |X(0)| bound
 
+\begin{lemma}[Lower bound for reservoir X size]
+  \label{lem:X:lower:bound}
+  \uses{def:algorithm-constants, lem:sum:of:lambdas}
+  % Source paper uses same label
+\end{lemma}
+
 % [LEMMA] Sum of λ parameters bound
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 92 (\begin{lemma}\label{lem:sum:of:lambdas})
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 188-212 (\begin{lemma}[Lemma 4.6])
@@ -87,6 +139,12 @@
 % Label: lem:sum:of:lambdas
 % Dependencies: def:boost-parameters, lem:Bi:max
 % TODO: Add ∑ⱼ√(λⱼ+1) ≤ O(rt) bound over all algorithm steps
+
+\begin{lemma}[Sum of λ parameters bound]
+  \label{lem:sum:of:lambdas}
+  \uses{def:boost-parameters, lem:Bi:max}
+  % Source paper uses same label
+\end{lemma}
 
 % ============================================================================
 % ALGORITHM OVERVIEW
@@ -102,6 +160,12 @@
 % TODO: Add initialization: T_i = ∅, X = reservoir, Y_i = vertex partitions
 % TODO: Add main loop: while X ≠ ∅ and max|T_i| < t
 
+\begin{algorithm}[Select and boost algorithm]
+  \label{alg:select-boost}
+  \uses{lem:key-lemma, def:boost-parameters}
+  % Source paper describes RBalg algorithm
+\end{algorithm}
+
 % [ALGORITHM STEP] Key lemma application
 % Source: blueprint/paper/sections/section_select_and_boost_strategy.tex (each algorithm iteration)
 % No deprecated blueprint equivalent
@@ -110,6 +174,12 @@
 % Dependencies: lem:key-lemma, alg:select-boost
 % TODO: Add application of key lemma to current X, Y_i with parameters α_i
 % TODO: Add extraction of vertex x, color ℓ, updated sets X', Y'_i, parameter λ
+
+\begin{algorithmic}[Key lemma application step]
+  \label{alg:key-lemma-step}
+  \uses{lem:key-lemma, alg:select-boost}
+  % Source paper applies key lemma in each iteration
+\end{algorithmic}
 
 % [ALGORITHM STEP] Color step vs density-boost step
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex (λ vs λ_0 comparison)
@@ -121,6 +191,12 @@
 % TODO: Color step: add x to T_ℓ, restrict Y_ℓ to Y'_ℓ
 % TODO: Density-boost step: update all Y_i to Y'_i, set X to X'
 
+\begin{algorithmic}[Decision rule for steps]
+  \label{alg:step-decision}
+  \uses{alg:key-lemma-step, def:boost-parameters}
+  % Source paper compares λ vs λ_0
+\end{algorithmic}
+
 % [ALGORITHM STEP] Invariant maintenance
 % Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 19-20 (invariant conditions)
 % No deprecated blueprint equivalent
@@ -131,6 +207,12 @@
 % TODO: Add maintenance of Y_i ⊂ ∩_{u∈T_i} N_i(u) for each color i
 % TODO: Add density tracking: p_i(X,Y_i) ≥ p_0 - (εt) for algorithm progress
 
+\begin{invariant}[Algorithm invariants]
+  \label{alg:invariants}
+  \uses{alg:step-decision, def:colour-neighborhood}
+  % Source paper maintains neighborhood constraints
+\end{invariant}
+
 % [ALGORITHM STEP] Termination and output
 % Source: blueprint/paper/sections/section_select_and_boost_strategy.tex (algorithm termination)
 % No deprecated blueprint equivalent
@@ -140,4 +222,10 @@
 % TODO: Add termination conditions: X = ∅ or some |T_i| = t
 % TODO: Add output: (t,m)-book with vertex set T_i ∪ Y_i where |T_i| = t
 % TODO: Add verification that m = |Y_i| satisfies required bounds
+
+\begin{algorithmic}[Termination conditions]
+  \label{alg:termination}
+  \uses{alg:invariants, def:book, lem:X:lower:bound, lem:Y:lower:bound}
+  % Source paper terminates when X empty or |T_i| = t
+\end{algorithmic}
 
