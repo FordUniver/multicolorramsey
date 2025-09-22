@@ -7,16 +7,6 @@
 % MOMENTS LEMMA
 % ============================================================================
 
-% [LEMMA] Moments lemma: non-negative expectations
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 16-19 (\begin{lemma}\label{lem:moments})
-% Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 3-13 (\begin{lemma}[Moments Lemma])
-% Lean status: ✓ Implemented as `moments` in Basic.lean
-% Label: lem:moments
-% Dependencies: def:inner-product-finite, def:uniform-product
-% TODO: Add moments lemma for i.i.d. random variables U, U'
-% TODO: Add statement E[⟨σ₁(U),σ₁(U')⟩^ℓ₁ ⋯ ⟨σᵣ(U),σᵣ(U')⟩^ℓᵣ] ≥ 0
-% TODO: Add proof using positive semidefiniteness
-
 \begin{lemma}[Moments lemma]
   \label{lem:moments} % Source paper uses same label
   \paperref{Lemma 3.2}
@@ -70,32 +60,9 @@
   (2) then follows by noting that $cos(\sqrt{-x}) \in [-1,1]$ for all $x<0$. 
 \end{proof}
 
-% [LEMMA] Tensor product formulation for moments
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (proof of moments lemma)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Partially used in Basic.lean moments proof
-% Label: lem:tensor-moments
-% Dependencies: def:inner-product-finite, lem:moments
-% TODO: Add tensor product Z = σₐ₁(U) ⊗ ⋯ ⊗ σₐₗ(U') construction
-% TODO: Add E[ZZ*] ≥ 0 positive semidefiniteness result
-
-\begin{lemma}[Tensor product moments]
-  \label{lem:tensor-moments}
-  \uses{def:inner-product-finite, lem:moments}
-  % Source paper uses tensor products in moments proof
-\end{lemma}
-
 % ============================================================================
 % SPECIAL FUNCTION LEMMAS
 % ============================================================================
-
-% [LEMMA] Special function lemma part 1: upper bound
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
-% Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 37-69 (\begin{lemma}[Special-function lemma (Part 1)])
-% Lean status: ✓ Implemented as `specialFunctionE` in Basic.lean
-% Label: lem:special:function:1
-% Dependencies: def:f, lem:coshsqrt-bd-pos, lem:taylor-nonneg
-% TODO: Add bound f(x) ≤ 3ʳ·r·exp(∑ᵢ √(xᵢ + 3r)) for xᵢ ≥ -3r ∀i
 
 \begin{lemma}[Special function upper bound]
   \label{lem:special:function:1} % Source paper: f(x) ≤ 3ʳr exp(∑ᵢ √(xᵢ+3r)) if xᵢ ≥ -3r ∀i
@@ -133,15 +100,6 @@
   If $x_j<0$, note that the numerator of the fraction is negative while the denominator is a positive number between 1 and 3 by point(2) of the remark above.
 \end{proof}
 
-
-% [LEMMA] Special function lemma part 2: lower bound when negative
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
-% Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 70-97 (\begin{lemma}[Special-function lemma (Part 2)])
-% Lean status: ✓ Implemented as `specialFunctionEc` in Basic.lean
-% Label: lem:special:function:2
-% Dependencies: def:f, lem:coshsqrt-bd-neg
-% TODO: Add bound f(x) ≤ -1 for x with ∃i: xᵢ ≤ -3r
-
 \begin{lemma}[Special function lower bound]
   \label{lem:special:function:2} % Source paper: f(x) ≤ -1 if ∃i: xᵢ ≤ -3r
   \paperref{Lemma 3.3}
@@ -177,92 +135,8 @@
 \end{proof}
 
 % ============================================================================
-% INTEGRATION THEORY
-% ============================================================================
-
-% [LEMMA] Fubini theorem for finite measures
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof line 100-104)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Uses Mathlib Fubini theorem
-% Label: lem:fubini-finite
-% Dependencies: def:uniform-product
-% TODO: Add Fubini theorem application for expectation computation
-
-\begin{lemma}[Fubini for finite measures]
-  \label{lem:fubini-finite}
-  \uses{def:uniform-product}
-  % Source paper uses Fubini in geometric lemma proof
-\end{lemma}
-
-% [LEMMA] Exponential function estimates
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 102-104 (integration bounds)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Uses standard exponential estimates
-% Label: lem:exp-estimates
-% Dependencies: None (elementary analysis)
-% TODO: Add bounds for integrals involving exponentials
-
-\begin{lemma}[Exponential estimates]
-  \label{lem:exp-estimates}
-  % Source paper uses exponential decay estimates
-\end{lemma}
-
-% [LEMMA] Basic integral bounds for exponential decay
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Implemented as `integral_rpow_mul_exp_neg_rpow_le` in Integrals.lean
-% Label: lem:integral-exp-decay
-% Dependencies: lem:fubini-finite, lem:exp-estimates
-% TODO: Add ∫₀^∞ x^a e^{-b√x} dx bounds for geometric lemma integration
-
-\begin{lemma}[Exponential decay integrals]
-  \label{lem:integral-exp-decay}
-  \uses{lem:fubini-finite, lem:exp-estimates}
-  \lean{integral_rpow_mul_exp_neg_rpow_le}
-  % Source paper uses these bounds implicitly in geometric lemma proof
-\end{lemma}
-
-% [LEMMA] Integration by parts for special functions
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Partially implemented in Integrals.lean
-% Label: lem:integration-by-parts-special
-% Dependencies: lem:integral-bounds
-% TODO: Add integration techniques for ∫ f(x₁,...,xᵣ) dx₁...dxᵣ type integrals
-
-\begin{lemma}[Integration by parts for special functions]
-  \label{lem:integration-by-parts-special}
-  \uses{lem:integral-bounds}
-  % Source paper uses integration by parts implicitly
-\end{lemma}
-
-% [LEMMA] Substitution formulas for geometric lemma
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Used in GeometricLemma.lean proof
-% Label: lem:substitution-geometric
-% Dependencies: lem:fubini-finite
-% TODO: Add change of variables for probability density calculations
-
-\begin{lemma}[Substitution formulas]
-  \label{lem:substitution-geometric}
-  \uses{lem:fubini-finite}
-  % Source paper uses substitution in geometric proof
-\end{lemma}
-
-% ============================================================================
 % GEOMETRIC LEMMA
 % ============================================================================
-
-% [LEMMA] Geometric lemma: main probabilistic bound
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 7-10 (\begin{lemma}\label{lem:lambda})
-% Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 98-108 (\begin{lemma}[Geometric lemma])
-% Lean status: ✓ Implemented as `geometric` in GeometricLemma.lean
-% Label: lem:lambda (source) / lem:geometric (blueprint)
-% Dependencies: lem:moments, lem:special:function:1, lem:special:function:2, lem:taylor-nonneg, lem:integral-exp-decay
-% TODO: Add geometric lemma for i.i.d. random variables U, U' and functions σ₁,...,σᵣ: X → ℝⁿ
-% TODO: Add existence of λ ≥ -1 and i ∈ [r] with probability bound
-% TODO: Add Pr(⟨σᵢ(U),σᵢ(U')⟩ ≥ λ ∧ ∀j≠i: ⟨σⱼ(U),σⱼ(U')⟩ ≥ -1) ≥ β e^{-C√(λ+1)}
 
 \begin{lemma}[Geometric lemma]
   \label{lem:geometric} % Source paper uses label lem:lambda

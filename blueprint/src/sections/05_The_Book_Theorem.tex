@@ -31,14 +31,6 @@
 % AUXILIARY LEMMAS FOR BOOK THEOREM PROOF
 % ============================================================================
 
-% [LEMMA] Lower bound for p_i during algorithm
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 16 (\begin{lemma}\label{lem:pi:lower:bound})
-% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 102-122 (\begin{lemma}[Lemma 4.1])
-% Lean status: ✗ Not implemented
-% Label: lem:pi:lower:bound
-% Dependencies: def:density-boost-sets, def:boost-parameters
-% TODO: Add bound p_i(s) - p_0 + δ ≥ δ(1-1/t)^t ∏_{j∈ℬ_i(s)}(1+λ(j)/t)
-
 \begin{lemma}[Lower bound for \(p_i\) during algorithm]
   \label{lem:pi:lower:bound} % Source paper uses same label
   \paperref{Lemma 4.1}
@@ -63,14 +55,6 @@
 
 Before continuing, let's note a couple of important consequences of Lemma~\ref{lem:pi:lower:bound}. First, it implies that neither $p_i(s)$ nor $\alpha_i(s)$ can get too small. 
 
-% [LEMMA] Minimum bounds on p_i and α_i
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 35 (\begin{lemma}\label{lem:pi:min})
-% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 123-136 (\begin{lemma}[Lemma 4.2])
-% Lean status: ✗ Not implemented
-% Label: lem:pi:min
-% Dependencies: lem:pi:lower:bound
-% TODO: Add bounds p_i(s) ≥ p_0 - 3δ/4 and α_i(s) ≥ δ/(4t) for t ≥ 2
-
 \begin{lemma}[Minimum bounds on \(p_i\) and \(\alpha_i\)]
   \label{lem:pi:min} % Source paper uses same label
   \paperref{Lemma 4.2}
@@ -86,14 +70,6 @@ Before continuing, let's note a couple of important consequences of Lemma~\ref{l
 \end{proof}
 
 It also implies the following bound on the number of density-boost steps. 
-
-% [LEMMA] Upper bound on density-boost steps
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 47 (\begin{lemma}\label{lem:Bi:max})
-% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 137-152 (\begin{lemma}[Lemma 4.3])
-% Lean status: ✗ Not implemented
-% Label: lem:Bi:max
-% Dependencies: lem:pi:min, def:density-boost-sets
-% TODO: Add bound |ℬ_i(s)| ≤ 4log(1/δ)/λ_0 · t for t ≥ λ_0 and δ ≤ 1/4
 
 \begin{lemma}[Upper bound on density-boost steps]
   \label{lem:Bi:max} % Source paper uses same label
@@ -114,14 +90,6 @@ It also implies the following bound on the number of density-boost steps.
 
 Lemmas~\ref{lem:pi:min} and~\ref{lem:Bi:max} together provide a lower bound on the size of the set $Y_i(s)$. 
 
-% [LEMMA] Lower bound for Y_i set sizes
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 61 (\begin{lemma}\label{lem:Y:lower:bound})
-% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 153-169 (\begin{lemma}[Lemma 4.4])
-% Lean status: ✗ Not implemented
-% Label: lem:Y:lower:bound
-% Dependencies: lem:pi:min, lem:Bi:max
-% TODO: Add |Y_i(s)| ≥ (p_0 - 3δ/4)^{t+|ℬ_i(s)|} |Y_i(0)| bound
-
 \begin{lemma}[Lower bound for \(Y_i\) set sizes]
   \label{lem:Y:lower:bound} % Source paper uses same label
   \paperref{Lemma 4.4}
@@ -139,14 +107,6 @@ Lemmas~\ref{lem:pi:min} and~\ref{lem:Bi:max} together provide a lower bound on t
 \end{proof}
 
 Finally, we need to bound the size of the set $X(s)$. To do so, set $\eps = (\beta / r) e^{- C \sqrt{\lambda_0 + 1}}$, and define $\cB(s) = \cB_1(s) \cup \cdots \cup \cB_r(s)$ to be the set of all density-boost steps. 
-
-% [LEMMA] Lower bound for reservoir X size
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 75 (\begin{lemma}\label{lem:X:lower:bound})
-% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 170-187 (\begin{lemma}[Lemma 4.5])
-% Lean status: ✗ Not implemented
-% Label: lem:X:lower:bound
-% Dependencies: def:algorithm-constants, lem:sum:of:lambdas
-% TODO: Add |X(s)| ≥ ε^{rt+|ℬ(s)|} exp(-C∑√(λ(j)+1)) |X(0)| - rt bound
 
 \begin{lemma}[Lower bound for reservoir X size]
   \label{lem:X:lower:bound} % Source paper uses same label
@@ -168,14 +128,6 @@ Finally, we need to bound the size of the set $X(s)$. To do so, set $\eps = (\be
   $$|X(j+1)| \ge \beta e^{- C \sqrt{\lambda(j) + 1}} |X(j)|,$$ 
   by~\eqref{eq:key:ell} and Step~3 of the algorithm. Since there are at most $rt$ colour steps, and $\beta \ge \eps$, the claimed bound follows.
 \end{proof}
-
-% [LEMMA] Sum of λ parameters bound
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 92 (\begin{lemma}\label{lem:sum:of:lambdas})
-% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 188-212 (\begin{lemma}[Lemma 4.6])
-% Lean status: ✗ Not implemented
-% Label: lem:sum:of:lambdas
-% Dependencies: lem:Bi:max, def:density-boost-sets
-% TODO: Add ∑_{j∈ℬ(s)} √λ(j) ≤ 7r log(1/δ)/√λ_0 · t bound for algorithm analysis
 
 \begin{lemma}[Sum of \(\lambda\) parameters bound]
   \label{lem:sum:of:lambdas} % Source paper uses same label
@@ -207,18 +159,6 @@ Finally, we need to bound the size of the set $X(s)$. To do so, set $\eps = (\be
 % ============================================================================
 % BOOK THEOREM
 % ============================================================================
-
-% [THEOREM] Book theorem: finding monochromatic books
-% Source: blueprint/paper/sections/section_the_book_theorem.tex line 17 (\begin{theorem}\label{thm:book})
-% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 213-220 (\begin{theorem}\label{thm:book})
-% Lean status: ✗ Not implemented
-% Label: thm:book
-% Dependencies: def:book, def:edge-colouring, def:colour-neighborhood
-% TODO: Add book theorem with r-colouring χ of E(K_n) and sets X,Y₁,...,Yᵣ ⊂ V(K_n)
-% TODO: Add condition: for p > 0, μ ≥ 2¹⁰r³, t,m ∈ ℕ with t ≥ μ⁵/p
-% TODO: Add density condition: |N_i(x) ∩ Y_i| ≥ p|Y_i| for all x ∈ X, i ∈ [r]
-% TODO: Add size conditions: |X| ≥ (μ²/p)^{μrt} and |Y_i| ≥ (e^{2¹³r³/μ²}/p)^t · m
-% TODO: Add conclusion: χ contains monochromatic (t,m)-book
 
 \begin{theorem}[Book theorem]
   \label{thm:book} % Source paper uses same label
