@@ -31,7 +31,7 @@ lemma fundamental (c m : ℝ) (mp : -1 ≤ m) :
   have hint : IntervalIntegrable (ecsq' c) volume (-1) m := by
     refine (intervalIntegrable_iff_integrableOn_Ioc_of_le mp).mpr ?_
     have : IntegrableOn (fun x ↦ c * (1 / (2 * √(x + 1)))) (Icc (-1) m) ℙ :=
-      (integrableOn_Icc_iff_integrableOn_Ioc.mpr intOn1).continuousOn_mul continuousOn_const isCompact_Icc
+      ((integrableOn_Icc_iff_integrableOn_Ioc (by finiteness)).mpr intOn1).continuousOn_mul continuousOn_const isCompact_Icc
     exact (this.continuousOn_mul hcont isCompact_Icc).mono_set Ioc_subset_Icc_self
 
   -- fundamental thm of calculus
@@ -44,13 +44,13 @@ theorem integral_ecsq' (c m : ℝ) (mp : -1 ≤ m) (cpos : 0 < c):
     let ecsq := fun y ↦ rexp (c * √(y + 1))
     let ecsq' := fun x ↦ (rexp (c * √(x + 1)) * (c * (1 / (2 * √(x + 1)))))
     ENNReal.ofReal (ecsq m) = ∫⁻ (y : ℝ), ENNReal.ofReal (ecsq' y) ∂(Measure.restrict volume (Ioc (-1) m)) + ENNReal.ofReal (ecsq (-1)) := by
-  simp only [ofReal_one]
+  simp only []
   have fnd := fundamental c m mp
   rw [← ofReal_integral_eq_lintegral_ofReal]
   · rw [← ofReal_add (by positivity)]
     symm; congr; apply add_eq_of_eq_sub
     convert fnd
-    simp [exp_nonneg]
+    simp
   · by_cases hm : m = -1
     · simp [hm]
     · apply MeasureTheory.Integrable.of_integral_ne_zero
@@ -76,7 +76,7 @@ lemma exp_indicator (m : X × X → ℝ) (E : Set (X × X)) (mp : ∀ x, m x < -
   · have := integral_ecsq' c.toReal (m x) cm (toReal_pos (ne_of_lt cpos).symm cnt)
     simp at this
     by_cases hx : x ∈ E
-    · simp [hx, ecsq, ecsq', this, add_mul, ← integral_mul_const, lintegral_Ioc_eq_Ioi, mul_assoc, one_mul]
+    · simp [hx, ecsq, ecsq', this, lintegral_Ioc_eq_Ioi]
       congr; ext y
       have (a : ℝ) : (E ∩ {x | a ≤ m x}).indicator (1 : (X × X) → ENNReal) x = {x | a ≤ m x}.indicator 1 x := by
         simp [inter_indicator_one, hx]
@@ -117,7 +117,7 @@ lemma exp_ineq {r : ℕ} (rpos : 0 < r) {V : Type} [Fintype V] {X : Finset V} [N
       (fun x _ => specialFunctionE (fun i ↦ Z i x))
 
   have : ∫ x in Eᶜ, -1 ∂ℙᵤ = - 1 + (ℙᵤ E).toReal := by
-    simp [integral_const_mul, Measure.real, prob_compl_eq_one_sub measE]
+    simp [Measure.real, prob_compl_eq_one_sub measE]
     rw [toReal_sub_of_le prob_le_one one_ne_top, toReal_one, neg_sub]
     exact sub_eq_neg_add (ℙᵤ E).toReal 1
 
@@ -266,7 +266,6 @@ lemma lintegral_sum_bound {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin 
     intro x xE
     apply ofReal_le_ofReal
     simp [ecsq, Nat.ofNat_nonneg, sqrt_mul, exp_le_exp, Z, ecsq, c]
-    rw [toReal_ofReal (by positivity)]
     exact sum_sqrt_le
 
   have dd :
@@ -284,7 +283,6 @@ lemma lintegral_sum_bound {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin 
 
     have ee : c.toReal ≤ C.toReal - 1 := by
       simp [c, C]
-      rw [toReal_ofReal (by positivity)]
       have : 1 ≤ (r : ℝ) := Nat.one_le_cast.mpr rpos
       have : 1 ≤ (r * √r) := by nlinarith [one_le_sqrt.mpr this]
       have : √3 ≤ 3 := Real.sqrt_le_iff.mpr ⟨zero_le_three, by linarith⟩
@@ -298,7 +296,7 @@ lemma lintegral_sum_bound {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin 
     have ff :
         Measurable fun (a : (X × X) × ℝ) ↦ (E ∩ {x | a.2 ≤ M x}).indicator (fun x ↦ (1 : ENNReal)) a.1 := by
       refine Measurable.ite ?_ measurable_const measurable_const
-      simp [preimage]
+      simp
       refine Measurable.and ?_ ?_
       · simp only [neg_mul, E]
         refine Measurable.forall ?_
@@ -393,12 +391,11 @@ lemma juicy {r : ℕ} {V : Type} [Fintype V] [nenr: Nonempty (Fin r)] {X : Finse
           rw [Real.rpow_neg (by positivity)]
           field_simp
           apply (div_le_div_iff₀ (by positivity) (by positivity)).mpr
-          gcongr
-          trans 3 ^ (4 * (1 : ℝ))
-          simp
-          gcongr
-          linarith
-          exact Nat.one_le_cast.mpr rpos
+          simp only [one_mul]
+          apply Real.rpow_le_rpow_of_exponent_le
+          · norm_num
+          · have : (1 : ℝ) ≤ (r : ℝ) := Nat.one_le_cast.mpr rpos
+            linarith
         linarith
 
       exact (lt_self_iff_false _).mp (lt_of_le_of_lt ca this)

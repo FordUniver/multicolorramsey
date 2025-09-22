@@ -35,14 +35,14 @@ lemma integrableOn_one_div_two_mul_sqrt_plus (m : ℝ) (c : ℝ) : IntegrableOn 
     have := ((hasDerivAt_id' x).add (hasDerivAt_const x c)).sqrt (by simp; linarith [mem_Ioo.mp xi])
     simpa only [one_div, mul_inv_rev, add_zero]
 
-  apply integrableOn_Icc_iff_integrableOn_Ioc.mpr
+  apply (integrableOn_Icc_iff_integrableOn_Ioc (by finiteness)).mpr
 
   exact intervalIntegral.integrableOn_deriv_of_nonneg ((continuousOn_id' _).add continuousOn_const).sqrt this (by intros; positivity)
 
 lemma continuousOn_add_const : ContinuousOn (fun (x : ℝ) ↦ (x + c)) s := ((continuousOn_id' _).add continuousOn_const)
 
 lemma intOn1 {m : ℝ} : IntegrableOn (fun x ↦ 1 / (2 * √(x + 1))) (Ioc (-1) m) := by
-  apply integrableOn_Icc_iff_integrableOn_Ioc.mp
+  apply (integrableOn_Icc_iff_integrableOn_Ioc (by finiteness)).mp
   exact integrableOn_one_div_two_mul_sqrt_plus m 1
 
 lemma improper_integral_shift (c : ℝ) (f : ℝ → ℝ) (cf : ContinuousOn f (Ioi 0))
@@ -63,7 +63,7 @@ lemma integrableOn_pow {m a c : ℝ} (mp : 0 < m) (ha : a < -1) (cp : 0 ≤ c) :
     intro x hx
     convert (((hasDerivAt_id _).add_const c).rpow_const _).div_const (a + 1) using 1
     field_simp [show a + 1 ≠ 0 from ne_of_lt (by linarith), mul_comm]
-    simp_all; left; have := (lt_of_lt_of_le mp hx); exact ne_of_gt (by linarith)
+    simp_all; left; have := (lt_of_lt_of_le mp hx); exact ne_of_gt (lt_of_lt_of_le this (le_add_of_nonneg_right cp))
 
   have ht : Filter.Tendsto (fun t => ((t + c) ^ (a + 1)) / (a + 1)) Filter.atTop (nhds (0 / (a + 1))) := by
     refine Filter.Tendsto.div_const ?_ (a + 1)
@@ -72,7 +72,7 @@ lemma integrableOn_pow {m a c : ℝ} (mp : 0 < m) (ha : a < -1) (cp : 0 ≤ c) :
 
     have :
       Filter.Tendsto (fun t : ℝ => (t + c : ℝ) ^ (a + 1)) Filter.atTop (nhds 0) =
-      Filter.Tendsto ((fun x : ℝ => x ^ (a + 1)) ∘ fun t : ℝ => (t + c : ℝ)) Filter.atTop (nhds 0) := by simp [add_assoc]; rfl
+      Filter.Tendsto ((fun x : ℝ => x ^ (a + 1)) ∘ fun t : ℝ => (t + c : ℝ)) Filter.atTop (nhds 0) := by simp; rfl
     rw [this]
     apply Filter.Tendsto.comp
     assumption
@@ -87,7 +87,7 @@ lemma measEsqc : Measurable fun x ↦ rexp (d * √(x + 1)) * (c * (1 / (2 * √
 lemma integrableOn_exp_neg_sqrt_plus {c : ℝ} (cn : 0 ≤ c) : IntegrableOn (fun x ↦ rexp (-√(x + c)) * (1 / (2 * √(x + c)))) (Ioi (-c)) ℙ := by
 
   have i0 : IntegrableOn (fun x ↦ rexp (-√(x + c)) * (1 / (2 * √(x + c)))) (Ioc (-c) 1) ℙ := by
-    apply integrableOn_Icc_iff_integrableOn_Ioc.mp
+    apply (integrableOn_Icc_iff_integrableOn_Ioc (by finiteness)).mp
     refine IntegrableOn.continuousOn_mul ?_ ?_ isCompact_Icc
     exact continuousOn_add_const.sqrt.neg.rexp
     exact integrableOn_one_div_two_mul_sqrt_plus _ c
@@ -114,7 +114,6 @@ lemma integrableOn_exp_neg_sqrt_plus {c : ℝ} (cn : 0 ≤ c) : IntegrableOn (fu
     rw [← pow_recip_sqrt_cubed (x + c) xcn, exp_neg, moo]
 
     have : √(x + c) ^ 2 / 2 < rexp √(x + c) := lt_of_lt_of_le (by linarith [sqrt_pos.mpr xcn]) (quadratic_le_exp_of_nonneg (by positivity))
-    simp only [sq_sqrt] at this
     have := (inv_lt_inv₀ (by positivity) (by positivity)).mpr this
     exact le_of_lt ((mul_lt_mul_iff_of_pos_right (show 0 < (1 / (2 * sqrt (x + c))) by positivity)).mpr this)
 
@@ -151,12 +150,14 @@ lemma integral_exp_neg_sqrt : ∫ (x : ℝ) in Ioi 0, rexp (-√x) * (1 / (2 * �
       · simp only [mem_image, mem_Ici, forall_exists_index, and_imp]; intro x xpos xe; simp [← xe]
       · simp; intro bpos; use b^2; simp [bpos]
     rw [this]
-    have := integrableOn_Ici_iff_integrableOn_Ioi.mpr (exp_neg_integrableOn_Ioi 0 zero_lt_one)
+    apply (integrableOn_Ici_iff_integrableOn_Ioi (by finiteness)).mpr
+    have := (exp_neg_integrableOn_Ioi 0 zero_lt_one)
     simpa only [neg_mul, one_mul]
   have : IntegrableOn (fun x ↦ rexp (-√x) * (1 / (2 * √x))) (Ioi 0) ℙ := by
     have := integrableOn_exp_neg_sqrt_plus (Preorder.le_refl 0)
     simpa
-  exact integrableOn_Ici_iff_integrableOn_Ioi.mpr this
+  apply (integrableOn_Ici_iff_integrableOn_Ioi (by finiteness)).mpr
+  exact this
 
 lemma terriblel (c : ℝ) : ∫ a in Ioi (-1), (rexp (- √(a + 1)) *  (c * (1 / (2 * √(a + 1))))) = c := by
   have := improper_integral_shift 1 (fun a ↦ rexp (-√a) * (c * (1 / (2 * √a)))) ?_ ?_ ?_
@@ -173,7 +174,7 @@ lemma terriblel (c : ℝ) : ∫ a in Ioi (-1), (rexp (- √(a + 1)) *  (c * (1 /
   -- TODO what how to all_goals and then stop again
   all_goals have (a : ℝ) : rexp (-√a) * (c * (1 / (2 * √a))) = (rexp (-√a) * (1 / (2 * √a))) * c := by ring
   all_goals simp_rw [this]
-  all_goals apply integrableOn_Ici_iff_integrableOn_Ioi.mpr
+  all_goals apply (integrableOn_Ici_iff_integrableOn_Ioi (by finiteness)).mpr
   · exact (integrableOn_exp_neg_sqrt).smul_const c
   · exact ((integrableOn_exp_neg_sqrt_plus zero_le_one).smul_const c)
 

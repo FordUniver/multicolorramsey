@@ -131,10 +131,10 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
   exists X'
 
   have : Nonempty { x // x ∈ X' } := by
-    apply Fintype.card_pos_iff.mp
+    rw [← Fintype.card_pos_iff]
     have : 0 < (3 ^ (-(4 : ℝ) * ↑r)) * rexp (-((4 : ℝ) * r * √r) * √(Λ + 1)) * ↑(Fintype.card { x // x ∈ X }) := by positivity
-    convert lt_of_lt_of_le this X'card
-    simp only [Fintype.card_coe, card_pos, Nat.cast_pos, N']
+    convert lt_of_lt_of_le this X'card using 1
+    simp only [Fintype.card_coe, Nat.cast_pos]
 
   exists this
 
@@ -195,7 +195,7 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
   repeat any_goals constructor
   · simp only [N'sub, implies_true, Y']
   · simp only [neg_mul, Fintype.card_coe] at X'card
-    simp only [neg_mul, Fintype.card_coe, X'card, β, C]
+    simp only [neg_mul, X'card, β, C]
   · simp only [Y'card, implies_true]
   · exact Y'lee.1
   · exact fun i inl ↦ Y'lee.2 i inl

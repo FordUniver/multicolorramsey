@@ -62,7 +62,7 @@ theorem tsum_even_nat [TopologicalSpace T] [AddCommMonoid T] (f : Nat → T) :
   · congr; ext x; congr; simp; exact (Nat.two_mul_div_two_of_even (x.prop)).symm
   · constructor
     · rintro ⟨_, hn⟩ ⟨_, hm⟩ h
-      simp_all [Nat.even_iff, Nat.div_eq_of_lt]
+      simp_all
       exact (Nat.div_left_inj (even_iff_two_dvd.mp hn) (even_iff_two_dvd.mp hm)).mp h
     · intro n
       exact ⟨⟨2 * n, (by simp)⟩, by simp⟩
@@ -158,7 +158,7 @@ lemma one_le_coshsqrt (x : ℝ) : 1 ≤ 2 + coshsqrt x := by
   · have : 1 ≤ coshsqrt x := by
       trans 1 + ∑' (i : ℕ), x ^ (i + 1) / ↑(2 * (i + 1)).factorial
       simp; positivity
-      simp [coshsqrt, ← Summable.sum_add_tsum_nat_add 1 (mew (le_of_lt h)), Finset.sum, add_comm]
+      simp [coshsqrt, ← Summable.sum_add_tsum_nat_add 1 (mew (le_of_lt h)), Finset.sum]
     linarith
   · have := (Set.mem_Icc.mp (icc_coshsqrt_neg x (le_of_not_gt h))).left
     linarith
@@ -278,7 +278,7 @@ lemma Fintype.exists_mul_of_sum_bound [Nonempty X] [Fintype X] [AddCommMonoid Y]
   obtain ⟨j, p⟩ : ∃ j, ∀ i, g i ≤ g j := Finite.exists_max g
   use j
   calc ∑ i : X, g i ≤ ∑ i : X, g j           := by exact sum_le_sum fun i a ↦ p i
-                  _ = (Fintype.card X) • g j := by simp only [sum_const, card_univ, nsmul_eq_mul]
+                  _ = (Fintype.card X) • g j := by simp only [sum_const, card_univ]
 
 lemma Finset.exists_mul_of_sum_bound [Nonempty X] [Fintype X] [AddCommMonoid Y] [LinearOrder Y] [IsOrderedAddMonoid Y]
     (s : Finset X) (g : X → Y) (ns : s.Nonempty) :
@@ -316,7 +316,7 @@ lemma probabilistic_method {X : Type} [Fintype X] [MeasurableSpace X] (U : Measu
     (0 : ℝ≥0∞) < (U.prod U) { x : X × X | p x.1 x.2 } → ∃ x : X, ∃ x' : X , p x x' := by
       intro a
       by_contra c
-      simp_all only [not_exists, not_and, coe_mem, ite_false, integral_zero, Set.setOf_false, measure_empty, lt_self_iff_false]
+      simp_all only [not_exists, Set.setOf_false, measure_empty, lt_self_iff_false]
 
 
 lemma pidgeon_sum {X Y : Type} [nenx: Nonempty X] [fin: Fintype X] [nen: Nonempty Y] [fin: Fintype Y]
@@ -467,7 +467,7 @@ end
 
 
 lemma three_ineq_ENN {r : ℕ} (rpos: 0 < r) :
-    r * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 + r ^ 2 * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * ENNReal.ofReal (r * √3 * √r) * 3 ^ r * 3 ≤ 1 := by
+    r * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 + r ^ 3 * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * ENNReal.ofReal √3 * ENNReal.ofReal √r * 3 ^ r * 3 ≤ 1 := by
   sorry
 
 -- TODO i just put here everything that annoyed me
