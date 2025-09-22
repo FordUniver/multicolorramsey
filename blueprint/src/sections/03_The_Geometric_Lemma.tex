@@ -23,7 +23,32 @@
 \end{lemma}
 %
 \begin{proof}
-  % TODO
+  To simplify the notation, let us write
+	%
+	\begin{equation*}
+		\big\langle \sigma_1(U),\sigma_1(U') \big\rangle^{\ell_1} \cdots \big\langle \sigma_r(U), \sigma_r(U') \big\rangle^{\ell_r} = \prod_{i = 1}^\ell \big\langle \sigma_{a_i}(U), \sigma_{a_i}(U') \big\rangle
+	\end{equation*}
+	%
+	where \(\ell = \ell_1 + \cdots + \ell_r\) and \((a_1,\dots,a_\ell)\) is such that \(\big| \big\{ i \in [\ell] : a_i = j \big\} \big| = \ell_j\) for each \(j \in [r]\). Now set
+	%
+	\begin{equation*}
+		Z = \sigma_{a_1}(U) \otimes \sigma_{a_2}(U) \otimes \cdots \otimes \sigma_{a_\ell}(U) \quad \text{and} \quad Z' = \sigma_{a_1}(U') \otimes \sigma_{a_2}(U') \otimes \cdots \otimes \sigma_{a_\ell}(U'),
+	\end{equation*}
+	%
+	and note that
+	%
+	\begin{equation*}
+		\big\langle Z, Z' \big\rangle = \prod_{i = 1}^\ell \big\langle \sigma_{a_i}(U), \sigma_{a_i}(U') \big\rangle,
+	\end{equation*}
+	%
+	since \(\langle u_1 \otimes \cdots \otimes u_r, v_1 \otimes \cdots \otimes v_r \rangle = \langle u_1, v_1 \rangle  \cdots \langle v_r , u_r \rangle \) for any vectors \(u_i,v_i \in \R^n\). Finally, note that \(Z\) and \(Z'\) are independent and identically distributed random vectors, and therefore
+	%
+	\begin{equation*}
+		\Ex \big[ \langle Z, Z' \rangle \big] = \Ex_{Z'} \big[ \Ex_Z \big[ \langle Z, Z' \rangle \big] \big] =
+		\Ex_{Z'} \big[ \big\langle \Ex[Z], Z' \big\rangle \big] = \big\langle \Ex[Z], \Ex[Z'] \big\rangle \ge 0,
+	\end{equation*}
+	%
+	as required, where the final inequality holds because \(\Ex[Z] = \Ex[Z']\).
 \end{proof}
 
 \begin{remark}
@@ -146,6 +171,11 @@
   %
   since the sum in the last term is \(\leq -1\) while the product is at least \(1\) (each factor in the product is at least 1).
 \end{proof}
+
+\begin{remark}
+	The key idea in the two lemmas above was to find an entire function, \(2 + \cosh\sqrt{x}\), which \((a)\) has a Taylor expansion at \(x = 0\) with non-negative coefficients; \((b)\) is bounded on the negative real axis; and \((c)\) does not grow too quickly on the positive axis. The Phragm\'en--Lindel\"of theorem
+	implies that functions satisfying \((a)\) and \((b)\) must grow at least as fast as \(\exp\big( \Omega(\sqrt{x}) \big)\) on the positive real axis.  Thus the bound on the growth of \(f\) given by the lemma is essentially best possible for constructions of this type.
+\end{remark}
 
 % ============================================================================
 % GEOMETRIC LEMMA

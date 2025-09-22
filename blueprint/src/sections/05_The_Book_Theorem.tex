@@ -37,7 +37,31 @@
   %
   and go to Step~1.
   \end{enumerate}  
-\end{algorithm} 
+\end{algorithm}
+
+In this section we will use the multicolour book algorithm to prove Theorem~\ref{thm:book}. To do so, we will first prove a few simple lemmas about the sets produced by the algorithm when applied with arbitrary inputs, and then apply these bounds to our setting. Recall that we are given an \(r\)-colouring \(\chi\) of \(E(K_n)\) and
+sets \(X,Y_1,\ldots,Y_r \subset V(K_n)\), define
+%
+\begin{equation}
+	\label{def:p0}
+	p_0 = \min\big\{ p_i(X,Y_i) : i \in [r] \big\},
+\end{equation}
+%
+and run the algorithm for some \(t \in \N\), \(\lambda_0 \ge -1\) and \(\delta > 0\).
+
+In order to simplify the statements of the lemmas below, let us write \(X(s)\) and \(Y_i(s)\) for the sets \(X\) and \(Y_i\) after \(s\) steps of the algorithm, and set
+%
+\begin{equation*}
+	p_i(s) = p_i\big( X(s), Y_i(s) \big) \qquad \text{and} \qquad \alpha_i(s) = \frac{p_i(s) - p_0 + \delta}{t}.
+\end{equation*}
+%
+Let us also write \(\ell(s) \in [r]\) and \(\lambda(s) \ge -1\) for the colour and number given by the application of Lemma~\ref{key:lemma} to the sets \(X(s)\) and \(Y_1(s),\dots,Y_r(s)\), and define
+%
+\begin{equation*}
+	\cB_i(s) = \big\{ 0 \le j < s \,:\, \ell(j) = i \, \text{ and } \, \lambda(j) > \lambda_0 \big\},
+\end{equation*}
+%
+for each \(i \in [r]\) and \(s \in \N\), to be the set of density-boost steps in colour \(i\) during the first \(s\) steps of the algorithm. We begin by noting the following lower bound on \(p_i(s)\).
 
 % ============================================================================
 % AUXILIARY LEMMAS FOR BOOK THEOREM PROOF
@@ -53,6 +77,7 @@
   \begin{equation}\label{eq:pi:lower:bound}
     p_i(s) - p_0 + \delta \, \ge \, \delta \cdot \bigg( 1 - \frac{1}{t} \bigg)^{t} \prod_{j \in \cB_i(s)} \bigg( 1 + \frac{\lambda(j)}{t} \bigg).
   \end{equation}
+  %
 \end{lemma}
 
 \begin{proof}
@@ -94,7 +119,7 @@ Before continuing, let's note a couple of important consequences of Lemma~\ref{l
 \end{proof}
 
 It also implies the following bound on the number of density-boost steps. 
-
+%
 \begin{lemma}[Upper bound on density-boost steps]
   \label{lem:Bi:max} % Source paper uses same label
   \paperref{Lemma 4.3}
@@ -177,6 +202,8 @@ Finally, we need to bound the size of the set \(X(s)\). To do so, set \(\eps = (
   by~\eqref{eq:key:ell} and Step~3 of the algorithm. Since there are at most \(rt\) colour steps, and \(\beta \ge \eps\), the claimed bound follows.
 \end{proof}
 
+We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lower:bound}.
+
 \begin{lemma}[Sum of \(\lambda\) parameters bound]
   \label{lem:sum:of:lambdas} % Source paper uses same label
   \paperref{Lemma 4.6}
@@ -193,17 +220,18 @@ Finally, we need to bound the size of the set \(X(s)\). To do so, set \(\eps = (
 %
 \begin{proof}
   Observe first that, by Lemma~\ref{lem:pi:lower:bound}, we have 
+  %
   \begin{equation}\label{eq:B:condition}
-  \frac{\delta}{4} \prod_{j \in \cB_i(s)} \bigg( 1 + \frac{\lambda(j)}{t} \bigg) \le 1 + \delta
+    \frac{\delta}{4} \prod_{j \in \cB_i(s)} \bigg( 1 + \frac{\lambda(j)}{t} \bigg) \le 1 + \delta
   \end{equation}
+  %
   for each \(i \in [r]\). Note also that \(\lambda_0 \le \lambda(j) \le 5t/\delta\) for every \(j \in \cB(s)\), where the lower bound holds by the definition of \(\cB(s)\), and the upper bound by~\eqref{eq:B:condition} and since \(\delta \le 1/4\). Now, since \(\log(1+x) \ge \min\{ x/2,1\}\) for all \(x > 0\), it follows that
-  %the function \(\sqrt{x}/\log(1+x)\) is increasing either side of its unique minimum, and therefore %is therefore maximised at one of its extreme points. 
+  %
   \begin{equation}\label{eq:not:convexity}
-  \frac{ \sqrt{\lambda(j)} }{\log(1 + \lambda(j)/t) } \le \max\bigg\{ \frac{ 2t }{ \sqrt{\lambda_0} }, \, \sqrt{ \frac{5t}{\delta}} \bigg\} \le \frac{ 3t }{ \sqrt{\lambda_0} },
-  %\frac{ \sqrt{\lambda(j)} }{\log(1 + \lambda(j)/t) } \le \max\bigg\{ \frac{ \sqrt{\lambda_0} }{ \log(1 + \lambda_0/t) }, \, \frac{\sqrt{5t/\delta}}{\log(1 + 5/\delta)} \bigg\} \le \frac{ 2t }{ \sqrt{\lambda_0} },
+    \frac{ \sqrt{\lambda(j)} }{\log(1 + \lambda(j)/t) } \le \max\bigg\{ \frac{ 2t }{ \sqrt{\lambda_0} }, \, \sqrt{ \frac{5t}{\delta}} \bigg\} \le \frac{ 3t }{ \sqrt{\lambda_0} },
   \end{equation}
-  where in the second inequality we used %the fact that \(\log(1 + x) \ge x/2\) for all \(0 < x \le 1/4\), and 
-  our assumption that \(t \ge \lambda_0 / \delta\). It now follows that
+  %
+  where in the second inequality we used our assumption that \(t \ge \lambda_0 / \delta\). It now follows that
   %
   \begin{equation*}
     \sum_{j \in \cB_i(s)} \sqrt{\lambda(j)} \le \frac{ 3t }{ \sqrt{\lambda_0} } \sum_{j \in \cB_i(s)} \log \bigg( 1 + \frac{\lambda(j)}{t} \bigg) \le \frac{7 \log(1/\delta)}{\sqrt{\lambda_0}} \cdot t,
@@ -224,33 +252,33 @@ Finally, we need to bound the size of the set \(X(s)\). To do so, set \(\eps = (
   Let \(\chi\) be an \(r\)-colouring of \(E(K_n)\), and let \(X,Y_1,\ldots,Y_r \subset V(K_n)\). % be disjoint sets. 
   For every \(p > 0\) and \(\mu \ge 2^{10} r^3\), and every \(t,m \in \N\) with \(t \ge \mu^5 / p\), the following holds. If 
   %
-  %
   \begin{equation*}
     |N_i(x) \cap Y_i| \ge p|Y_i|
   \end{equation*}
   %
-  %
   for every \(x \in X\) and \(i \in [r]\), and moreover
-  %
   %
   \begin{equation*}
     |X| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t} \qquad \text{and} \qquad |Y_i| \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m,
   \end{equation*}
   % 
-  %
   then \(\chi\) contains a monochromatic \((t,m)\)-book.
 \end{theorem}
 %
 \begin{proof}
   Recall that we are given an \(r\)-colouring \(\chi\) of \(E(K_n)\) and a collection of %disjoint 
   sets \(X,Y_1,\ldots,Y_r \subset V(K_n)\) with
+  %
   \begin{equation}\label{eq:book:thm:conditions}
-  |X| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t} \qquad \text{and} \qquad |Y_i| \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m
+    |X| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t} \qquad \text{and} \qquad |Y_i| \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m
   \end{equation}
+  %
   for each \(i \in [r]\), for some \(p > 0\), \(\mu \ge 2^{10} r^3\) and \(t,m \in \N\) with \(t \ge \mu^5 / p\), and moreover
+  %
   \begin{equation}\label{eq:book:thm:min:degree}
-  |N_i(x) \cap Y_i| \ge p|Y_i|
+    |N_i(x) \cap Y_i| \ge p|Y_i|
   \end{equation}
+  %
   for every \(x \in X\) and \(i \in [r]\). 
   %Our task is to show that the multicolour book algorithm produces a monochromatic \((t,m)\)-book. 
   We will run the multicolour book algorithm with
@@ -268,9 +296,11 @@ Finally, we need to bound the size of the set \(X(s)\). To do so, set \(\eps = (
   and therefore produces a monochromatic \((t,m)\)-book.
   
   To do so, we just need to bound the sizes of the sets \(X(s)\) and \(Y_i(s)\) from below. Observe that \(t \ge \lambda_0\) and \(\delta \le 1/4\), and therefore, by Lemma~\ref{lem:Bi:max}, that
+  %
   \begin{equation}\label{eq:Bi:final:bound}
-  |\cB_i(s)| \, \le \, \frac{4 \log(1/\delta)}{\lambda_0} \cdot t \, = \, \frac{2^{12} r^3}{\mu^2 \log(1/\delta)} \cdot t \, \le \, t
+    |\cB_i(s)| \, \le \, \frac{4 \log(1/\delta)}{\lambda_0} \cdot t \, = \, \frac{2^{12} r^3}{\mu^2 \log(1/\delta)} \cdot t \, \le \, t
   \end{equation}
+  %
   for every \(i \in [r]\) and \(s \in \N\). Since \(p_0 \ge p\), by~\eqref{eq:book:thm:min:degree} and the definition of \(p_0\), it follows that  
   %
   \begin{equation*}

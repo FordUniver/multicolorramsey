@@ -7,6 +7,8 @@
 % KEY LEMMA STATEMENT
 % ============================================================================
 
+We can deduce Lemma~\ref{key:lemma} from Lemma~\ref{lem:lambda}.
+
 \begin{lemma}[Key lemma]
   \label{lem:key-lemma} % Source paper uses label key:lemma
   \paperref{Lemma 2.2}
@@ -34,20 +36,16 @@
 
   For each colour \(i \in [r]\), define a function \(\sigma_i \colon X \to \R^{\cup_i Y_i}\) as follows: for each \(x \in X\), choose a set \(N'_i(x) \subset N_i(x) \cap Y_i\) of size exactly \(p_i|Y_i|\), where \(p_i = p_i(X,Y_i)\), and set
   %
-  %
   \begin{equation*}
     \sigma_i(x) = \frac{\id_{N'_i(x)} - p_i\id_{Y_i}}{\sqrt{\alpha_ip_i|Y_i|}},
   \end{equation*}
   %
-  %
   where \(\id_S \in \{0,1\}^{\cup_i Y_i}\) denotes the indicator function of the set \(S\). Note that, for any \(x,y\in X\),
   %TODO why? mp direction suffices
-  %
   %
   \begin{equation*}
     \lambda \le \big\langle \sigma_i(x),\sigma_i(y) \big\rangle \quad \Leftrightarrow \quad \big( p_i + \lambda\alpha_i \big) p_i |Y_i| \le |N'_i(x) \cap N'_i(y)|.
   \end{equation*}
-  %
   %
   Indeed, for every \(x,y\in X\), we have 
   %
@@ -72,7 +70,6 @@
    %TODO
   such that,
   %
-  %
   \begin{equation*}
     \beta e^{- C \sqrt{\lambda + 1}} |X| \le |X'|
   \end{equation*}
@@ -80,27 +77,21 @@
   %
   and
   %
-  %
   \begin{equation*}
     \big( p_\ell + \lambda\alpha_\ell \big) p_\ell |Y_\ell | \le |N'_\ell(x) \cap N'_\ell(y)|
   \end{equation*}
   %
-  %
   for every \(y \in X'\), and
-  %
   %
   \begin{equation*}
     \big( p_i - \alpha_i \big) p_i |Y_i| \le |N'_i(x) \cap N'_i(y)|
   \end{equation*}
   %
-  %
   for every \(y \in X'\) and \(i \in [r]\). To see this, we let 
-  %
   %
   \begin{equation*}
      P= \Biggl\{(x,x'): x,x' \in X , \lambda  \le \big\langle \sigma_\ell(x),\sigma_\ell(x') \big\rangle \, \text{ and } \, -1 \le \big\langle \sigma_i(x), \sigma_i(x') \big\rangle \, \text{ for all } \, i \ne \ell  \Biggr\}.
   \end{equation*}
-  %
   %
   Since \(U\) and \(U'\) are independent and uniformly distributed over \(x\), Equation \ref{eq: geometric-app} implies that
   %

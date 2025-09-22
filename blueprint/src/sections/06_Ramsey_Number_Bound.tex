@@ -3,21 +3,15 @@
 
 \section{Deducing the Bound on the Ramsey Number}
 
+In this section we will deduce Theorem~\ref{thm:Ramsey:multicolour}, the bound on the Ramsey numbers \(R_r(k)\), from Theorem~\ref{thm:book}.
+We will in fact prove a stronger quantitative version of the theorem in the form of Theorem~\ref{thm:Ramsey:multicolour:quant}.
+
 % ============================================================================
 % ERDŐS-SZEKERES AUXILIARY LEMMAS
 % ============================================================================
 
-% [LEMMA] Single Erdős-Szekeres step
-% Source: blueprint/paper/sections/section_deducing_the_bound_on_rrk.tex line 13 (\begin{lemma}\label{lem:ESz:steps})
-% Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 4-21 (\begin{lemma}[Lemma 5.2])
-% Lean status: ✗ Not implemented
-% Label: lem:ESz:steps
-% Dependencies: def:edge-colouring, def:colour-neighborhood, def:book
-% TODO: Add lemma for n,r ∈ ℕ and ε > 0 with r-colouring of E(K_n)
-% TODO: Add existence of disjoint sets S₁,...,Sᵣ and W with bounds
-% TODO: Add |W| ≥ ((1+ε)/r)^{∑|Sⱼ|} n and |N_i(w) ∩ W| ≥ (1/r - ε)|W| - 1
-% TODO: Add (S_i,W) is monochromatic book in colour i for each i ∈ [r]
-
+In order to apply Theorem~\ref{thm:book}, we need to find a suitable collection of sets \(X,Y_1,\ldots,Y_r\) in an arbitrary \(r\)-colouring of \(E(K_n)\). To do so, we simply run the Erd\H{o}s--Szekeres process until we find a subset of the vertex set in which each colour has density close to \(1/r\), and the colouring is close to regular in each colour.
+%
 \begin{lemma}[Single Erdős-Szekeres step]
   \label{lem:ESz:steps} % Source paper uses same label
   \paperref{Lemma 5.2}
@@ -60,16 +54,8 @@
   Since \((S_i,W)\) is a monochromatic book in colour~\(i\) for each \(i \in [r]\), it follows that \(S_1,\dots,S_r\) and \(W\) are sets with the claimed properties.
 \end{proof}
 
-% [LEMMA] Many Erdős-Szekeres steps bound
-% Source: blueprint/paper/sections/section_deducing_the_bound_on_rrk.tex line 33 (\begin{lemma}\label{lem:many:ESz:steps})
-% Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 22-33 (\begin{lemma}[Lemma 5.3])
-% Lean status: ✗ Not implemented
-% Label: lem:many:ESz:steps
-% Dependencies: lem:ESz:steps, def:ramsey-number-off-diagonal
-% TODO: Add bound for k,r ≥ 2 and ε ∈ (0,1)
-% TODO: Add R_r(k-s₁,...,k-sᵣ) ≤ e^{-ε³k/2} ((1+ε)/r)^s r^{rk}
-% TODO: Add condition s₁,...,sᵣ ∈ [k] with s = s₁ + ... + sᵣ ≥ ε²k
-
+The next lemma, which is an immediate consequence of the Erd\H{o}s--Szekeres bound on the \(r\)-colour Ramsey numbers, implies (roughly speaking) that either the sets \(S_1,\dots,S_r\) given by Lemma~\ref{lem:ESz:steps} satisfy \(|S_i| = o(k)\) for each \(i \in [r]\), or we are already done.
+%
 \begin{lemma}[Many Erdős-Szekeres steps bound]
   \label{lem:many:ESz:steps} % Source paper uses same label
   \paperref{Lemma 5.3}
@@ -77,11 +63,9 @@
   %
   Let \(k,r \ge 2\) and \(\eps \in (0,1)\). We have 
   %
-  %
   \begin{equation*}
     R_r\big( k - s_1, \ldots, k - s_r \big) \le e^{-\eps^3 k / 2} \bigg( \frac{1+\eps}{r} \bigg)^s r^{rk}
   \end{equation*}
-  %
   %
   for every \(s_1,\ldots,s_r \in [k]\) with \(s = s_1 + \cdots + s_r \ge \eps^2 k\).
 \end{lemma}
@@ -95,16 +79,6 @@
   %
   The claimed bound follows, since \(( 1 + \eps )^{\eps^2 k} \ge e^{\eps^3 k/2}\) for every \(\eps \in (0,1)\).
 \end{proof}
-
-% [THEOREM] Quantitative version of main theorem
-% Source: blueprint/paper/sections/section_deducing_the_bound_on_rrk.tex line 5 (\begin{theorem}\label{thm:Ramsey:multicolour:quant})
-% Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 34-42 (\begin{theorem}[Theorem 5.1])
-% Lean status: ✗ Not implemented
-% Label: thm:Ramsey:multicolour:quant
-% Dependencies: def:ramsey-number
-% TODO: Add quantitative theorem for r ≥ 2 with δ = 2^{-160} r^{-12}
-% TODO: Add bound R_r(k) ≤ e^{-δk} r^{rk} for k ≥ 2^{160} r^{16}
-% TODO: Add explicit constants showing exponential improvement
 
 \begin{theorem}[Quantitative main theorem]
   \label{thm:Ramsey:multicolour:quant} % Source paper uses same label
@@ -173,6 +147,5 @@
     |Y_i| = |W| \ge \bigg( \frac{1+\eps}{r} \bigg)^{\eps t} n \ge \frac{m}{p^t} \cdot \exp\bigg( \frac{t^2}{8k} - 4\eps r t \bigg) \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m,
   \end{equation*}
   %
-  %\(\)|Y_i| \ge \frac{|W|}{4r} \ge \bigg( \frac{1+\eps}{r} \bigg)^{\eps^2 k} \frac{n}{4r} \ge \frac{m}{p^t} \cdot \exp\bigg( \frac{t^2}{8k} - 4\eps r t \bigg) \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m,\(\)
   as claimed. Thus \(\chi\) contains a monochromatic \((t,m)\)-book, and hence, by our choice of \(m\), \(\chi\) contains a monochromatic copy of \(K_k\), as required.
 \end{proof}
