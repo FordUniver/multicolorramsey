@@ -72,6 +72,12 @@
 % Dependencies: def:complete-graph, def:edge-colouring, def:monochromatic-clique
 % TODO: Add definition R_r(k) = min{n : every r-coloring of E(K_n) contains monochromatic K_k}
 
+\begin{definition}[Multicolor Ramsey numbers]
+  \label{def:ramsey-number}
+  \uses{def:complete-graph, def:edge-colouring, def:monochromatic-clique}
+  % Source paper defines R_r(k) = min{n : every r-coloring of E(K_n) contains monochromatic K_k}
+\end{definition}
+
 % [DEFINITION] Off-diagonal Ramsey numbers R_r(k_1,...,k_r)
 % Source: blueprint/paper/sections/section_the_book_theorem.tex line 7 (R_r(k,...,k,k-t))
 % No deprecated blueprint equivalent
@@ -79,6 +85,12 @@
 % Label: def:ramsey-number-off-diagonal
 % Dependencies: def:ramsey-number
 % TODO: Add definition R_r(k_1,...,k_r) for off-diagonal Ramsey numbers
+
+\begin{definition}[Off-diagonal Ramsey numbers]
+  \label{def:ramsey-number-off-diagonal}
+  \uses{def:ramsey-number}
+  % Source paper uses R_r(k_1,...,k_r) for off-diagonal Ramsey numbers
+\end{definition}
 
 % [DEFINITION] Books (A,B)
 % Source: blueprint/paper/sections/section_the_book_theorem.tex line 3-5 (book definition)
@@ -88,6 +100,13 @@
 % Dependencies: def:complete-graph
 % TODO: Add definition of book graph: vertex set A ∪ B, edge set {uv : {u,v} ⊄ B}
 % TODO: Add definition of (t,m)-book with |A| = t and |B| = m
+
+\begin{definition}[Books]
+  \label{def:book}
+  \uses{def:complete-graph}
+  % Source paper defines book graph with vertex set A ∪ B, edge set {uv : {u,v} ⊄ B}
+  % A (t,m)-book has |A| = t and |B| = m
+\end{definition}
 
 % [DEFINITION] Function p_i(X,Y) - minimum proportion
 % Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 3-4 (p_i(X,Y) definition)
@@ -110,6 +129,12 @@
 % Label: def:monochromatic-clique
 % Dependencies: def:complete-graph, def:edge-colouring
 % TODO: Add definition of monochromatic clique in edge coloring
+
+\begin{definition}[Monochromatic cliques]
+  \label{def:monochromatic-clique}
+  \uses{def:complete-graph, def:edge-colouring}
+  % Source paper defines monochromatic clique K_k in edge coloring
+\end{definition}
 
 % [DEFINITION] Graph regularity and density
 % Source: blueprint/paper/sections/section_select_and_boost_strategy.tex (colouring is almost regular)
