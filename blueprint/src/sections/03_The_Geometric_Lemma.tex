@@ -1,6 +1,7 @@
 % The Geometric Lemma section - moments lemma, geometric lemma, and key lemma proof
 % This section contains the geometric tools needed to prove the key lemma
 
+\section{The Geometric Lemma}
 
 % ============================================================================
 % MOMENTS LEMMA
@@ -17,10 +18,10 @@
 % TODO: Add proof using positive semidefiniteness
 
 \begin{lemma}[Moments lemma]
-  \label{lem:moments}
+  \label{lem:moments} % Source paper uses same label
+  \paperref{Lemma 3.2}
   \uses{def:inner-product-finite, def:uniform-product}
   \lean{moments}
-  % Source paper uses same label
 \end{lemma}
 
 % [LEMMA] Tensor product formulation for moments
@@ -51,10 +52,10 @@
 % TODO: Add bound f(x) ≤ 3ʳ·r·exp(∑ᵢ √(xᵢ + 3r)) for xᵢ ≥ -3r ∀i
 
 \begin{lemma}[Special function upper bound]
-  \label{lem:special:function:1}
+  \label{lem:special:function:1} % Source paper: f(x) ≤ 3ʳr exp(∑ᵢ √(xᵢ+3r)) if xᵢ ≥ -3r ∀i
+  \paperref{Lemma 3.3}
   \uses{def:f, lem:coshsqrt-bd-pos, lem:taylor-nonneg}
   \lean{specialFunctionE}
-  % Source paper: f(x) ≤ 3ʳr exp(∑ᵢ √(xᵢ+3r)) if xᵢ ≥ -3r ∀i
 \end{lemma}
 
 % [LEMMA] Special function lemma part 2: lower bound when negative
@@ -66,10 +67,10 @@
 % TODO: Add bound f(x) ≤ -1 for x with ∃i: xᵢ ≤ -3r
 
 \begin{lemma}[Special function lower bound]
-  \label{lem:special:function:2}
+  \label{lem:special:function:2} % Source paper: f(x) ≤ -1 if ∃i: xᵢ ≤ -3r
+  \paperref{Lemma 3.3}
   \uses{def:f, lem:coshsqrt-bd-neg}
   \lean{specialFunctionEc}
-  % Source paper: f(x) ≤ -1 if ∃i: xᵢ ≤ -3r
 \end{lemma}
 
 % ============================================================================
@@ -161,10 +162,10 @@
 % TODO: Add Pr(⟨σᵢ(U),σᵢ(U')⟩ ≥ λ ∧ ∀j≠i: ⟨σⱼ(U),σⱼ(U')⟩ ≥ -1) ≥ β e^{-C√(λ+1)}
 
 \begin{lemma}[Geometric lemma]
-  \label{lem:geometric}
+  \label{lem:geometric} % Source paper uses label lem:lambda
+  \paperref{Lemma 3.1}
   \uses{lem:moments, lem:special:function:1, lem:special:function:2, lem:taylor-nonneg, lem:integral-exp-decay}
   \lean{geometric}
-  % Source paper uses label lem:lambda
 \end{lemma}
 
 \begin{proof}

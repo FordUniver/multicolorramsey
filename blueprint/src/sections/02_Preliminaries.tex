@@ -1,6 +1,8 @@
 % Preliminaries section - basic definitions only
 % This section contains the fundamental definitions needed for the formalization
 
+\section{Preliminaries}
+
 \subsection{Elementary combinatorics}
 
 % [LEMMA] Multinomial coefficient bound (Appendix lemma)
@@ -12,8 +14,8 @@
 % TODO: Add bound for multinomial coefficient with exponential decay
 
 \begin{lemma}[Multinomial coefficient bound]
-  \label{lem:multibounds}
-  % Source paper uses same label
+  \label{lem:multibounds} % Source paper uses same label
+  \paperref{Lemma A.1}
 \end{lemma}
 
 \subsection{Graphs and colourings}
@@ -95,6 +97,12 @@
 % Dependencies: def:colour-neighborhood
 % TODO: Add definition of p_i(X,Y) = min{|N_i(x) ∩ Y|/|Y| : x ∈ X}
 
+\begin{definition}[Function \(p_i(X,Y)\)]
+  \label{def:p}
+  \uses{def:colour-neighborhood}
+  % Definition: p_i(X,Y) = min{|N_i(x) ∩ Y|/|Y| : x ∈ X}
+\end{definition}
+
 % [DEFINITION] Cliques and monochromatic structures
 % Source: blueprint/paper/sections/section_introduction.tex line 6 (monochromatic clique K_k)
 % No deprecated blueprint equivalent
@@ -139,18 +147,6 @@
   % Source paper uses U, U' i.i.d. uniform on finite set X
 \end{definition}
 
-% [DEFINITION] Hyperbolic cosine of square root
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 39-40 (cosh√x Taylor expansion)
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 76-89 (\begin{definition} \label{def:coshsqrt})
-% Lean status: ✓ Implemented as `coshSqrt` in Basic.lean
-% Label: def:coshsqrt
-% Dependencies: None (elementary functions)
-% TODO: Add definition cosh√x = ∑_{n=0}^∞ x^n/(2n)! via Taylor expansion
-
-\begin{definition}[Hyperbolic cosine of square root]
-  \label{def:coshsqrt}
-  % Source paper defines cosh√x = ∑_{n=0}^∞ x^n/(2n)!
-\end{definition}
 
 % [LEMMA] Bounds on cosh√x for positive arguments
 % Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 54 (x ≤ 2 + cosh√x ≤ 3e^√x)
@@ -160,7 +156,7 @@
 % Dependencies: def:coshsqrt
 % TODO: Add bounds x ≤ 2 + cosh√x ≤ 3e^√x for x ≥ 0
 
-\begin{lemma}[Bounds on $\cosh\sqrt{x}$ for positive arguments]
+\begin{lemma}[Bounds on \(\cosh\sqrt{x}\) for positive arguments]
   \label{lem:coshsqrt-bd-pos}
   \uses{def:coshsqrt}
   % Source paper uses x ≤ 2 + cosh√x ≤ 3e^√x for x ≥ 0
@@ -174,7 +170,7 @@
 % Dependencies: def:coshsqrt
 % TODO: Add bounds -1 ≤ cosh√x ≤ 1 for x < 0 via cosh√x = cos√(-x)
 
-\begin{lemma}[Bounds on $\cosh\sqrt{x}$ for negative arguments]
+\begin{lemma}[Bounds on \(\cosh\sqrt{x}\) for negative arguments]
   \label{lem:coshsqrt-bd-neg}
   \uses{def:coshsqrt}
   % Source paper uses cosh√x = cos√(-x) for x < 0
@@ -217,6 +213,12 @@
 % Label: def:algorithm-state
 % Dependencies: def:edge-colouring, def:p
 % TODO: Add formal state space for iterative algorithm with T_1,...,T_r and X,Y_i
+
+\begin{definition}[Select and boost algorithm state]
+  \label{def:algorithm-state}
+  \uses{def:edge-colouring, def:p}
+  % Formal state space for iterative algorithm with T_1,...,T_r and X,Y_i
+\end{definition}
 
 % [DEFINITION] Algorithm parameters and updates
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex (α_i, λ parameters)
@@ -384,3 +386,9 @@
 % Label: lem:integral-bounds
 % Dependencies: lem:exp-estimates, lem:fubini-finite
 % TODO: Add robust integration theory for ∫^∞ exp(-√x) dx type integrals
+
+\begin{lemma}[Integration bounds for improper integrals]
+  \label{lem:integral-bounds}
+  \uses{lem:exp-estimates, lem:fubini-finite}
+  % Robust integration theory for ∫^∞ exp(-√x) dx type integrals
+\end{lemma}

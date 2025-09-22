@@ -13,11 +13,21 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{algorithm}[theorem]{Algorithm}
 
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 
+\theoremstyle{plain}
+\newtheorem{invariant}[theorem]{Invariant}
+
+
+% Paper reference command - highlights which paper lemma/theorem this corresponds to
+\usepackage{xcolor}
+\newcommand{\paperref}[1]{%
+  \par\noindent%
+  \colorbox{blue!10}{\textcolor{blue!80!black}{\textbf{Paper reference:} #1}}%
+  \par\vspace{0.5em}%
+}
 
 % definitions from the original paper
 \newcommand\N{\mathbb{N}}
@@ -35,7 +45,7 @@
 \def\Pr{\mathbb{P}}
 \def\cS{\mathcal{S}}
 \newcommand\Ex{\mathbb{E}}
-\newcommand\id{\hbox{$1\mkern-6.5mu1$}}
+\newcommand\id{\hbox{\(1\mkern-6.5mu1\)}}
 \newcommand\lcm{\operatorname{lcm}}
 \newcommand\eps{\varepsilon}
 

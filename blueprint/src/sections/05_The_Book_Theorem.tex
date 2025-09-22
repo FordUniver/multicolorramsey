@@ -1,6 +1,8 @@
 % The Book Theorem section - statement and proof using key lemma
 % This section states and proves the book theorem using the select-and-boost algorithm
 
+\section{The Book Theorem}
+
 % ============================================================================
 % FOUNDATIONAL DEFINITIONS FOR ALGORITHM ANALYSIS
 % ============================================================================
@@ -45,10 +47,10 @@
 % Dependencies: def:density-boost-sets, def:boost-parameters
 % TODO: Add bound p_i(s) - p_0 + δ ≥ δ(1-1/t)^t ∏_{j∈ℬ_i(s)}(1+λ(j)/t)
 
-\begin{lemma}[Lower bound for p_i during algorithm]
-  \label{lem:pi:lower:bound}
+\begin{lemma}[Lower bound for \(p_i\) during algorithm]
+  \label{lem:pi:lower:bound} % Source paper uses same label
+  \paperref{Lemma 4.1}
   \uses{def:density-boost-sets, def:boost-parameters}
-  % Source paper uses same label
 \end{lemma}
 
 % [LEMMA] Minimum bounds on p_i and α_i
@@ -59,10 +61,10 @@
 % Dependencies: lem:pi:lower:bound
 % TODO: Add bounds p_i(s) ≥ p_0 - 3δ/4 and α_i(s) ≥ δ/(4t) for t ≥ 2
 
-\begin{lemma}[Minimum bounds on p_i and α_i]
-  \label{lem:pi:min}
+\begin{lemma}[Minimum bounds on \(p_i\) and \(\alpha_i\)]
+  \label{lem:pi:min} % Source paper uses same label
+  \paperref{Lemma 4.2}
   \uses{lem:pi:lower:bound}
-  % Source paper uses same label
 \end{lemma}
 
 % [LEMMA] Upper bound on density-boost steps
@@ -74,9 +76,9 @@
 % TODO: Add bound |ℬ_i(s)| ≤ 4log(1/δ)/λ_0 · t for t ≥ λ_0 and δ ≤ 1/4
 
 \begin{lemma}[Upper bound on density-boost steps]
-  \label{lem:Bi:max}
+  \label{lem:Bi:max} % Source paper uses same label
+  \paperref{Lemma 4.3}
   \uses{lem:pi:min, def:density-boost-sets}
-  % Source paper uses same label
 \end{lemma}
 
 % [LEMMA] Lower bound for Y_i set sizes
@@ -87,10 +89,10 @@
 % Dependencies: lem:pi:min, lem:Bi:max
 % TODO: Add |Y_i(s)| ≥ (p_0 - 3δ/4)^{t+|ℬ_i(s)|} |Y_i(0)| bound
 
-\begin{lemma}[Lower bound for Y_i set sizes]
-  \label{lem:Y:lower:bound}
+\begin{lemma}[Lower bound for \(Y_i\) set sizes]
+  \label{lem:Y:lower:bound} % Source paper uses same label
+  \paperref{Lemma 4.4}
   \uses{lem:pi:min, lem:Bi:max}
-  % Source paper uses same label
 \end{lemma}
 
 % [LEMMA] Lower bound for reservoir X size
@@ -102,9 +104,9 @@
 % TODO: Add |X(s)| ≥ ε^{rt+|ℬ(s)|} exp(-C∑√(λ(j)+1)) |X(0)| - rt bound
 
 \begin{lemma}[Lower bound for reservoir X size]
-  \label{lem:X:lower:bound}
+  \label{lem:X:lower:bound} % Source paper uses same label
+  \paperref{Lemma 4.5}
   \uses{def:algorithm-constants, lem:sum:of:lambdas}
-  % Source paper uses same label
 \end{lemma}
 
 % [LEMMA] Sum of λ parameters bound
@@ -116,9 +118,9 @@
 % TODO: Add ∑_{j∈ℬ(s)} √λ(j) ≤ 7r log(1/δ)/√λ_0 · t bound for algorithm analysis
 
 \begin{lemma}[Sum of λ parameters bound]
-  \label{lem:sum:of:lambdas}
+  \label{lem:sum:of:lambdas} % Source paper uses same label
+  \paperref{Lemma 4.6}
   \uses{lem:Bi:max, def:density-boost-sets}
-  % Source paper uses same label
 \end{lemma}
 
 % ============================================================================
@@ -135,7 +137,8 @@
 % TODO: Add initialization: T_i = ∅, X = reservoir, Y_i = vertex partitions
 % TODO: Add main loop: while X ≠ ∅ and max|T_i| < t
 
-\begin{algorithm}[Select and boost algorithm]
+\begin{algorithm}
+  \caption{Select and boost algorithm}
   \label{alg:select-boost}
   \uses{lem:key-lemma, def:boost-parameters}
   % Source paper describes RBalg algorithm
@@ -150,11 +153,12 @@
 % TODO: Add application of key lemma to current X, Y_i with parameters α_i
 % TODO: Add extraction of vertex x, color ℓ, updated sets X', Y'_i, parameter λ
 
-\begin{algorithmic}[Key lemma application step]
+\begin{algorithm}
+  \caption{Key lemma application step}
   \label{alg:key-lemma-step}
   \uses{lem:key-lemma, alg:select-boost}
   % Source paper applies key lemma in each iteration
-\end{algorithmic}
+\end{algorithm}
 
 % [ALGORITHM STEP] Color step vs density-boost step
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex (λ vs λ_0 comparison)
@@ -166,11 +170,12 @@
 % TODO: Color step: add x to T_ℓ, restrict Y_ℓ to Y'_ℓ
 % TODO: Density-boost step: update all Y_i to Y'_i, set X to X'
 
-\begin{algorithmic}[Decision rule for steps]
+\begin{algorithm}
+  \caption{Decision rule for steps}
   \label{alg:step-decision}
   \uses{alg:key-lemma-step, def:boost-parameters}
   % Source paper compares λ vs λ_0
-\end{algorithmic}
+\end{algorithm}
 
 % [ALGORITHM STEP] Invariant maintenance
 % Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 19-20 (invariant conditions)
@@ -198,11 +203,12 @@
 % TODO: Add output: (t,m)-book with vertex set T_i ∪ Y_i where |T_i| = t
 % TODO: Add verification that m = |Y_i| satisfies required bounds
 
-\begin{algorithmic}[Termination conditions]
+\begin{algorithm}
+  \caption{Termination conditions}
   \label{alg:termination}
   \uses{alg:invariants, def:book, lem:X:lower:bound, lem:Y:lower:bound}
   % Source paper terminates when X empty or |T_i| = t
-\end{algorithmic}
+\end{algorithm}
 
 % ============================================================================
 % MULTICOLOUR BOOK ALGORITHM
@@ -219,7 +225,8 @@
 % TODO: Add Step 2: Colour step if λ ≤ λ_0, choose j with |N_j(x) ∩ X'| ≥ (|X'|-1)/r
 % TODO: Add Step 3: Density-boost step if λ > λ_0, update X → X' and Y_ℓ → Y'_ℓ
 
-\begin{algorithm}[Multicolour book algorithm]
+\begin{algorithm}
+  \caption{Multicolour book algorithm}
   \label{alg:multicolour-book}
   \uses{alg:select-boost, lem:key-lemma}
   % Source paper describes complete book algorithm
@@ -242,9 +249,9 @@
 % TODO: Add conclusion: χ contains monochromatic (t,m)-book
 
 \begin{theorem}[Book theorem]
-  \label{thm:book}
+  \label{thm:book} % Source paper uses same label
+  \paperref{Theorem 2.1}
   \uses{def:book, def:edge-colouring, def:colour-neighborhood, alg:multicolour-book, lem:pi:lower:bound, lem:pi:min, lem:Bi:max, lem:Y:lower:bound, lem:X:lower:bound, lem:sum:of:lambdas}
-  % Source paper uses same label
 \end{theorem}
 
 % ============================================================================
