@@ -10,6 +10,7 @@
 % Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 4-21 (\begin{lemma}[Lemma 5.2])
 % Lean status: ✗ Not implemented
 % Label: lem:ESz:steps
+% Dependencies: def:edge-colouring, def:colour-neighborhood, def:book
 % TODO: Add lemma for n,r ∈ ℕ and ε > 0 with r-colouring of E(K_n)
 % TODO: Add existence of disjoint sets S₁,...,Sᵣ and W with bounds
 % TODO: Add |W| ≥ ((1+ε)/r)^{∑|Sⱼ|} n and |N_i(w) ∩ W| ≥ (1/r - ε)|W| - 1
@@ -20,6 +21,7 @@
 % Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 22-33 (\begin{lemma}[Lemma 5.3])
 % Lean status: ✗ Not implemented
 % Label: lem:many:ESz:steps
+% Dependencies: lem:ESz:steps, def:ramsey-number-off-diagonal
 % TODO: Add bound for k,r ≥ 2 and ε ∈ (0,1)
 % TODO: Add R_r(k-s₁,...,k-sᵣ) ≤ e^{-ε³k/2} ((1+ε)/r)^s r^{rk}
 % TODO: Add condition s₁,...,sᵣ ∈ [k] with s = s₁ + ... + sᵣ ≥ ε²k
@@ -33,6 +35,7 @@
 % Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 34-42 (\begin{theorem}[Theorem 5.1])
 % Lean status: ✗ Not implemented
 % Label: thm:Ramsey:multicolour:quant
+% Dependencies: def:ramsey-number
 % TODO: Add quantitative theorem for r ≥ 2 with δ = 2^{-160} r^{-12}
 % TODO: Add bound R_r(k) ≤ e^{-δk} r^{rk} for k ≥ 2^{160} r^{16}
 % TODO: Add explicit constants showing exponential improvement
@@ -46,6 +49,7 @@
 % Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 45-69 (proof section)
 % Lean status: ✗ Not implemented (proof)
 % Uses: thm:book, lem:ESz:steps, lem:many:ESz:steps, lem:multibounds
+% Dependencies: thm:Ramsey:multicolour:quant, thm:book, lem:many:ESz:steps
 % TODO: Add proof setup: δ = 2^{-160}r^{-12}, ε = 2^{-50}r^{-4}, k ≥ 2^{160}r^{16}
 % TODO: Add case 1: |S₁| + ... + |Sᵣ| ≥ ε²k using Erdős-Szekeres completion
 % TODO: Add case 2: |S₁| + ... + |Sᵣ| ≤ ε²k using book theorem application
@@ -63,6 +67,7 @@
 % Lean status: ✗ Not implemented
 % Uses: thm:Ramsey:multicolour:quant
 % Label: proof:main-from-quant
+% Dependencies: thm:Ramsey:multicolour:quant
 % TODO: Add proof that thm:Ramsey:multicolour:quant implies thm:Ramsey:multicolour
 % TODO: Show δ(r) = 2^{-160}r^{-12} > 0 for each r ≥ 2
 % TODO: Verify "sufficiently large k" condition: k ≥ 2^{160}r^{16}

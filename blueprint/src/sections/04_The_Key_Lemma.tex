@@ -10,6 +10,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 9 (β = 3^{-4r})
 % Lean status: ✓ Implemented in KeyLemma.lean and GeometricLemma.lean
 % Label: def:algorithm-constants
+% Dependencies: None (elementary constants)
 % TODO: Add definitions β = 3^{-4r}, C = 4r^{3/2} for geometric lemma parameters
 
 % [DEFINITION] Algorithm threshold and boost parameters
@@ -17,6 +18,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:boost-parameters
+% Dependencies: def:p (from section 02)
 % TODO: Add λ_0 threshold, α_i = (p_i(X,Y_i) - p_0 + δ)/t boost parameters
 
 % ============================================================================
@@ -28,6 +30,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 4-20 (\begin{lemma}[Key lemma])
 % Lean status: ✓ Partially implemented as `key` in KeyLemma.lean
 % Label: lem:key-lemma (blueprint) / key:lemma (source)
+% Dependencies: def:p, lem:geometric (from section 03), def:algorithm-constants
 % TODO: Add key lemma statement with input: χ r-coloring, sets X,Y₁,...,Yᵣ, parameters α₁,...,αᵣ > 0
 % TODO: Add existence of vertex x ∈ X, colour ℓ ∈ [r], sets X' ⊂ X, Y'ᵢ ⊂ Nᵢ(x) ∩ Yᵢ, λ ≥ -1
 % TODO: Add bounds |X'| ≥ β e^{-C√(λ+1)} |X| and p_ℓ(X',Y'_ℓ) ≥ p_ℓ(X,Y_ℓ) + λα_ℓ
@@ -42,6 +45,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 102-122 (\begin{lemma}[Lemma 4.1])
 % Lean status: ✗ Not implemented
 % Label: lem:pi:lower:bound
+% Dependencies: def:boost-parameters, alg:select-boost
 % TODO: Add bound p_i(s) ≥ (1-ε)^s · p_0 for algorithm step s
 
 % [LEMMA] Minimum bounds on p_i and α_i
@@ -49,6 +53,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 123-136 (\begin{lemma}[Lemma 4.2])
 % Lean status: ✗ Not implemented
 % Label: lem:pi:min
+% Dependencies: def:boost-parameters, lem:pi:lower:bound
 % TODO: Add bounds min p_i(s) ≥ p_0/2 and α_i(s) ≥ δ/2t
 
 % [LEMMA] Upper bound on density-boost steps
@@ -56,6 +61,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 137-152 (\begin{lemma}[Lemma 4.3])
 % Lean status: ✗ Not implemented
 % Label: lem:Bi:max
+% Dependencies: def:boost-parameters, lem:pi:min
 % TODO: Add bound on total number of density-boost steps B_i ≤ 2t/δ
 
 % [LEMMA] Lower bound for Y_i set sizes
@@ -63,6 +69,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 153-169 (\begin{lemma}[Lemma 4.4])
 % Lean status: ✗ Not implemented
 % Label: lem:Y:lower:bound
+% Dependencies: lem:pi:min, lem:Bi:max
 % TODO: Add |Y_i(s)| ≥ (p_0/2)^{B_i+C_i} |Y_i(0)| bound during algorithm
 
 % [LEMMA] Lower bound for reservoir X size
@@ -70,6 +77,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 170-187 (\begin{lemma}[Lemma 4.5])
 % Lean status: ✗ Not implemented
 % Label: lem:X:lower:bound
+% Dependencies: def:algorithm-constants, lem:sum:of:lambdas
 % TODO: Add |X(s)| ≥ β^s exp(-C∑√(λⱼ+1)) |X(0)| bound
 
 % [LEMMA] Sum of λ parameters bound
@@ -77,6 +85,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 188-212 (\begin{lemma}[Lemma 4.6])
 % Lean status: ✗ Not implemented
 % Label: lem:sum:of:lambdas
+% Dependencies: def:boost-parameters, lem:Bi:max
 % TODO: Add ∑ⱼ√(λⱼ+1) ≤ O(rt) bound over all algorithm steps
 
 % ============================================================================
@@ -88,6 +97,7 @@
 % No direct deprecated blueprint equivalent (was scattered in proof)
 % Lean status: ✗ Not implemented (algorithmic description)
 % Label: alg:select-boost
+% Dependencies: lem:key-lemma, def:boost-parameters
 % TODO: Add algorithm RBalg with input parameters t, p_0, δ
 % TODO: Add initialization: T_i = ∅, X = reservoir, Y_i = vertex partitions
 % TODO: Add main loop: while X ≠ ∅ and max|T_i| < t
@@ -97,6 +107,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: alg:key-lemma-step
+% Dependencies: lem:key-lemma, alg:select-boost
 % TODO: Add application of key lemma to current X, Y_i with parameters α_i
 % TODO: Add extraction of vertex x, color ℓ, updated sets X', Y'_i, parameter λ
 
@@ -105,6 +116,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: alg:step-decision
+% Dependencies: alg:key-lemma-step, def:boost-parameters
 % TODO: Add decision rule: if λ ≥ λ_0 then color step, else density-boost step
 % TODO: Color step: add x to T_ℓ, restrict Y_ℓ to Y'_ℓ
 % TODO: Density-boost step: update all Y_i to Y'_i, set X to X'
@@ -114,6 +126,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: alg:invariants
+% Dependencies: alg:step-decision, def:colour-neighborhood
 % TODO: Add maintenance of X ⊂ ∩_j ∩_{u∈T_j} N_j(u)
 % TODO: Add maintenance of Y_i ⊂ ∩_{u∈T_i} N_i(u) for each color i
 % TODO: Add density tracking: p_i(X,Y_i) ≥ p_0 - (εt) for algorithm progress
@@ -123,6 +136,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: alg:termination
+% Dependencies: alg:invariants, def:book, lem:X:lower:bound, lem:Y:lower:bound
 % TODO: Add termination conditions: X = ∅ or some |T_i| = t
 % TODO: Add output: (t,m)-book with vertex set T_i ∪ Y_i where |T_i| = t
 % TODO: Add verification that m = |Y_i| satisfies required bounds

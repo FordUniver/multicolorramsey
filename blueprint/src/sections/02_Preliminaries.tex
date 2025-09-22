@@ -8,6 +8,7 @@
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 30-40 (\begin{lemma}[Lemma A.1])
 % Lean status: ✗ Not implemented
 % Label: lem:multibounds
+% Dependencies: None (elementary combinatorics)
 % TODO: Add bound for multinomial coefficient with exponential decay
 
 \subsection{Graphs and colourings}
@@ -17,6 +18,7 @@
 % No direct deprecated blueprint equivalent
 % Lean status: ✓ Implemented in Mathlib as CompleteGraph
 % Label: def:complete-graph
+% Dependencies: None (standard graph theory)
 % TODO: Add definition of complete graph K_n on n vertices
 
 % [DEFINITION] Edge colouring of graphs
@@ -24,6 +26,7 @@
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 3-8 (\begin{definition} \label{def:edge-colouring})
 % Lean status: ✓ Implemented as SimpleGraph.EdgeColoring
 % Label: def:edge-colouring
+% Dependencies: def:complete-graph
 % TODO: Add definition of edge colouring as map from edge set to colours
 
 % [DEFINITION] Colour neighbourhood
@@ -31,6 +34,7 @@
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 10-16 (\begin{definition} \label{def:colour-neighborhood})
 % Lean status: ✓ Implemented as SimpleGraph.EdgeColoring.coloredNeighborSet
 % Label: def:colour-neighborhood
+% Dependencies: def:edge-colouring
 % TODO: Add definition N_i(u) for neighbourhood of vertex u in colour i
 
 % [DEFINITION] Ramsey numbers R_r(k)
@@ -38,6 +42,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:ramsey-number
+% Dependencies: def:complete-graph, def:edge-colouring, def:monochromatic-clique
 % TODO: Add definition R_r(k) = min{n : every r-coloring of E(K_n) contains monochromatic K_k}
 
 % [DEFINITION] Off-diagonal Ramsey numbers R_r(k_1,...,k_r)
@@ -45,6 +50,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:ramsey-number-off-diagonal
+% Dependencies: def:ramsey-number
 % TODO: Add definition R_r(k_1,...,k_r) for off-diagonal Ramsey numbers
 
 % [DEFINITION] Books (A,B)
@@ -52,6 +58,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:book
+% Dependencies: def:complete-graph
 % TODO: Add definition of book graph: vertex set A ∪ B, edge set {uv : {u,v} ⊄ B}
 % TODO: Add definition of (t,m)-book with |A| = t and |B| = m
 
@@ -60,6 +67,7 @@
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 18-24 (\begin{definition} \label{def:p})
 % Lean status: ✓ Partially implemented as pY in KeyLemma.lean
 % Label: def:p
+% Dependencies: def:colour-neighborhood
 % TODO: Add definition of p_i(X,Y) = min{|N_i(x) ∩ Y|/|Y| : x ∈ X}
 
 % [DEFINITION] Cliques and monochromatic structures
@@ -67,6 +75,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:monochromatic-clique
+% Dependencies: def:complete-graph, def:edge-colouring
 % TODO: Add definition of monochromatic clique in edge coloring
 
 % [DEFINITION] Graph regularity and density
@@ -74,6 +83,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:regular-coloring
+% Dependencies: def:edge-colouring, def:colour-neighborhood
 % TODO: Add definition of ε-regular coloring with density close to 1/r
 
 \subsection{Algorithmic foundations}
@@ -83,6 +93,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:algorithm-state
+% Dependencies: def:edge-colouring, def:p
 % TODO: Add formal state space for iterative algorithm with T_1,...,T_r and X,Y_i
 
 % [DEFINITION] Algorithm parameters and updates
@@ -90,6 +101,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:algorithm-parameters
+% Dependencies: def:algorithm-state, def:p
 % TODO: Add α_i boost parameters and λ density improvement tracking
 
 % [LEMMA] Algorithm termination
@@ -97,6 +109,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: lem:algorithm-termination
+% Dependencies: def:algorithm-state, def:algorithm-parameters, def:book
 % TODO: Add proof that algorithm terminates with required book structure
 
 \subsection{Erdős-Szekeres method}
@@ -106,6 +119,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:erdos-szekeres-bound
+% Dependencies: def:ramsey-number
 % TODO: Add classical upper bound construction
 
 % [LEMMA] Erdős-Szekeres greedy process
@@ -113,6 +127,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: lem:erdos-szekeres-greedy
+% Dependencies: def:erdos-szekeres-bound, def:monochromatic-clique
 % TODO: Add greedy clique-finding process with exponential gains
 
 \subsection{Linear algebra and inner products}
@@ -122,6 +137,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:inner-product-finite
+% Dependencies: None (standard linear algebra)
 % TODO: Add inner product structure on functions X → ℝ^V for finite X, V
 
 % [DEFINITION] Tensor products for moments lemma
@@ -129,6 +145,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:tensor-moments
+% Dependencies: def:inner-product-finite
 % TODO: Add tensor product Z = σₐ₁(U) ⊗ ⋯ ⊗ σₐₗ(U') for moments calculation
 
 % [LEMMA] Positive semidefiniteness of moment matrices
@@ -136,6 +153,7 @@
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 3-13 (related to moments)
 % Lean status: ✓ Partially implemented as `moments` in Basic.lean
 % Label: lem:positive-semidefinite
+% Dependencies: def:tensor-moments, def:uniform-product
 % TODO: Add proof that E[ZZ*] ≥ 0 for tensor products
 
 \subsection{Probability theory and measure theory}
@@ -145,6 +163,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✓ Partially implemented in GeometricLemma.lean
 % Label: def:uniform-product
+% Dependencies: None (standard probability theory)
 % TODO: Add uniform distribution on X × X with proper measure theory
 
 % [LEMMA] Product measure integration (Fubini)
@@ -152,6 +171,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✓ Partially used in GeometricLemma.lean
 % Label: lem:fubini-finite
+% Dependencies: def:uniform-product
 % TODO: Add Fubini's theorem for finite product spaces
 
 % [LEMMA] Concentration inequalities
@@ -159,6 +179,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: lem:concentration
+% Dependencies: def:uniform-product
 % TODO: Add concentration bounds for the probabilistic method
 
 \subsection{Trigonometry and special functions}
@@ -168,6 +189,7 @@
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 46-52 (\begin{definition} \label{def:coshsqrt})
 % Lean status: ✓ Implemented as coshsqrt in Basic.lean
 % Label: def:coshsqrt
+% Dependencies: None (standard analysis)
 % TODO: Add definition of cosh√x via Taylor expansion
 
 % [LEMMA] Lower bound 1 ≤ 2 + cosh√x
@@ -175,6 +197,7 @@
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 54-63 (\begin{lemma} \label{lem:le-coshsqrt})
 % Lean status: ✓ Implemented as one_le_coshsqrt in Basic.lean
 % Label: lem:le-coshsqrt
+% Dependencies: def:coshsqrt, lem:coshsqrt-bd-neg
 % TODO: Add proof that 1 ≤ 2 + cosh√x for all x
 
 % [LEMMA] Bounds for positive x
@@ -182,6 +205,7 @@
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 65-82 (\begin{lemma} \label{lem:coshsqrt-bd-pos})
 % Lean status: ✓ Partially implemented (lt_coshsqrt, ge_coshsqrt in Basic.lean)
 % Label: lem:coshsqrt-bd-pos
+% Dependencies: def:coshsqrt
 % TODO: Add bounds x ≤ 2 + cosh√x ≤ 3e^√x for x > 0
 
 % [LEMMA] Bounds for negative x
@@ -189,6 +213,7 @@
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 84-93 (\begin{lemma} \label{lem:coshsqrt-bd-neg})
 % Lean status: ✓ Implemented as icc_coshsqrt_neg in Basic.lean
 % Label: lem:coshsqrt-bd-neg
+% Dependencies: def:coshsqrt
 % TODO: Add bounds -1 ≤ cosh√x ≤ 1 for x < 0
 
 % [DEFINITION] Special function f(x₁,...,xᵣ)
@@ -196,6 +221,7 @@
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 95-104 (\begin{definition} \label{def:f})
 % Lean status: ✓ Implemented as f in Basic.lean
 % Label: def:f
+% Dependencies: def:coshsqrt, lem:coshsqrt-bd-neg, lem:coshsqrt-bd-pos
 % TODO: Add definition f(x₁,...,xᵣ) = ∑ⱼ xⱼ ∏ᵢ≠ⱼ(2 + cosh√xᵢ)
 
 % [LEMMA] Taylor coefficients are non-negative
@@ -203,6 +229,7 @@
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 106-113 (\begin{lemma} \label{lem:taylor-nonneg})
 % Lean status: ✗ Not implemented
 % Label: lem:taylor-nonneg
+% Dependencies: def:f
 % TODO: Add proof that f has non-negative Taylor coefficients
 
 % [LEMMA] Exponential function estimates
@@ -210,6 +237,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: lem:exp-estimates
+% Dependencies: lem:coshsqrt-bd-pos
 % TODO: Add sharp bounds on exp(c√x) for the geometric lemma
 
 % [LEMMA] Integration bounds for improper integrals
@@ -217,4 +245,5 @@
 % No deprecated blueprint equivalent
 % Lean status: ✓ Partially implemented in Integrals.lean
 % Label: lem:integral-bounds
+% Dependencies: lem:exp-estimates, lem:fubini-finite
 % TODO: Add robust integration theory for ∫^∞ exp(-√x) dx type integrals

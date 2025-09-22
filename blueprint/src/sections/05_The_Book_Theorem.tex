@@ -10,6 +10,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:algorithm-state-book
+% Dependencies: def:algorithm-state, def:p
 % TODO: Add definitions p_0, p_i(s), α_i(s), X(s), Y_i(s) for algorithm analysis
 
 % [DEFINITION] Density-boost step sets
@@ -17,6 +18,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:density-boost-sets
+% Dependencies: def:algorithm-state-book, def:boost-parameters
 % TODO: Add definition ℬ_i(s) = {j : ℓ(j) = i and λ(j) > λ_0} for tracking boost steps
 
 % ============================================================================
@@ -28,6 +30,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 102-122 (\begin{lemma}[Lemma 4.1])
 % Lean status: ✗ Not implemented
 % Label: lem:pi:lower:bound
+% Dependencies: def:density-boost-sets, def:boost-parameters
 % TODO: Add bound p_i(s) - p_0 + δ ≥ δ(1-1/t)^t ∏_{j∈ℬ_i(s)}(1+λ(j)/t)
 
 % [LEMMA] Minimum bounds on p_i and α_i
@@ -35,6 +38,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 123-136 (\begin{lemma}[Lemma 4.2])
 % Lean status: ✗ Not implemented
 % Label: lem:pi:min
+% Dependencies: lem:pi:lower:bound
 % TODO: Add bounds p_i(s) ≥ p_0 - 3δ/4 and α_i(s) ≥ δ/(4t) for t ≥ 2
 
 % [LEMMA] Upper bound on density-boost steps
@@ -42,6 +46,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 137-152 (\begin{lemma}[Lemma 4.3])
 % Lean status: ✗ Not implemented
 % Label: lem:Bi:max
+% Dependencies: lem:pi:min, def:density-boost-sets
 % TODO: Add bound |ℬ_i(s)| ≤ 4log(1/δ)/λ_0 · t for t ≥ λ_0 and δ ≤ 1/4
 
 % [LEMMA] Lower bound for Y_i set sizes
@@ -49,6 +54,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 153-169 (\begin{lemma}[Lemma 4.4])
 % Lean status: ✗ Not implemented
 % Label: lem:Y:lower:bound
+% Dependencies: lem:pi:min, lem:Bi:max
 % TODO: Add |Y_i(s)| ≥ (p_0 - 3δ/4)^{t+|ℬ_i(s)|} |Y_i(0)| bound
 
 % [LEMMA] Lower bound for reservoir X size
@@ -56,6 +62,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 170-187 (\begin{lemma}[Lemma 4.5])
 % Lean status: ✗ Not implemented
 % Label: lem:X:lower:bound
+% Dependencies: def:algorithm-constants, lem:sum:of:lambdas
 % TODO: Add |X(s)| ≥ ε^{rt+|ℬ(s)|} exp(-C∑√(λ(j)+1)) |X(0)| - rt bound
 
 % [LEMMA] Sum of λ parameters bound
@@ -63,6 +70,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 188-212 (\begin{lemma}[Lemma 4.6])
 % Lean status: ✗ Not implemented
 % Label: lem:sum:of:lambdas
+% Dependencies: lem:Bi:max, def:density-boost-sets
 % TODO: Add ∑_{j∈ℬ(s)} √λ(j) ≤ 7r log(1/δ)/√λ_0 · t bound for algorithm analysis
 
 % ============================================================================
@@ -74,6 +82,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 82-100 (\begin{algorithm}[The Multicolour Book Algorithm])
 % Lean status: ✗ Not implemented (algorithmic description)
 % Label: alg:multicolour-book
+% Dependencies: alg:select-boost, lem:key-lemma
 % TODO: Add complete multicolour book algorithm with 3 steps
 % TODO: Add Step 1: Apply key lemma with α_i = (p_i(X,Y_i) - p_0 + δ)/t
 % TODO: Add Step 2: Colour step if λ ≤ λ_0, choose j with |N_j(x) ∩ X'| ≥ (|X'|-1)/r
@@ -88,6 +97,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 213-220 (\begin{theorem}\label{thm:book})
 % Lean status: ✗ Not implemented
 % Label: thm:book
+% Dependencies: def:book, def:edge-colouring, def:colour-neighborhood
 % TODO: Add book theorem with r-colouring χ of E(K_n) and sets X,Y₁,...,Yᵣ ⊂ V(K_n)
 % TODO: Add condition: for p > 0, μ ≥ 2¹⁰r³, t,m ∈ ℕ with t ≥ μ⁵/p
 % TODO: Add density condition: |N_i(x) ∩ Y_i| ≥ p|Y_i| for all x ∈ X, i ∈ [r]
@@ -103,6 +113,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 222-257 (proof of book theorem)
 % Lean status: ✗ Not implemented (proof)
 % Uses: alg:multicolour-book, lem:pi:lower:bound, lem:pi:min, lem:Bi:max, lem:Y:lower:bound, lem:X:lower:bound, lem:sum:of:lambdas
+% Dependencies: thm:book, alg:multicolour-book, lem:X:lower:bound, lem:Y:lower:bound
 % TODO: Add algorithm setup with δ = p/μ² and λ₀ = (μlog(1/δ)/(8C))²
 % TODO: Add proof that algorithm terminates with max|T_i(s)| = t and min|Y_i(s)| ≥ m
 % TODO: Add bound analysis: |ℬ_i(s)| ≤ t using auxiliary lemmas

@@ -1,51 +1,6 @@
 % The Geometric Lemma section - moments lemma, geometric lemma, and key lemma proof
 % This section contains the geometric tools needed to prove the key lemma
 
-% ============================================================================
-% FOUNDATIONAL DEFINITIONS
-% ============================================================================
-
-% [DEFINITION] Definition of cosh√x via Taylor series
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 39-40 (implicit)
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 47-52 (\begin{definition}\label{def:coshsqrt})
-% Lean status: ✓ Implemented as `coshsqrt` in Basic.lean
-% Label: def:coshsqrt
-% TODO: Add Taylor series definition cosh√x = ∑_{n=0}^∞ x^n/(2n)!
-
-% [LEMMA] Lower bound 1 ≤ 2 + cosh√x
-% Source: implicit (used in geometric lemma proof)
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 54-63 (\begin{lemma}\label{lem:le-coshsqrt})
-% Lean status: ✓ Implemented as `one_le_coshsqrt` in Basic.lean
-% Label: lem:le-coshsqrt
-% TODO: Add proof that 1 ≤ 2 + cosh√x for all x
-
-% [LEMMA] Bounds for positive x
-% Source: implicit (used in geometric lemma proof)
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 65-82 (\begin{lemma}\label{lem:coshsqrt-bd-pos})
-% Lean status: ✓ Partially implemented (lt_coshsqrt, ge_coshsqrt in Basic.lean)
-% Label: lem:coshsqrt-bd-pos
-% TODO: Add bounds x ≤ 2 + cosh√x ≤ 3e^√x for x > 0
-
-% [LEMMA] Bounds for negative x
-% Source: implicit (used in geometric lemma proof)
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 84-93 (\begin{lemma}\label{lem:coshsqrt-bd-neg})
-% Lean status: ✓ Implemented as `icc_coshsqrt_neg` in Basic.lean
-% Label: lem:coshsqrt-bd-neg
-% TODO: Add bounds -1 ≤ cosh√x ≤ 1 for x < 0
-
-% [DEFINITION] Special function f(x₁,...,xᵣ)
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 95-104 (\begin{definition}\label{def:f})
-% Lean status: ✓ Implemented as `f` in Basic.lean
-% Label: def:f
-% TODO: Add definition f(x₁,...,xᵣ) = ∑ⱼ xⱼ ∏ᵢ≠ⱼ(2 + cosh√xᵢ)
-
-% [LEMMA] Non-negative Taylor coefficients of special function
-% Source: implicit in geometric lemma proof
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 106-113 (\begin{lemma}\label{lem:taylor-nonneg})
-% Lean status: ✓ Used implicitly in moments proof in Basic.lean
-% Label: lem:taylor-nonneg
-% TODO: Add proof that all coefficients of f's Taylor expansion are non-negative
 
 % ============================================================================
 % MOMENTS LEMMA
@@ -56,6 +11,7 @@
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 3-13 (\begin{lemma}[Moments Lemma])
 % Lean status: ✓ Implemented as `moments` in Basic.lean
 % Label: lem:moments
+% Dependencies: def:inner-product-finite, def:uniform-product
 % TODO: Add moments lemma for i.i.d. random variables U, U'
 % TODO: Add statement E[⟨σ₁(U),σ₁(U')⟩^ℓ₁ ⋯ ⟨σᵣ(U),σᵣ(U')⟩^ℓᵣ] ≥ 0
 % TODO: Add proof using positive semidefiniteness
@@ -65,6 +21,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✓ Partially used in Basic.lean moments proof
 % Label: lem:tensor-moments
+% Dependencies: def:inner-product-finite, lem:moments
 % TODO: Add tensor product Z = σₐ₁(U) ⊗ ⋯ ⊗ σₐₗ(U') construction
 % TODO: Add E[ZZ*] ≥ 0 positive semidefiniteness result
 
@@ -77,6 +34,7 @@
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 37-69 (\begin{lemma}[Special-function lemma (Part 1)])
 % Lean status: ✓ Implemented as `specialFunctionE` in Basic.lean
 % Label: lem:special:function:1
+% Dependencies: def:f, lem:coshsqrt-bd-pos
 % TODO: Add bound f(x) ≤ 3ʳ·r·exp(∑ᵢ √(xᵢ + 3r)) for all x
 
 % [LEMMA] Special function lemma part 2: lower bound when negative
@@ -84,6 +42,7 @@
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 70-97 (\begin{lemma}[Special-function lemma (Part 2)])
 % Lean status: ✓ Implemented as `specialFunctionEc` in Basic.lean
 % Label: lem:special:function:2
+% Dependencies: def:f, lem:coshsqrt-bd-neg
 % TODO: Add bound f(x) ≥ 3^{-4r} for x with ∃i: xᵢ < -3r
 
 % ============================================================================
@@ -95,6 +54,7 @@
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 98-108 (\begin{lemma}[Geometric lemma])
 % Lean status: ✓ Implemented as `geometric` in GeometricLemma.lean
 % Label: lem:lambda (source) / lem:geometric (blueprint)
+% Dependencies: lem:moments, lem:special:function:1, lem:special:function:2, lem:integral-exp-decay
 % TODO: Add geometric lemma for i.i.d. random variables U, U' and functions σ₁,...,σᵣ
 % TODO: Add existence of λ ≥ -1 and i ∈ [r] with probability bound
 % TODO: Add Pr(⟨σᵢ(U),σᵢ(U')⟩ ≥ λ ∧ ∀j≠i: ⟨σⱼ(U),σⱼ(U')⟩ ≥ -1) ≥ β e^{-C√(λ+1)}
@@ -108,6 +68,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✓ Implemented as `integral_rpow_mul_exp_neg_rpow_le` in Integrals.lean
 % Label: lem:integral-exp-decay
+% Dependencies: lem:fubini-finite, lem:exp-estimates
 % TODO: Add ∫₀^∞ x^a e^{-b√x} dx bounds for geometric lemma integration
 
 % [LEMMA] Integration by parts for special functions
@@ -115,6 +76,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✓ Partially implemented in Integrals.lean
 % Label: lem:integration-by-parts-special
+% Dependencies: lem:integral-bounds
 % TODO: Add integration techniques for ∫ f(x₁,...,xᵣ) dx₁...dxᵣ type integrals
 
 % [LEMMA] Substitution formulas for geometric lemma
@@ -122,6 +84,7 @@
 % No deprecated blueprint equivalent
 % Lean status: ✓ Used in GeometricLemma.lean proof
 % Label: lem:substitution-geometric
+% Dependencies: lem:fubini-finite
 % TODO: Add change of variables for probability density calculations
 
 % ============================================================================
@@ -133,6 +96,7 @@
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 22-101 (proof of key lemma)
 % Lean status: ✓ Implemented as `key` in KeyLemma.lean
 % Uses: lem:moments, lem:geometric
+% Dependencies: lem:geometric, def:p, def:colour-neighborhood
 % TODO: Add proof constructing functions σᵢ from neighborhood sets
 % TODO: Add application of geometric lemma to obtain vertex x and parameter λ
 % TODO: Add verification of key lemma bounds using geometric lemma output
