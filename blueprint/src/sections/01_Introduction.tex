@@ -1,9 +1,28 @@
-\begin{theorem}\label{thm:Ramsey:multicolour}
-  For each $r \ge 2$, there exists $\delta = \delta(r) > 0$ such that 
-  %
-  \begin{equation*}
-    R_r(k) \le e^{-\delta k} r^{rk}
-  \end{equation*} 
-  %
-  for all sufficiently large $k \in \N$. 
+% Introduction section - main theorem statement
+% This section contains the main result of the paper
+
+This blueprint formalizes the proof from \cite{CGMS} of an exponential improvement to the classical Erdős-Szekeres upper bound for multicolor Ramsey numbers.
+
+The $r$-color Ramsey number $R_r(k)$ is the minimum $n$ such that every $r$-coloring of the edges of the complete graph $K_n$ contains a monochromatic clique $K_k$.
+Ramsey~\cite{Ramsey30} proved in 1930 that these numbers are finite, and Erdős and Szekeres~\cite{ESz35} showed in 1935 that $R_r(k) \le r^{rk}$.
+For over 85 years, no improvement was known for the case $r \ge 3$.
+
+The main result of this formalization establishes the first exponential improvement over the Erdős-Szekeres bound for all $r \ge 2$:
+
+% ============================================================================
+% MAIN THEOREM
+% ============================================================================
+
+\begin{theorem}
+    \label{thm:Ramsey:multicolour}
+    %
+    For each $r \ge 2$, there exists $\delta = \delta(r) > 0$ such that
+    %
+    \begin{equation*}
+        R_r(k) \le e^{-\delta k} r^{rk}
+    \end{equation*}
+    %
+    for all sufficiently large $k \in \N$.
 \end{theorem}
+
+The proof introduces a new ``select and boost'' algorithm that iteratively finds large monochromatic substructures using a geometric lemma based on moment inequalities.

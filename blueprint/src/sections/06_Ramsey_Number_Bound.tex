@@ -1,0 +1,65 @@
+% Deducing the Main Result section - Erdős-Szekeres steps and final assembly
+% This section combines all results to prove the main theorem
+
+% ============================================================================
+% ERDŐS-SZEKERES AUXILIARY LEMMAS
+% ============================================================================
+
+% [LEMMA] Single Erdős-Szekeres step
+% Source: source/sections/section_deducing_the_bound_on_rrk.tex line 13 (\begin{lemma}\label{lem:ESz:steps})
+% Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 4-21 (\begin{lemma}[Lemma 5.2])
+% Lean status: ✗ Not implemented
+% Label: lem:ESz:steps
+% TODO: Add lemma about single step of Erdős-Szekeres algorithm
+% TODO: Add existence of disjoint sets S₁,...,Sᵣ and W
+% TODO: Add bounds |W| ≥ ((1+ε)/r)^{∑|Sⱼ|} n and degree conditions
+% TODO: Add monochromatic book property (Sᵢ,W) in colour i
+
+% [LEMMA] Many Erdős-Szekeres steps bound
+% Source: source/sections/section_deducing_the_bound_on_rrk.tex line 33 (\begin{lemma}\label{lem:many:ESz:steps})
+% Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 22-33 (\begin{lemma}[Lemma 5.3])
+% Lean status: ✗ Not implemented
+% Label: lem:many:ESz:steps
+% TODO: Add bound R_r(k-s₁,...,k-sᵣ) ≤ e^{-ε³k/2} ((1+ε)/r)^s r^{rk}
+% TODO: Add condition s = s₁ + ... + sᵣ ≥ ε²k
+
+% ============================================================================
+% QUANTITATIVE MAIN THEOREM
+% ============================================================================
+
+% [THEOREM] Quantitative version of main theorem
+% Source: source/sections/section_deducing_the_bound_on_rrk.tex line 5 (\begin{theorem}\label{thm:Ramsey:multicolour:quant})
+% Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex line 34-40 (\begin{theorem}[Theorem 5.1])
+% Lean status: ✗ Not implemented
+% Label: thm:Ramsey:multicolour:quant
+% TODO: Add quantitative version with explicit constants
+% TODO: Add bound R_r(k) ≤ exp(-ε³k/8) r^{rk} for ε = ε(r)
+% TODO: Add all sufficiently large k condition
+
+% ============================================================================
+% MAIN THEOREM PROOF
+% ============================================================================
+
+% [PROOF] Proof of main theorem using book theorem and Erdős-Szekeres
+% Source: source/sections/section_deducing_the_bound_on_rrk.tex (main proof)
+% Deprecated blueprint: deprecated/05_Deducing_the_Bound_on_the_Ramsey_Number.tex (proof section)
+% Lean status: ✗ Not implemented (proof)
+% Uses: thm:book, lem:ESz:steps, lem:many:ESz:steps
+% TODO: Add proof strategy explanation
+% TODO: Add parameter choices: t = εk, m ≥ e^{-t²/8k} r^{-t} · n
+% TODO: Add verification that book theorem conditions are satisfied
+% TODO: Add application of Erdős-Szekeres bounds to complete proof
+% TODO: Add deduction of thm:Ramsey:multicolour from quantitative version
+
+% ============================================================================
+% FINAL ASSEMBLY
+% ============================================================================
+
+% [PROOF] Proof that quantitative theorem implies main theorem
+% Source: source/sections/section_deducing_the_bound_on_rrk.tex (final step)
+% No direct deprecated equivalent (was implicit)
+% Lean status: ✗ Not implemented
+% Uses: thm:Ramsey:multicolour:quant
+% TODO: Add proof that quantitative bound implies main theorem
+% TODO: Show existence of δ(r) = ε³(r)/8 > 0
+% TODO: Verify R_r(k) ≤ e^{-δk} r^{rk} for large k

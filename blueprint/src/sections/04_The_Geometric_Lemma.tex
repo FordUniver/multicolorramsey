@@ -1,0 +1,67 @@
+% The Geometric Lemma section - moments lemma, geometric lemma, and key lemma proof
+% This section contains the geometric tools needed to prove the key lemma
+
+% ============================================================================
+% MOMENTS LEMMA
+% ============================================================================
+
+% [LEMMA] Moments lemma: non-negative expectations
+% Source: source/sections/section_the_proof_of_the_key_lemma.tex line 16-19 (\begin{lemma}\label{lem:moments})
+% Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 3-13 (\begin{lemma}[Moments Lemma])
+% Lean status: ✓ Implemented as `moments` in Basic.lean
+% Label: lem:moments
+% TODO: Add moments lemma for i.i.d. random variables U, U'
+% TODO: Add statement E[⟨σ₁(U),σ₁(U')⟩^ℓ₁ ⋯ ⟨σᵣ(U),σᵣ(U')⟩^ℓᵣ] ≥ 0
+% TODO: Add proof using positive semidefiniteness
+
+% ============================================================================
+% SPECIAL FUNCTION LEMMAS
+% ============================================================================
+
+% [REMARK] Properties of cosh√x function
+% Source: source/sections/section_the_proof_of_the_key_lemma.tex line 67 (\begin{remark})
+% Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 14-36 (Remark with bounds)
+% Lean status: ✓ Partially implemented (various bounds in Basic.lean)
+% No label (remark)
+% TODO: Add bounds for g(x) = cosh(√x): x ≤ 2+cosh(√x) ≤ 3e^√x for x≥0
+% TODO: Add bounds -1 ≤ cosh(√x) ≤ 1 for x < 0, and 2+cosh(x) ≥ 1 for all x
+
+% [LEMMA] Special function lemma part 1: upper bound
+% Source: source/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
+% Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 37-69 (\begin{lemma}[Special-function lemma (Part 1)])
+% Lean status: ✓ Implemented as `specialFunctionE` in Basic.lean
+% Label: lem:special:function:1
+% TODO: Add bound f(x) ≤ 3ʳ·r·exp(∑ᵢ √(xᵢ + 3r)) for all x
+
+% [LEMMA] Special function lemma part 2: lower bound when negative
+% Source: source/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
+% Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 70-97 (\begin{lemma}[Special-function lemma (Part 2)])
+% Lean status: ✓ Implemented as `specialFunctionEc` in Basic.lean
+% Label: lem:special:function:2
+% TODO: Add bound f(x) ≥ 3^{-4r} for x with ∃i: xᵢ < -3r
+
+% ============================================================================
+% GEOMETRIC LEMMA
+% ============================================================================
+
+% [LEMMA] Geometric lemma: main probabilistic bound
+% Source: source/sections/section_the_proof_of_the_key_lemma.tex line 7-10 (\begin{lemma}\label{lem:lambda})
+% Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 98-108 (\begin{lemma}[Geometric lemma])
+% Lean status: ✓ Implemented as `geometric` in GeometricLemma.lean
+% Label: lem:lambda (source) / lem:geometric (blueprint)
+% TODO: Add geometric lemma for i.i.d. random variables U, U' and functions σ₁,...,σᵣ
+% TODO: Add existence of λ ≥ -1 and i ∈ [r] with probability bound
+% TODO: Add Pr(⟨σᵢ(U),σᵢ(U')⟩ ≥ λ ∧ ∀j≠i: ⟨σⱼ(U),σⱼ(U')⟩ ≥ -1) ≥ β e^{-C√(λ+1)}
+
+% ============================================================================
+% KEY LEMMA PROOF
+% ============================================================================
+
+% [PROOF] Proof of key lemma using geometric lemma
+% Source: source/sections/section_the_proof_of_the_key_lemma.tex (proof after geometric lemma)
+% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 22-101 (proof of key lemma)
+% Lean status: ✓ Implemented as `key` in KeyLemma.lean
+% Uses: lem:moments, lem:geometric
+% TODO: Add proof constructing functions σᵢ from neighborhood sets
+% TODO: Add application of geometric lemma to obtain vertex x and parameter λ
+% TODO: Add verification of key lemma bounds using geometric lemma output

@@ -1,0 +1,29 @@
+% The Key Lemma section - statement and algorithm overview
+% This section states the key lemma and explains the select-and-boost algorithm
+
+% ============================================================================
+% KEY LEMMA STATEMENT
+% ============================================================================
+
+% [LEMMA] Key lemma: select and boost with geometric improvement
+% Source: source/sections/section_select_and_boost_strategy.tex line 7-16 (\begin{lemma}\label{key:lemma})
+% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 4-20 (\begin{lemma}[Key lemma])
+% Lean status: ✓ Partially implemented as `key` in KeyLemma.lean
+% Label: lem:key-lemma (blueprint) / key:lemma (source)
+% TODO: Add key lemma statement with parameters β = 3^{-4r}, C = 4r^{3/2}
+% TODO: Add existence of vertex x, colour ℓ, sets X', Y'_i, and λ ≥ -1
+% TODO: Add bounds |X'| ≥ β e^{-C√(λ+1)} |X| and p_ℓ(X',Y'_ℓ) ≥ p_ℓ(X,Y_ℓ) + λα_ℓ
+% TODO: Add conditions |Y'_i| = p_i(X,Y_i)|Y_i| and p_i(X',Y'_i) ≥ p_i(X,Y_i) - α_i
+
+% ============================================================================
+% ALGORITHM OVERVIEW
+% ============================================================================
+
+% [ALGORITHM EXPLANATION] Select and boost strategy
+% Source: source/sections/section_select_and_boost_strategy.tex line 18-25 (algorithm explanation)
+% No direct blueprint equivalent (was scattered in proof)
+% Lean status: ✗ Not implemented (algorithmic description)
+% TODO: Add explanation of how key lemma is used iteratively
+% TODO: Explain building collections T_1,...,T_r of monochromatic cliques
+% TODO: Explain replacement of sets X and Y_1,...,Y_r by subsets
+% TODO: Add conditions X ⊂ ∩_j ∩_{u∈T_j} N_j(u) and Y_i ⊂ ∩_{u∈T_i} N_i(u)
