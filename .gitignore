@@ -53,3 +53,4 @@ blueprint/lean_decls
 *.xdy
 *.xml
 *blx.bib
+*.bak*
