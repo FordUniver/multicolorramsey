@@ -33,8 +33,8 @@
 
 \begin{definition}[Complete graph]
   \label{def:complete-graph}
-  \lean{CompleteGraph}
-  \leanok
+  % \lean{CompleteGraph}
+  % \leanok
 \end{definition}
 
 \begin{definition}[Edge colouring]
@@ -246,21 +246,6 @@
 \begin{lemma}[Exponential estimates]
   \label{lem:exp-estimates}
   % Source paper uses exponential decay estimates
-\end{lemma}
-
-% [LEMMA] Basic integral bounds for exponential decay
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Implemented as `integral_rpow_mul_exp_neg_rpow_le` in Integrals.lean
-% Label: lem:integral-exp-decay
-% Dependencies: lem:fubini-finite, lem:exp-estimates
-% TODO: Add ∫₀^∞ x^a e^{-b√x} dx bounds for geometric lemma integration
-
-\begin{lemma}[Exponential decay integrals]
-  \label{lem:integral-exp-decay}
-  \uses{lem:fubini-finite, lem:exp-estimates}
-  \lean{integral_rpow_mul_exp_neg_rpow_le}
-  % Source paper uses these bounds implicitly in geometric lemma proof
 \end{lemma}
 
 % [LEMMA] Integration by parts for special functions
