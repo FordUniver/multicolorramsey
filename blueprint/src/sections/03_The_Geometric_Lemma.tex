@@ -22,7 +22,53 @@
   \paperref{Lemma 3.2}
   \uses{def:inner-product-finite, def:uniform-product}
   \lean{moments}
+  %
+  Let $U$ and\/ $U'$ be i.i.d.~random variables taking values in a finite set~$X$, and let\/ $\sigma_1,\ldots,\sigma_r \colon X \to \R^n$ be arbitrary functions. Then
+  $$\Ex\Big[ \big\langle \sigma_1(U),\sigma_1(U') \big\rangle^{\ell_1} \cdots \big\langle \sigma_r(U),\sigma_r(U') \big\rangle^{\ell_r} \Big] \ge 0.$$
+  for every $(\ell_1,\dots,\ell_r) \in \Z^r$ with $\ell_1,\dots,\ell_r \ge 0$.
 \end{lemma}
+%
+\begin{proof}
+  % TODO
+\end{proof}
+
+\begin{remark}
+  Let $g(x):= cosh(\sqrt{x})$ where $cosh(x)$ is defined by $cosh(\sqrt{x})=\overunderset{\infty}{n=0}{\sum}\frac{x^n}{(2n)!}$, then: 
+  %
+  \begin{enumerate}
+    \item For all $x\geq 0$, we have $x \leq 2+cosh(\sqrt{x}) \leq 3e^{\sqrt{x}}$.
+    \item For all $x <0$, we have $-1 \leq cosh(\sqrt{x})\leq 1$. In particular, $2+cosh(x)\geq 1$ for all $x\in \mathbb{R}$.
+  \end{enumerate}
+  %
+\end{remark}
+%
+\begin{proof}
+  To prove (1), let $x\geq 0$ then:
+  %
+  \begin{equation*}
+    2+cosh(\sqrt{x}) = 3 + \overunderset{\infty}{n=1}{\sum}\frac{x^n}{(2n)!}\geq 3 + \frac{x}{2}+\frac{x^2}{24}.
+  \end{equation*}
+  %
+  However,
+  %
+  \begin{equation*}
+    3+\frac{x}{2}+\frac{x^2}{24}\geq x \iff \frac{1}{24}(x^2-12x+72)\geq 0 \iff \frac{1}{24}((x-6)^2+36)\geq 0,s
+  \end{equation*}
+  %
+  which concludes the lower bound in the first point. To conclude (1), we note the following for $x\geq0$: 
+  %
+  \begin{equation*}
+    3e^{\sqrt{x}}= 3\overunderset{\infty}{n=0}{\sum}\frac{x^{n/2}}{n!}\geq 3\overunderset{\infty}{n=0}{\sum}\frac{x^{n}}{(2n)!} \geq 2 + \overunderset{\infty}{n=0}{\sum}\frac{x^{n}}{(2n)!}= 2 + cosh(\sqrt{x}).
+  \end{equation*}
+  %
+  To prove (2), note that for $x<0$,
+  %
+  \begin{equation*}
+    cosh(\sqrt{x})= \overunderset{\infty}{n=0}{\sum}\frac{x^n}{(2n)!}= \overunderset{\infty}{n=0}{\sum}\frac{(-1)^n \sqrt{-x}^{2n}}{(2n)!}= cos(\sqrt{-x}).
+  \end{equation*}
+  %
+  (2) then follows by noting that $cos(\sqrt{-x}) \in [-1,1]$ for all $x<0$. 
+\end{proof}
 
 % [LEMMA] Tensor product formulation for moments
 % Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (proof of moments lemma)
@@ -56,7 +102,37 @@
   \paperref{Lemma 3.3}
   \uses{def:f, lem:coshsqrt-bd-pos, lem:taylor-nonneg}
   \lean{specialFunctionE}
+  \leanok
+  %
+  Let $r \in \N$. If $x_i \ge - 3r$ for all $i \in [r]$, the function $f \colon \R^r \to \R$ defined in~\eqref{eq:f} satisfies 
+  $$ f(x_1,\dots,x_r) \le 3^r r \exp\bigg( \displaystyle\sum_{i = 1}^r \sqrt{ x_i + 3r } \bigg)$$
 \end{lemma}
+%
+\begin{proof} 
+  %
+  \begin{equation*}
+    f(x_1,\dots,x_r)= \Bigl(\overunderset{r}{i=1}{\prod}(2+cosh\sqrt{x_i})\Bigr)\overunderset{r}{j=1}{\sum}\frac{x_j}{2+cosh \sqrt{x_j}}
+     \overset{**}{\leq}r\Bigl(\overunderset{r}{i=1}{\prod} 3e^{\sqrt{x_i+3r}}\Bigr),
+  \end{equation*}
+  %
+  % justification of inequality (**)
+  % bounding the factors with x_i>0
+  To see (**), we write down upper bounds for all the factors of the LHS of (**).
+  First, for every $i \in [r]$, such that $x_i \geq 0$, we note that $cosh(\sqrt{x_i} )\leq cosh(\sqrt{x_i+3r})$ (which follows since all
+  the coefficients in the taylor expansion of $cosh(\sqrt{y}))$ are non-negative and thus $cosh(\sqrt{y})$ is non-decreasing on the positive reals.
+  In turn, $2+cosh(\sqrt{x_i+3r}) \leq 3e^{\sqrt{x_i+3r}}$ by point 1 of the above remark. We conculde that if $x_i \geq 0$, 
+  $2 + cosh{\sqrt{x_i}} \leq 3 e^{\sqrt{x_i+3r}}$.
+
+  % bounding the factors with x_i<0
+  Next, we condiser the indices $i \in [r]$ such that $x_i<0$. In this case \begin{equation*}
+    2+cosh(\sqrt{x_i})= 2 + cos(\sqrt{-x_i}) \leq 3 \leq 3 e^{\sqrt{x_i+3r}},
+  \end{equation*} 
+  since $x_i \geq -3r$.
+  %justification of the sum factor
+  It remains to show that $\frac{x_j}{2+cosh(\sqrt{x_j})} \leq 1$ for every $j \in [r]$. If $x_j\geq 0$ this follows directly from point (1) in the above remark.
+  If $x_j<0$, note that the numerator of the fraction is negative while the denominator is a positive number between 1 and 3 by point(2) of the remark above.
+\end{proof}
+
 
 % [LEMMA] Special function lemma part 2: lower bound when negative
 % Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
@@ -71,7 +147,34 @@
   \paperref{Lemma 3.3}
   \uses{def:f, lem:coshsqrt-bd-neg}
   \lean{specialFunctionEc}
+  \leanok
+  %
+  Let $r \in \N$. If there exists an $i \in [r]$ with $x_i \le - 3r$, the function $f \colon \R^r \to \R$ defined in~\eqref{eq:f} satisfies $$f(x_1,\dots,x_r) \le -1$$
 \end{lemma}
+%
+\begin{proof}
+  Let $i \in [r]$ satisfy $x_i \leq -3r$. Note that if $x\geq 0$, then $\frac{x}{2+cosh(\sqrt{x})}\leq 1$ by point (1) of the above remark.
+  Trivially, we have $\frac{x}{2+cosh{\sqrt{x}}}<0\leq 1$ for $x<0$ (note that $2+cosh(\sqrt{x})\geq 1$.)
+  Therefore, we have 
+  %
+  \begin{equation*}
+    \underset{j \in [r], j \neq i}{\sum} \frac{x_j}{2+cosh(\sqrt{x_j})} \leq r-1.
+  \end{equation*}
+  %
+  On the other hand, we know that $\frac{x_i}{2+cosh(\sqrt{x_i})} \leq \frac{x_i}{3}$ by part (2) in the remark above and therefore,
+  %
+  \begin{equation*}
+    \overunderset{r}{j=1}{\sum}\frac{x_j}{2+cosh(\sqrt{x_j})}\leq \frac{x_i}{3}+r-1\leq -1.
+  \end{equation*}
+  %
+  Finally we write 
+  %
+  \begin{equation*}
+    f(x_1,\dots,x_r) = \Bigl(\overunderset{r}{i=1}{\prod}(2+cosh\sqrt{x_i})\Bigr)\overunderset{r}{j=1}{\sum}\frac{x_j}{2+cosh \sqrt{x_j}} \leq -1,
+  \end{equation*}
+  %
+  since the sum in the last term is $\leq -1$ while the product is at least $1$ (each factor in the product is at least 1).
+\end{proof}
 
 % ============================================================================
 % INTEGRATION THEORY
@@ -166,9 +269,96 @@
   \paperref{Lemma 3.1}
   \uses{lem:moments, lem:special:function:1, lem:special:function:2, lem:taylor-nonneg, lem:integral-exp-decay}
   \lean{geometric}
+  %
+  Let $r, n\in\N$. Set $\beta = 3^{-4r}$ and $C = 4r^{3/2}$.
+  Let\/ $U$ and\/ $U'$ be i.i.d.~random variables taking values in a finite set~$X$, and let $\sigma_1,\ldots,\sigma_r \colon X \to \R^n$ be arbitrary functions. There exists $\lambda\ge-1$ and\/ $i\in[r]$ such that
+  $$\Pr\Big( \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \ge \lambda \, \text{ and } \, \big\langle \sigma_j(U), \sigma_j(U') \big\rangle \ge -1 \, \text{ for all } \, j \ne i \Big) \ge \beta e^{- C\sqrt{\lambda + 1}}.$$
 \end{lemma}
 
 \begin{proof}
-  % Proof uses all the supporting lemmas defined above
-\end{proof}
+  \uses{def:p, lem:special-function-e, lem:special-function-ec, lem:moments, def:f, lem:le-coshsqrt}
+  For each $i \in [r]$, define $Z_i = 3r\big\langle \sigma_i(U),\sigma_i(U') \big\rangle$, and let $E$ be the event that $Z_i \ge -3r$ for every $i \in [r]$.
 
+  Consider two cases:
+
+  First assume $\Pr(E) \ge \beta$. Note that
+  $$\Pr(E) = \Pr\Big( Z_i \ge - 3r \, \text{ for all } \, i \in [r] \Big),$$
+  so with $\lambda = -1$,
+  %
+  \begin{align*}
+    \beta e^{-C\times 0} &= \beta\\
+    &\le \Pr(E)\\
+    &= \Pr\Big(3r\big\langle \sigma_i(U),\sigma_i(U') \big\rangle \ge -3r \text{ for all }i\Big)\\
+    &= \Pr\Big( \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \ge \lambda \, \text{ and } \, \big\langle \sigma_j(U), \sigma_j(U') \big\rangle \ge -1 \, \text{ for all } \, j \ne i \Big)
+  \end{align*}
+  %
+  hence the claimed inequality holds.
+
+  Now, assume $\Pr(E) \le \beta$ and assume for the sake of a contradiction that for all $\lambda \geq -1$,
+
+  \begin{align}\label{eq:max:big:and:E:no}
+    \Pr\left(E \cap \left( \bigcup_{i \in [r]} \left\{ \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \ge \lambda \right\}\right)\right) < \beta r e^{-C\sqrt{\lambda + 1}}.
+  \end{align}
+
+  Observe that, since $x \le 2 + \cosh\sqrt{x}$ (Lemma~\ref{lem:le-coshsqrt}) and using Lemma~\ref{lem:moments} and linearity of expectation,
+  \[
+    \Ex\big[ f\big( Z_1,\ldots,Z_r \big) \big] \ge 0
+  \]
+
+  We hence have
+  %
+  \begin{align*}
+    0 &\le \Ex\big[ f\big( Z_1,\ldots,Z_r \big) \big]\\
+    &= \Ex\big[ f\big( Z_1,\ldots,Z_r \big)  \mathbf{1}_E \big] + \Ex\big[ f\big( Z_1,\ldots,Z_r \big) \mathbf{1}_{E^c} \big]\\
+    &\le \Ex\left[ 3^r r \exp\bigg( \displaystyle\sum_{i = 1}^r \sqrt{ Z_i + 3r } \bigg)  \mathbf{1}_E \right] + \Ex\big[-1 \cdot \mathbf{1}_{E^c} \big]
+  \end{align*}
+  %
+  where we use Lemma~\ref{lem:special-function-e} to bound the case for $E$, and Lemma~\ref{lem:special-function-ec} for $E^c$.
+  It follows that
+  %
+  \begin{equation}\label{eq:eventE:inequality}
+    1 - \Pr(E) \le 3^r r \cdot \Ex\bigg[ \exp\bigg( \sum_{i = 1}^r \sqrt{ Z_i + 3r } \bigg) \mathbf{1}_E \bigg].
+  \end{equation}
+
+  Let $M = \max \big\{ \big\langle \sigma_i(U),\sigma_i(U') \big\rangle : i \in [r] \big\}$. For any constant $c \le C - 1$, we have
+  %
+  \begin{align}
+  \exp(c\sqrt{M+1})\id_E&= \id_E \Bigl(e^{c\sqrt{1-1}}+ \int_{-1}^M \frac{ce^{c\sqrt{\lambda+1}}}{2\sqrt{\lambda+1}} d\lambda\Bigr)\\
+  &= \id_E+ \int_{-1}^{\infty} \id_{E,\{M\geq \lambda\}}\frac{ce^{c\sqrt{\lambda+1}}}{2\sqrt{\lambda+1}} d\lambda.
+  \end{align}
+  %
+  Given any $c \leq C-1$ we take the expected value of both sides of the previous equation and apply Tonelli's theorem to obtain:
+  %
+  \begin{align*}
+    \Ex\Big[ \exp\big( c \sqrt{M + 1} \big) \mathbf{1}_E \Big]
+    & % = \int_{E} \exp\big( c \sqrt{M + 1}  \big) d\Pr
+    \\
+    & \le \, \Pr(E) + \int_{-1}^\infty \Pr\Big( \big\{ M \ge \lambda \big\} \cap E \Big) \cdot \frac{c}{2\sqrt{\lambda + 1}} \cdot e^{c \sqrt{\lambda + 1}} \,\mathrm{d}\lambda\\ %TODO not clear!
+    & \le \, \beta +  \int_{-1}^\infty \frac{\beta r c}{2\sqrt{\lambda + 1}} \cdot e^{- C\sqrt{\lambda + 1}+c\sqrt{\lambda+1}} \,\mathrm{d}\lambda\\
+    & \le \, \beta + \beta r \int_{-1}^\infty \frac{c}{2\sqrt{\lambda + 1}} \cdot e^{- \sqrt{\lambda + 1}} \,\mathrm{d}\lambda\\
+    & \le \, \beta (cr + 1),
+  \end{align*}
+  %
+  where in the second inequality we used (\ref{eq:max:big:and:E:no}) and $\Pr(E) \le \beta$; in the third we used $c \le C - 1$; and in the last inequality we used the fact that $\int_0^\infty \frac{1}{2\sqrt{x}} e^{-\sqrt{x}} \, \mathrm{d}x = 1$.
+  Note that the second and third inequalities rely on the non-negativity of the integrand.
+  In particular, applying this with $c = \sqrt{3}r^{3/2}$, and recalling that $C = 4r^{3/2} \ge c + 1$ and $\beta = 3^{-4r}$, it follows that
+  %
+  \begin{align}
+    1 - \Pr(E) &\le 3^r r \cdot \Ex\bigg[ \exp\bigg( \sum_{i = 1}^r \sqrt{ Z_i + 3r } \bigg) \mathbf{1}_E \bigg]\\
+    &\le  3^r r \cdot \Ex\bigg[ \exp\bigg( r \cdot \max_{i \in [r]} \sqrt{ Z_i + 3r } \bigg) \mathbf{1}_E \bigg]\\
+    &= 3^r r \cdot \Ex\bigg[ \exp\bigg( r \cdot \sqrt{ 3r} \cdot \sqrt{ (M + 1) } \bigg) \mathbf{1}_E \bigg]\\
+    &\le 3^r r \cdot \beta (r^{2}\sqrt{3r} + 1) \le 1/3,
+  \end{align}
+  %
+  which contradicts our assumption that $\Pr(E) \le \beta$.
+
+  Hence, there exists $\lambda \ge -1$ such that
+  %
+  \begin{align}\label{eq:max:big:and:E}
+    \beta r e^{-C\sqrt{\lambda + 1}} &\le \Pr\left(E \cap \left( \bigcup_{i \in [r]} \left\{ \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \ge \lambda \right\}\right)   \right) \\
+    &\le \sum_{i \in [r]} \Pr\left(E \cap \left\{ \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \ge \lambda \right\} \right)\\
+    &\le r \cdot \max_{i \in [r]} \Pr\left(E \cap \left\{ \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \ge \lambda \right\} \right) ,
+  \end{align}
+  %
+  and therefore there exists an $i \in [r]$ as required.
+\end{proof}

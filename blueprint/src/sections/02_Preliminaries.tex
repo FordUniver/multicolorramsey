@@ -3,6 +3,7 @@
 
 \section{Preliminaries}
 
+
 \subsection{Elementary combinatorics}
 
 % [LEMMA] Multinomial coefficient bound (Appendix lemma)
@@ -16,7 +17,17 @@
 \begin{lemma}[Multinomial coefficient bound]
   \label{lem:multibounds} % Source paper uses same label
   \paperref{Lemma A.1}
+  %
+  For each $k,t,r \in \N$ with $3 \le t \le k$, we have
+  $$\binom{rk-t}{k,\dots,k,k-t} \le e^{-(r-1)t^2/3rk} r^{rk-t}.$$
 \end{lemma}
+%
+\begin{proof}
+  To prove this, observe that 
+  $$\binom{rk-t}{k,\dots,k,k-t} \binom{rk}{k,\dots,k}^{-1} = \, \prod_{i = 0}^{t - 1} \frac{k - i}{rk - i} = r^{-t} \,\prod_{i = 0}^{t-1} \bigg( 1 - \frac{(r-1)i}{rk - i} \bigg) \le r^{-t} \cdot e^{-(r-1)t^2/3rk}.$$
+  Since $\binom{rk}{k,\dots,k} \le r^{rk}$, the claimed bound follows.
+\end{proof}
+
 
 \subsection{Graphs and colourings}
 
@@ -47,6 +58,8 @@
   \uses{def:complete-graph}
   \lean{SimpleGraph.EdgeColoring}
   \leanok
+  %
+  An edge colouring of a graph $G$ with colours $C$ is a map from the edge set $E(G)$ to $C$.
 \end{definition}
 
 % [DEFINITION] Colour neighbourhood
@@ -62,6 +75,39 @@
   \uses{def:edge-colouring}
   \lean{SimpleGraph.EdgeColoring.coloredNeighborSet}
   \leanok
+  %
+  Given an edge colouring, we write $N_i(u)$ to denote the neighbourhood of vertex $u$ in colour $i$.
+\end{definition}
+
+% [DEFINITION] Function p_i(X,Y) - minimum proportion
+% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 3-4 (p_i(X,Y) definition)
+% Deprecated blueprint: deprecated/02_Preliminaries.tex line 18-24 (\begin{definition} \label{def:p})
+% Lean status: ✓ Partially implemented as pY in KeyLemma.lean
+% Label: def:p
+% Dependencies: def:colour-neighborhood
+% TODO: Add definition of p_i(X,Y) = min{|N_i(x) ∩ Y|/|Y| : x ∈ X}
+
+\begin{definition}[Function \(p_i(X,Y)\)]
+  \label{def:p}
+  \uses{def:colour-neighborhood}
+  \lean{p}
+  %
+  Let $r, n\in\N$. Given sets $X,Y \subset V(K_n)$ and a colour $i \in [r]$, define
+  $$p_i(X,Y) = \min\bigg\{ \frac{|N_i(x) \cap Y|}{|Y|} : x \in X \bigg\},$$
+\end{definition}
+
+% [DEFINITION] Cliques and monochromatic structures
+% Source: blueprint/paper/sections/section_introduction.tex line 6 (monochromatic clique K_k)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: def:monochromatic-clique
+% Dependencies: def:complete-graph, def:edge-colouring
+% TODO: Add definition of monochromatic clique in edge coloring
+
+\begin{definition}[Monochromatic cliques]
+  \label{def:monochromatic-clique}
+  \uses{def:complete-graph, def:edge-colouring}
+  % Source paper defines monochromatic clique K_k in edge coloring
 \end{definition}
 
 % [DEFINITION] Ramsey numbers R_r(k)
@@ -108,70 +154,25 @@
   % A (t,m)-book has |A| = t and |B| = m
 \end{definition}
 
-% [DEFINITION] Function p_i(X,Y) - minimum proportion
-% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 3-4 (p_i(X,Y) definition)
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 18-24 (\begin{definition} \label{def:p})
-% Lean status: ✓ Partially implemented as pY in KeyLemma.lean
-% Label: def:p
-% Dependencies: def:colour-neighborhood
-% TODO: Add definition of p_i(X,Y) = min{|N_i(x) ∩ Y|/|Y| : x ∈ X}
 
-\begin{definition}[Function \(p_i(X,Y)\)]
-  \label{def:p}
-  \uses{def:colour-neighborhood}
-  % Definition: p_i(X,Y) = min{|N_i(x) ∩ Y|/|Y| : x ∈ X}
+\subsection{Trigonometry}
+
+% [DEFINITION] cosh√x via Taylor series
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (implicit in special function)
+% Deprecated blueprint: deprecated/02_Preliminaries.tex line 46-52 (\begin{definition} \label{def:coshsqrt})
+% Lean status: ✓ Implemented as coshsqrt in Basic.lean
+% Label: def:coshsqrt
+% Dependencies: None (standard analysis)
+% TODO: Add definition of cosh√x via Taylor expansion
+
+\begin{definition}[cosh√x function]
+  \label{def:coshsqrt} % Source paper uses same label
+  \lean{coshsqrt}
+  \leanok
+  %
+  Define $\cosh \sqrt{x}$ via its Taylor expansion
+  $$\cosh\sqrt{x} = \sum_{n = 0}^\infty \frac{x^n}{(2n)!}.$$
 \end{definition}
-
-% [DEFINITION] Cliques and monochromatic structures
-% Source: blueprint/paper/sections/section_introduction.tex line 6 (monochromatic clique K_k)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: def:monochromatic-clique
-% Dependencies: def:complete-graph, def:edge-colouring
-% TODO: Add definition of monochromatic clique in edge coloring
-
-\begin{definition}[Monochromatic cliques]
-  \label{def:monochromatic-clique}
-  \uses{def:complete-graph, def:edge-colouring}
-  % Source paper defines monochromatic clique K_k in edge coloring
-\end{definition}
-
-% [DEFINITION] Graph regularity and density
-% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex (colouring is almost regular)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: def:regular-coloring
-% Dependencies: def:edge-colouring, def:colour-neighborhood
-% TODO: Add definition of ε-regular coloring with density close to 1/r
-
-\subsection{Special functions for the geometric lemma}
-
-% [DEFINITION] Inner product on finite sets
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 5 (⟨·,·⟩ standard inner product on ℝⁿ)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Uses Mathlib inner product
-% Label: def:inner-product-finite
-% Dependencies: None (standard linear algebra)
-% TODO: Add inner product ⟨·,·⟩: ℝⁿ × ℝⁿ → ℝ for finite-dimensional spaces
-
-\begin{definition}[Inner product on finite-dimensional spaces]
-  \label{def:inner-product-finite}
-  % Source paper uses standard inner product ⟨·,·⟩ on ℝⁿ
-\end{definition}
-
-% [DEFINITION] Uniform product measure on finite sets
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 8 (U, U' i.i.d. random variables on finite set X)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Uses Mathlib probability theory
-% Label: def:uniform-product
-% Dependencies: None (standard probability)
-% TODO: Add product measure for i.i.d. uniform random variables on finite set
-
-\begin{definition}[Uniform product measure]
-  \label{def:uniform-product}
-  % Source paper uses U, U' i.i.d. uniform on finite set X
-\end{definition}
-
 
 % [LEMMA] Bounds on cosh√x for positive arguments
 % Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 54 (x ≤ 2 + cosh√x ≤ 3e^√x)
@@ -184,8 +185,27 @@
 \begin{lemma}[Bounds on \(\cosh\sqrt{x}\) for positive arguments]
   \label{lem:coshsqrt-bd-pos}
   \uses{def:coshsqrt}
-  % Source paper uses x ≤ 2 + cosh√x ≤ 3e^√x for x ≥ 0
+  \lean{lt_coshsqrt}
+  \leanok
+  %
+  $x \le 2 + \cosh \sqrt{x} \le 3 e^{\sqrt{x}}$ for every $x > 0$.
 \end{lemma}
+%
+\begin{proof}
+  For the lower-bound, using the fact that $x>0$ and all coefficients of $\cosh \sqrt{x}$ are positive,
+  %
+  \begin{equation*}
+    2+\cosh \sqrt{x} - x \ge 2 - \frac{x}{2} + \frac{x^2}{24} = \frac{1}{2}+\frac{1}{24}(x-6)^2 \ge 0.
+  \end{equation*}
+  %
+  For the upper bound, we observe that because by comparing coefficients,
+  %
+  \begin{equation*}
+    e^{\sqrt{x}} = \sum 3\frac{x^{n/2}}{n!}  \ge \cosh\sqrt{x}
+  \end{equation*}
+  %
+  Finally, $2e^{\sqrt{x}}\ge 2$ when $x>0$.
+\end{proof}
 
 % [LEMMA] Bounds on cosh√x for negative arguments
 % Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 58 (cosh√x = cos√(-x), -1 ≤ cosh√x ≤ 1)
@@ -198,155 +218,15 @@
 \begin{lemma}[Bounds on \(\cosh\sqrt{x}\) for negative arguments]
   \label{lem:coshsqrt-bd-neg}
   \uses{def:coshsqrt}
-  % Source paper uses cosh√x = cos√(-x) for x < 0
-\end{lemma}
-
-% [DEFINITION] Special function f for geometric lemma
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 36-37 (\begin{equation}\label{def:f})
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 95-104 (\begin{definition} \label{def:f})
-% Lean status: ✓ Implemented as `f` in Basic.lean
-% Label: def:f
-% Dependencies: def:coshsqrt
-% TODO: Add definition f(x₁,...,xᵣ) = ∑_{j=1}^r xⱼ ∏_{i≠j} (2 + cosh√xᵢ)
-
-\begin{definition}[Special function for geometric lemma]
-  \label{def:f}
-  \uses{def:coshsqrt}
-  % Source paper uses f(x₁,...,xᵣ) = ∑_{j=1}^r xⱼ ∏_{i≠j} (2 + cosh√xᵢ)
-\end{definition}
-
-% [LEMMA] Non-negative Taylor coefficients of f
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 41 (Taylor expansion coefficients are non-negative)
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 106-109 (\begin{lemma} \label{lem:taylor-nonneg})
-% Lean status: ✓ Used in Basic.lean proof of specialFunction
-% Label: lem:taylor-nonneg
-% Dependencies: def:f, def:coshsqrt
-% TODO: Add proof that all Taylor coefficients of f are non-negative
-
-\begin{lemma}[Non-negative Taylor coefficients]
-  \label{lem:taylor-nonneg}
-  \uses{def:f, def:coshsqrt}
-  % Source paper notes all Taylor coefficients are non-negative
-\end{lemma}
-
-\subsection{Algorithmic foundations}
-
-% [DEFINITION] Select and boost algorithm state
-% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 11-13 (algorithm description)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: def:algorithm-state
-% Dependencies: def:edge-colouring, def:p
-% TODO: Add formal state space for iterative algorithm with T_1,...,T_r and X,Y_i
-
-\begin{definition}[Select and boost algorithm state]
-  \label{def:algorithm-state}
-  \uses{def:edge-colouring, def:p}
-  % Formal state space for iterative algorithm with T_1,...,T_r and X,Y_i
-\end{definition}
-
-% [DEFINITION] Algorithm parameters and updates
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex (α_i, λ parameters)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: def:algorithm-parameters
-% Dependencies: def:algorithm-state, def:p
-% TODO: Add α_i boost parameters and λ density improvement tracking
-
-% [LEMMA] Algorithm termination
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex (termination analysis)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: lem:algorithm-termination
-% Dependencies: def:algorithm-state, def:algorithm-parameters, def:book
-% TODO: Add proof that algorithm terminates with required book structure
-
-\subsection{Erdős-Szekeres method}
-
-% [DEFINITION] Classical Erdős-Szekeres bound
-% Source: blueprint/paper/sections/section_introduction.tex line 3 (R_r(k) ≤ r^{rk})
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: def:erdos-szekeres-bound
-% Dependencies: def:ramsey-number
-% TODO: Add classical upper bound construction
-
-% [LEMMA] Erdős-Szekeres greedy process
-% Source: blueprint/paper/sections/section_deducing_the_bound_on_rrk.tex line 11-12 (greedy algorithm)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: lem:erdos-szekeres-greedy
-% Dependencies: def:erdos-szekeres-bound, def:monochromatic-clique
-% TODO: Add greedy clique-finding process with exponential gains
-
-\subsection{Linear algebra and inner products}
-
-% [DEFINITION] Inner products on finite domains
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 25-29 (⟨σᵢ(x),σᵢ(y)⟩)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: def:inner-product-finite
-% Dependencies: None (standard linear algebra)
-% TODO: Add inner product structure on functions X → ℝ^V for finite X, V
-
-% [DEFINITION] Tensor products for moments lemma
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (proof of moments lemma)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: def:tensor-moments
-% Dependencies: def:inner-product-finite
-% TODO: Add tensor product Z = σₐ₁(U) ⊗ ⋯ ⊗ σₐₗ(U') for moments calculation
-
-% [LEMMA] Positive semidefiniteness of moment matrices
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (moments lemma proof)
-% Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 3-13 (related to moments)
-% Lean status: ✓ Partially implemented as `moments` in Basic.lean
-% Label: lem:positive-semidefinite
-% Dependencies: def:tensor-moments, def:uniform-product
-% TODO: Add proof that E[ZZ*] ≥ 0 for tensor products
-
-\subsection{Probability theory and measure theory}
-
-% [DEFINITION] Uniform distribution on finite products
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (U, U' i.i.d. uniform)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Partially implemented in GeometricLemma.lean
-% Label: def:uniform-product
-% Dependencies: None (standard probability theory)
-% TODO: Add uniform distribution on X × X with proper measure theory
-
-% [LEMMA] Product measure integration (Fubini)
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Partially used in GeometricLemma.lean
-% Label: lem:fubini-finite
-% Dependencies: def:uniform-product
-% TODO: Add Fubini's theorem for finite product spaces
-
-% [LEMMA] Concentration inequalities
-% Source: implicit in probabilistic arguments throughout
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: lem:concentration
-% Dependencies: def:uniform-product
-% TODO: Add concentration bounds for the probabilistic method
-
-\subsection{Trigonometry and special functions}
-
-% [DEFINITION] cosh√x via Taylor series
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (implicit in special function)
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 46-52 (\begin{definition} \label{def:coshsqrt})
-% Lean status: ✓ Implemented as coshsqrt in Basic.lean
-% Label: def:coshsqrt
-% Dependencies: None (standard analysis)
-% TODO: Add definition of cosh√x via Taylor expansion
-
-\begin{definition}[cosh√x function]
-  \label{def:coshsqrt}
-  \lean{coshsqrt}
+  \lean{icc_coshsqrt_neg}
   \leanok
-  % Source paper uses same label
-\end{definition}
+  %
+  $-1 \le \cosh \sqrt{x} \le 1$ for every $x < 0$.
+\end{lemma}
+%
+\begin{proof}
+  From the Taylor expansion, we get $\cosh \sqrt{x} = \cos \sqrt{-x}$.
+\end{proof}
 
 % [LEMMA] Lower bound 1 ≤ 2 + cosh√x
 % Source: implicit (used in geometric lemma proof)
@@ -357,28 +237,17 @@
 % TODO: Add proof that 1 ≤ 2 + cosh√x for all x
 
 \begin{lemma}[Lower bound for cosh√x]
-  \label{lem:le-coshsqrt}
+  \label{lem:le-coshsqrt} % Source paper uses same label
   \uses{def:coshsqrt, lem:coshsqrt-bd-neg}
   \lean{one_le_coshsqrt}
   \leanok
-  % Source paper uses same label
+  %
+  For all $x \in \R$, it is $1 \le 2 + \cosh\sqrt{x}$.
 \end{lemma}
-
-% [LEMMA] Bounds for positive x
-% Source: implicit (used in geometric lemma proof)
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 65-82 (\begin{lemma} \label{lem:coshsqrt-bd-pos})
-% Lean status: ✓ Partially implemented (lt_coshsqrt, ge_coshsqrt in Basic.lean)
-% Label: lem:coshsqrt-bd-pos
-% Dependencies: def:coshsqrt
-% TODO: Add bounds x ≤ 2 + cosh√x ≤ 3e^√x for x > 0
-
-% [LEMMA] Bounds for negative x
-% Source: implicit (used in geometric lemma proof)
-% Deprecated blueprint: deprecated/02_Preliminaries.tex line 84-93 (\begin{lemma} \label{lem:coshsqrt-bd-neg})
-% Lean status: ✓ Implemented as icc_coshsqrt_neg in Basic.lean
-% Label: lem:coshsqrt-bd-neg
-% Dependencies: def:coshsqrt
-% TODO: Add bounds -1 ≤ cosh√x ≤ 1 for x < 0
+%
+\begin{proof}
+  When $x$ is negative, we use $\cosh \sqrt{x} = \cos \sqrt{-x}\ge -1$. When $x$ is positive this is implied by the fact that all coefficients in the power series of $\cosh \sqrt{x}$ are positive.
+\end{proof}
 
 % [DEFINITION] Special function f(x₁,...,xᵣ)
 % Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
@@ -388,6 +257,20 @@
 % Dependencies: def:coshsqrt, lem:coshsqrt-bd-neg, lem:coshsqrt-bd-pos
 % TODO: Add definition f(x₁,...,xᵣ) = ∑ⱼ xⱼ ∏ᵢ≠ⱼ(2 + cosh√xᵢ)
 
+\begin{definition}
+  \label{def:f}
+  \uses{def:coshsqrt, lem:coshsqrt-bd-neg, lem:coshsqrt-bd-pos}
+  \lean{f}
+  \leanok
+  %
+  Let $r \in \N$.
+  %
+  \begin{equation}\label{eq:f}
+    f(x_1,\dots,x_r) = \sum_{j = 1}^r x_j \prod_{i \ne j} \big( 2 + \cosh\sqrt{x_i} \big).
+  \end{equation}
+  %
+\end{definition}
+
 % [LEMMA] Taylor coefficients are non-negative
 % Source: implicit in geometric lemma proof
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 106-113 (\begin{lemma} \label{lem:taylor-nonneg})
@@ -396,24 +279,13 @@
 % Dependencies: def:f
 % TODO: Add proof that f has non-negative Taylor coefficients
 
-% [LEMMA] Exponential function estimates
-% Source: throughout the proof (bounds on exp(c√x))
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: lem:exp-estimates
-% Dependencies: lem:coshsqrt-bd-pos
-% TODO: Add sharp bounds on exp(c√x) for the geometric lemma
-
-% [LEMMA] Integration bounds for improper integrals
-% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
-% No deprecated blueprint equivalent
-% Lean status: ✓ Partially implemented in Integrals.lean
-% Label: lem:integral-bounds
-% Dependencies: lem:exp-estimates, lem:fubini-finite
-% TODO: Add robust integration theory for ∫^∞ exp(-√x) dx type integrals
-
-\begin{lemma}[Integration bounds for improper integrals]
-  \label{lem:integral-bounds}
-  \uses{lem:exp-estimates, lem:fubini-finite}
-  % Robust integration theory for ∫^∞ exp(-√x) dx type integrals
+\begin{lemma}
+  \label{lem:taylor-nonneg}
+  \uses{def:f}
+  %
+  All of the coefficients of the Taylor expansion of $f$ are non-negative.
 \end{lemma}
+%
+\begin{proof}
+  By definition $2+\cosh\sqrt{x}$ has positive coefficients. It suffices to observe that the product and sum of two Taylor series with only positive coefficients has again positive coefficients. Since $f$ is such a combination of sums and products of Taylor series with only positive coefficients, we get the claim.
+\end{proof}

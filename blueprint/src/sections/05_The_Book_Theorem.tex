@@ -4,36 +4,28 @@
 \section{The Book Theorem}
 
 % ============================================================================
-% FOUNDATIONAL DEFINITIONS FOR ALGORITHM ANALYSIS
+% THE ALGORITHM
 % ============================================================================
 
-% [DEFINITION] Algorithm state definitions
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 10-14 (algorithm state notation)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: def:algorithm-state-book
-% Dependencies: def:algorithm-state, def:p
-% TODO: Add definitions p_0, p_i(s), α_i(s), X(s), Y_i(s) for algorithm analysis
-
-\begin{definition}[Algorithm state definitions]
-  \label{def:algorithm-state-book}
-  \uses{def:algorithm-state, def:p}
-  % Source paper uses algorithm step notation
-\end{definition}
-
-% [DEFINITION] Density-boost step sets
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 13 (ℬ_i(s) definition)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: def:density-boost-sets
-% Dependencies: def:algorithm-state-book, def:boost-parameters
-% TODO: Add definition ℬ_i(s) = {j : ℓ(j) = i and λ(j) > λ_0} for tracking boost steps
-
-\begin{definition}[Density-boost step sets]
-  \label{def:density-boost-sets}
-  \uses{def:algorithm-state-book, def:boost-parameters}
-  % Source paper uses ℬ_i(s) notation
-\end{definition}
+\begin{algorithm}[The Multicolour Book Algorithm in Balister et al.]\label{alg:book}
+  %Let $\chi$ be an $r$-colouring of $E(K_n)$, let $X$ and $Y_1,\ldots, Y_r$ be disjoint sets of vertices of $K_n$, and 
+  Set $T_1 = \cdots = T_r = \emptyset$, and repeat the following steps until either $X = \emptyset$ or $\max\big\{ |T_i| : i \in [r] \big\} = t$. 
+  \begin{enumerate}
+  \item\label{Alg:Step1} Applying the key lemma: let the vertex $x \in X$, the colour $\ell \in [r]$, the sets $X' \subset X$ and $Y'_1,\ldots,Y'_r$, and $\lambda \ge -1$ be given by Lemma~\ref{key:lemma}, applied with
+  \begin{equation}\label{def:alpha}
+  \alpha_i = \frac{p_i(X,Y_i) - p_0 + \delta}{t}
+  \end{equation}
+  for each $i \in [r]$, and go to Step~2.\smallskip
+  \item\label{Alg:Step2} Colour step: If $\lambda \le \lambda_0$, then choose a colour $j \in [r]$ such that the set
+  $$X'' = N_j(x) \cap X'$$ 
+  has at least $(|X'| - 1)/r$ elements, and update the sets as follows:
+  $$X \to X'', \qquad Y_j \to Y'_j \qquad \text{and} \qquad T_j \to T_j \cup \{x\}$$
+  and go to Step~1. Otherwise go to Step~3.\smallskip
+  \item\label{Alg:Step3} Density-boost step: If $\lambda > \lambda_0$, then we update the sets as follows:
+  $$X \to X' \qquad \text{and} \qquad Y_\ell \to Y'_\ell,$$
+  and go to Step~1.
+  \end{enumerate}  
+\end{algorithm} 
 
 % ============================================================================
 % AUXILIARY LEMMAS FOR BOOK THEOREM PROOF
@@ -50,8 +42,26 @@
 \begin{lemma}[Lower bound for \(p_i\) during algorithm]
   \label{lem:pi:lower:bound} % Source paper uses same label
   \paperref{Lemma 4.1}
-  \uses{def:density-boost-sets, def:boost-parameters}
+  \uses{alg:book, lem:key}
+  %
+  For each $i \in [r]$ and $s \in \N$, 
+  %
+  \begin{equation}\label{eq:pi:lower:bound}
+    p_i(s) - p_0 + \delta \, \ge \, \delta \cdot \bigg( 1 - \frac{1}{t} \bigg)^{t} \prod_{j \in \cB_i(s)} \bigg( 1 + \frac{\lambda(j)}{t} \bigg).
+  \end{equation}
 \end{lemma}
+
+\begin{proof}
+  Note first that if $Y_i(s+1) = Y_i(s)$, then $p_i(s+1) \ge p_i(s)$, since the minimum degree does not decrease when we take a subset of $X(s)$. When we perform a colour step in colour $i$, % (that is, we add $x$ to $T_i$), 
+  we have $p_i(s+1) \ge p_i(s) - \alpha_i(s)$, by Lemma~\ref{key:lemma}, and hence
+  $$p_i(s+1) - p_0 + \delta \ge \bigg( 1 - \frac{1}{t} \bigg) \big( p_i(s) - p_0 + \delta \big),$$
+  by our choice of $\alpha_i(s)$. Similarly, when we perform a density-boost step in colour $i$  
+  we have $p_i(s+1) \ge p_i(s) + \lambda(s) \alpha_i(s)$, by Lemma~\ref{key:lemma}, and hence
+  $$p_i(s+1) - p_0 + \delta \ge \bigg( 1 + \frac{\lambda(s)}{t} \bigg) \big( p_i(s) - p_0 + \delta \big).$$
+  Recalling that there are at most $t$ colour steps in colour $i$, and that $p_i(0) \ge p_0$, by the definition~\eqref{def:p0} of $p_0$, the claimed bound follows. 
+\end{proof}
+
+Before continuing, let's note a couple of important consequences of Lemma~\ref{lem:pi:lower:bound}. First, it implies that neither $p_i(s)$ nor $\alpha_i(s)$ can get too small. 
 
 % [LEMMA] Minimum bounds on p_i and α_i
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 35 (\begin{lemma}\label{lem:pi:min})
@@ -64,8 +74,18 @@
 \begin{lemma}[Minimum bounds on \(p_i\) and \(\alpha_i\)]
   \label{lem:pi:min} % Source paper uses same label
   \paperref{Lemma 4.2}
-  \uses{lem:pi:lower:bound}
+  \uses{lem:pi:lower:bound, alg:book}
+  %
+  If\/ $t \ge 2$, then 
+  $$p_i(s) \, \ge \, p_0 - \frac{3\delta}{4} \qquad \text{and} \qquad \alpha_i(s) \, \ge \, \frac{\delta}{4t}$$
+  for every $i \in [r]$ and $s \in \N$. 
 \end{lemma}
+%
+\begin{proof}
+  Both bounds follow immediately from~\eqref{eq:pi:lower:bound} and the definition of $\alpha_i(s)$. 
+\end{proof}
+
+It also implies the following bound on the number of density-boost steps. 
 
 % [LEMMA] Upper bound on density-boost steps
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 47 (\begin{lemma}\label{lem:Bi:max})
@@ -78,8 +98,21 @@
 \begin{lemma}[Upper bound on density-boost steps]
   \label{lem:Bi:max} % Source paper uses same label
   \paperref{Lemma 4.3}
-  \uses{lem:pi:min, def:density-boost-sets}
+  \uses{lem:pi:min}
+  %
+  If\/ $t \ge \lambda_0$ and\/ $\delta \le 1/4$, then
+  $$|\cB_i(s)| \le \frac{4 \log(1/\delta)}{\lambda_0} \cdot t$$
+  for every $i \in [r]$ and $s \in \N$. 
 \end{lemma}
+%
+\begin{proof}
+    \uses{lem:pi:lower:bound}
+  Since $\lambda(j) > \lambda_0$ for every $j \in \cB_i(s)$, and $p_i(s) \le 1$, it follows from~\eqref{eq:pi:lower:bound} that
+  $$\frac{\delta}{4} \bigg( 1 + \frac{\lambda_0}{t} \bigg)^{|\cB_i(s)|} \le 1 + \delta.$$
+  Since $t \ge \lambda_0$ and $\delta \le 1/4$, the claimed bound follows. 
+\end{proof}
+
+Lemmas~\ref{lem:pi:min} and~\ref{lem:Bi:max} together provide a lower bound on the size of the set $Y_i(s)$. 
 
 % [LEMMA] Lower bound for Y_i set sizes
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 61 (\begin{lemma}\label{lem:Y:lower:bound})
@@ -92,8 +125,20 @@
 \begin{lemma}[Lower bound for \(Y_i\) set sizes]
   \label{lem:Y:lower:bound} % Source paper uses same label
   \paperref{Lemma 4.4}
-  \uses{lem:pi:min, lem:Bi:max}
+  \uses{lem:pi:min, lem:Bi:max, alg:book}
+  %
+  If\/ $t \ge 2$, then
+  $$|Y_i(s)| \ge \bigg( p_0 - \frac{3\delta}{4} \bigg)^{t + |\cB_i(s)|} |Y_i(0)|$$
+  for every $i \in [r]$ and $s \in \N$. 
 \end{lemma}
+%
+\begin{proof}
+  Note that $Y_i(j+1) \ne Y_i(j)$ for at most $t + |\cB_i(s)|$ of the first $s$ steps, and for those steps we have
+  $$|Y_i(j+1)| = p_i(j) |Y_i(j)| \ge \bigg( p_0 - \frac{3\delta}{4} \bigg) |Y_i(j)|,$$ 
+  by~\eqref{eq:key:alli} and Lemma~\ref{lem:pi:min}.
+\end{proof}
+
+Finally, we need to bound the size of the set $X(s)$. To do so, set $\eps = (\beta / r) e^{- C \sqrt{\lambda_0 + 1}}$, and define $\cB(s) = \cB_1(s) \cup \cdots \cup \cB_r(s)$ to be the set of all density-boost steps. 
 
 % [LEMMA] Lower bound for reservoir X size
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 75 (\begin{lemma}\label{lem:X:lower:bound})
@@ -106,8 +151,23 @@
 \begin{lemma}[Lower bound for reservoir X size]
   \label{lem:X:lower:bound} % Source paper uses same label
   \paperref{Lemma 4.5}
-  \uses{def:algorithm-constants, lem:sum:of:lambdas}
+  \uses{def:algorithm-constants, lem:sum:of:lambdas, alg:book}
+  %
+  For each $s \in \N$, 
+  %
+  \begin{equation}\label{eq:X:lower:bound}
+    |X(s)| \ge \eps^{rt + |\cB(s)|} \exp\bigg( - C \sum_{j \in \cB(s)} \sqrt{\lambda(j)+1}\,\, \bigg) |X(0)| - rt.
+  \end{equation}
+  %
 \end{lemma}
+%
+\begin{proof}
+  If $\lambda(j) \le \lambda_0$, then by~\eqref{eq:key:ell} and Step~2 of the algorithm we have
+  $$|X(j+1)| \ge \frac{\beta e^{- C \sqrt{\lambda_0 + 1}}}{r} \cdot |X(j)| - 1 = \eps |X(j)| - 1.$$ 
+  On the other hand, if $\lambda(j) > \lambda_0$, then $j \in \cB(s)$, and we have 
+  $$|X(j+1)| \ge \beta e^{- C \sqrt{\lambda(j) + 1}} |X(j)|,$$ 
+  by~\eqref{eq:key:ell} and Step~3 of the algorithm. Since there are at most $rt$ colour steps, and $\beta \ge \eps$, the claimed bound follows.
+\end{proof}
 
 % [LEMMA] Sum of λ parameters bound
 % Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex line 92 (\begin{lemma}\label{lem:sum:of:lambdas})
@@ -120,112 +180,29 @@
 \begin{lemma}[Sum of \(\lambda\) parameters bound]
   \label{lem:sum:of:lambdas} % Source paper uses same label
   \paperref{Lemma 4.6}
-  \uses{lem:Bi:max, def:density-boost-sets}
+  \uses{lem:Bi:max, def:density-boost-sets, alg:book}
+  %
+  If\/ $t \ge \lambda_0 / \delta > 0$ and\/ $\delta \le 1/4$, then
+  $$\sum_{j \in \cB(s)} \sqrt{\lambda(j)} \le \frac{7r \log(1/\delta)}{\sqrt{\lambda_0}} \cdot t$$
+  for every $s \in \N$. 
 \end{lemma}
-
-% ============================================================================
-% SELECT AND BOOST ALGORITHM
-% ============================================================================
-
-% [ALGORITHM] Select and boost algorithm (RBalg)
-% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 18-25 (algorithm description)
-% No direct deprecated blueprint equivalent (was scattered in proof)
-% Lean status: ✗ Not implemented (algorithmic description)
-% Label: alg:select-boost
-% Dependencies: lem:key-lemma, def:boost-parameters
-% TODO: Add algorithm RBalg with input parameters t, p_0, δ
-% TODO: Add initialization: T_i = ∅, X = reservoir, Y_i = vertex partitions
-% TODO: Add main loop: while X ≠ ∅ and max|T_i| < t
-
-\begin{algorithm}
-  \label{alg:select-boost}
-  \uses{lem:key-lemma, def:boost-parameters}
-  % Source paper describes RBalg algorithm
-\end{algorithm}
-
-% [ALGORITHM STEP] Key lemma application
-% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex (each algorithm iteration)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: alg:key-lemma-step
-% Dependencies: lem:key-lemma, alg:select-boost
-% TODO: Add application of key lemma to current X, Y_i with parameters α_i
-% TODO: Add extraction of vertex x, color ℓ, updated sets X', Y'_i, parameter λ
-
-\begin{algorithm}
-  \label{alg:key-lemma-step}
-  \uses{lem:key-lemma, alg:select-boost}
-  % Source paper applies key lemma in each iteration
-\end{algorithm}
-
-% [ALGORITHM STEP] Color step vs density-boost step
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex (λ vs λ_0 comparison)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: alg:step-decision
-% Dependencies: alg:key-lemma-step, def:boost-parameters
-% TODO: Add decision rule: if λ ≥ λ_0 then color step, else density-boost step
-% TODO: Color step: add x to T_ℓ, restrict Y_ℓ to Y'_ℓ
-% TODO: Density-boost step: update all Y_i to Y'_i, set X to X'
-
-\begin{algorithm}
-  \label{alg:step-decision}
-  \uses{alg:key-lemma-step, def:boost-parameters}
-  % Source paper compares λ vs λ_0
-\end{algorithm}
-
-% [ALGORITHM STEP] Invariant maintenance
-% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 19-20 (invariant conditions)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: alg:invariants
-% Dependencies: alg:step-decision, def:colour-neighborhood
-% TODO: Add maintenance of X ⊂ ∩_j ∩_{u∈T_j} N_j(u)
-% TODO: Add maintenance of Y_i ⊂ ∩_{u∈T_i} N_i(u) for each color i
-% TODO: Add density tracking: p_i(X,Y_i) ≥ p_0 - (εt) for algorithm progress
-
-\begin{invariant}[Algorithm invariants]
-  \label{alg:invariants}
-  \uses{alg:step-decision, def:colour-neighborhood}
-  % Source paper maintains neighborhood constraints
-\end{invariant}
-
-% [ALGORITHM STEP] Termination and output
-% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex (algorithm termination)
-% No deprecated blueprint equivalent
-% Lean status: ✗ Not implemented
-% Label: alg:termination
-% Dependencies: alg:invariants, def:book, lem:X:lower:bound, lem:Y:lower:bound
-% TODO: Add termination conditions: X = ∅ or some |T_i| = t
-% TODO: Add output: (t,m)-book with vertex set T_i ∪ Y_i where |T_i| = t
-% TODO: Add verification that m = |Y_i| satisfies required bounds
-
-\begin{algorithm}
-  \label{alg:termination}
-  \uses{alg:invariants, def:book, lem:X:lower:bound, lem:Y:lower:bound}
-  % Source paper terminates when X empty or |T_i| = t
-\end{algorithm}
-
-% ============================================================================
-% MULTICOLOUR BOOK ALGORITHM
-% ============================================================================
-
-% [ALGORITHM] Multicolour book algorithm
-% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex (algorithm description)
-% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 82-100 (\begin{algorithm}[The Multicolour Book Algorithm])
-% Lean status: ✗ Not implemented (algorithmic description)
-% Label: alg:multicolour-book
-% Dependencies: alg:select-boost, lem:key-lemma
-% TODO: Add complete multicolour book algorithm with 3 steps
-% TODO: Add Step 1: Apply key lemma with α_i = (p_i(X,Y_i) - p_0 + δ)/t
-% TODO: Add Step 2: Colour step if λ ≤ λ_0, choose j with |N_j(x) ∩ X'| ≥ (|X'|-1)/r
-% TODO: Add Step 3: Density-boost step if λ > λ_0, update X → X' and Y_ℓ → Y'_ℓ
-
-\begin{algorithm}
-  \label{alg:multicolour-book}
-  \uses{alg:select-boost, lem:key-lemma}
-  % Source paper describes complete book algorithm
-\end{algorithm}
+%
+\begin{proof}
+  Observe first that, by Lemma~\ref{lem:pi:lower:bound}, we have 
+  \begin{equation}\label{eq:B:condition}
+  \frac{\delta}{4} \prod_{j \in \cB_i(s)} \bigg( 1 + \frac{\lambda(j)}{t} \bigg) \le 1 + \delta
+  \end{equation}
+  for each $i \in [r]$. Note also that $\lambda_0 \le \lambda(j) \le 5t/\delta$ for every $j \in \cB(s)$, where the lower bound holds by the definition of $\cB(s)$, and the upper bound by~\eqref{eq:B:condition} and since $\delta \le 1/4$. Now, since $\log(1+x) \ge \min\{ x/2,1\}$ for all $x > 0$, it follows that
+  %the function $\sqrt{x}/\log(1+x)$ is increasing either side of its unique minimum, and therefore %is therefore maximised at one of its extreme points. 
+  \begin{equation}\label{eq:not:convexity}
+  \frac{ \sqrt{\lambda(j)} }{\log(1 + \lambda(j)/t) } \le \max\bigg\{ \frac{ 2t }{ \sqrt{\lambda_0} }, \, \sqrt{ \frac{5t}{\delta}} \bigg\} \le \frac{ 3t }{ \sqrt{\lambda_0} },
+  %\frac{ \sqrt{\lambda(j)} }{\log(1 + \lambda(j)/t) } \le \max\bigg\{ \frac{ \sqrt{\lambda_0} }{ \log(1 + \lambda_0/t) }, \, \frac{\sqrt{5t/\delta}}{\log(1 + 5/\delta)} \bigg\} \le \frac{ 2t }{ \sqrt{\lambda_0} },
+  \end{equation}
+  where in the second inequality we used %the fact that $\log(1 + x) \ge x/2$ for all $0 < x \le 1/4$, and 
+  our assumption that $t \ge \lambda_0 / \delta$. It now follows that
+  $$\sum_{j \in \cB_i(s)} \sqrt{\lambda(j)} \le \frac{ 3t }{ \sqrt{\lambda_0} } \sum_{j \in \cB_i(s)} \log \bigg( 1 + \frac{\lambda(j)}{t} \bigg) \le \frac{7 \log(1/\delta)}{\sqrt{\lambda_0}} \cdot t,$$
+  where the first inequality holds by~\eqref{eq:not:convexity}, and the second follows from~\eqref{eq:B:condition}, since $\delta \le 1/4$. Summing over $i \in [r]$, we obtain the claimed bound. 
+\end{proof}
 
 % ============================================================================
 % BOOK THEOREM
@@ -246,25 +223,51 @@
 \begin{theorem}[Book theorem]
   \label{thm:book} % Source paper uses same label
   \paperref{Theorem 2.1}
-  \uses{def:book, def:edge-colouring, def:colour-neighborhood, alg:multicolour-book, lem:pi:lower:bound, lem:pi:min, lem:Bi:max, lem:Y:lower:bound, lem:X:lower:bound, lem:sum:of:lambdas}
+  \uses{def:book, def:edge-colouring, def:colour-neighborhood, alg:multicolour-book, lem:pi:lower:bound, lem:pi:min, lem:Bi:max, lem:Y:lower:bound, lem:X:lower:bound, lem:sum:of:lambdas, alg:book}
+  %
+  Let\/ $\chi$ be an\/ $r$-colouring of\/ $E(K_n)$, and let\/ $X,Y_1,\ldots,Y_r \subset V(K_n)$. % be disjoint sets. 
+  For every $p > 0$ and $\mu \ge 2^{10} r^3$, and every $t,m \in \N$ with $t \ge \mu^5 / p$, the following holds. If 
+  %
+  $$|N_i(x) \cap Y_i| \ge p|Y_i|$$
+  %
+  for every $x \in X$ and $i \in [r]$, and moreover
+  %
+  $$|X| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t} \qquad \text{and} \qquad |Y_i| \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m,$$ 
+  %
+  then $\chi$ contains a monochromatic $(t,m)$-book.
 \end{theorem}
-
-% ============================================================================
-% BOOK THEOREM PROOF
-% ============================================================================
-
-% [PROOF] Proof of book theorem using multicolour book algorithm
-% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex (complete proof after lemmas)
-% Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 222-257 (proof of book theorem)
-% Lean status: ✗ Not implemented (proof)
-% Uses: alg:multicolour-book, lem:pi:lower:bound, lem:pi:min, lem:Bi:max, lem:Y:lower:bound, lem:X:lower:bound, lem:sum:of:lambdas
-% Dependencies: thm:book, alg:multicolour-book, lem:X:lower:bound, lem:Y:lower:bound
-% TODO: Add algorithm setup with δ = p/μ² and λ₀ = (μlog(1/δ)/(8C))²
-% TODO: Add proof that algorithm terminates with max|T_i(s)| = t and min|Y_i(s)| ≥ m
-% TODO: Add bound analysis: |ℬ_i(s)| ≤ t using auxiliary lemmas
-% TODO: Add final size bounds: |Y_i(s)| ≥ m and |X(s)| > 0 verification
-
-\begin{proof}[Proof of book theorem]
-  \uses{alg:multicolour-book, lem:pi:lower:bound, lem:pi:min, lem:Bi:max, lem:Y:lower:bound, lem:X:lower:bound, lem:sum:of:lambdas, def:density-boost-sets, def:algorithm-constants}
-  % Source paper proves theorem using all auxiliary lemmas for algorithm analysis
+%
+\begin{proof}
+  Recall that we are given an $r$-colouring $\chi$ of $E(K_n)$ and a collection of %disjoint 
+  sets $X,Y_1,\ldots,Y_r \subset V(K_n)$ with
+  \begin{equation}\label{eq:book:thm:conditions}
+  |X| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t} \qquad \text{and} \qquad |Y_i| \ge \bigg( \frac{e^{2^{13} r^3 / \mu^2}}{p} \bigg)^t \, m
+  \end{equation}
+  for each $i \in [r]$, for some $p > 0$, $\mu \ge 2^{10} r^3$ and $t,m \in \N$ with $t \ge \mu^5 / p$, and moreover
+  \begin{equation}\label{eq:book:thm:min:degree}
+  |N_i(x) \cap Y_i| \ge p|Y_i|
+  \end{equation}
+  for every $x \in X$ and $i \in [r]$. 
+  %Our task is to show that the multicolour book algorithm produces a monochromatic $(t,m)$-book. 
+  We will run the multicolour book algorithm with
+  $$\delta = \frac{p}{\mu^2} \qquad \text{and} \qquad \lambda_0 = \bigg( \frac{\mu \log(1/\delta)}{8C} \bigg)^2,$$
+  where $C = 4r^{3/2}$ (as before), and show that it ends with
+  $$\max \big\{ |T_i(s)| : i \in [r] \big\} = t \qquad \text{and} \qquad \min\big\{ |Y_i(s)| : i \in [r] \big\} \ge m,$$
+  and therefore produces a monochromatic $(t,m)$-book.
+  
+  To do so, we just need to bound the sizes of the sets $X(s)$ and $Y_i(s)$ from below. Observe that $t \ge \lambda_0$ and $\delta \le 1/4$, and therefore, by Lemma~\ref{lem:Bi:max}, that
+  \begin{equation}\label{eq:Bi:final:bound}
+  |\cB_i(s)| \, \le \, \frac{4 \log(1/\delta)}{\lambda_0} \cdot t \, = \, \frac{2^{12} r^3}{\mu^2 \log(1/\delta)} \cdot t \, \le \, t
+  \end{equation}
+  for every $i \in [r]$ and $s \in \N$. Since $p_0 \ge p$, by~\eqref{eq:book:thm:min:degree} and the definition of $p_0$, it follows that  
+  $$|Y_i(s)| \, \ge \, \bigg( p - \frac{3\delta}{4} \bigg)^{t + |\cB_i(s)|} |Y_i| \, \ge \, e^{-2\delta t / p} \, p^{|\cB_i(s)|} \, \big( e^{2^{13} r^3 / \mu^2} \big)^t \, m,$$
+  where the first inequality holds by Lemma~\ref{lem:Y:lower:bound}, and the second by~\eqref{eq:book:thm:conditions} and~\eqref{eq:Bi:final:bound}. Noting that $p^{|\cB_i(s)|} \ge e^{-2^{12} r^3 t / \mu^2}$, by~\eqref{eq:Bi:final:bound}, and that $\delta / p = 1/\mu^2$, it follows that 
+  $$|Y_i(s)| \, \ge \, e^{-2 t / \mu^2} \big( e^{2^{12} r^3 / \mu^2} \big)^t \, m \, \ge \, m,$$
+  as claimed. To bound $|X(s)|$, recall~\eqref{eq:X:lower:bound} and observe that 
+  $$\eps^{rt + |\cB(s)|}  \ge \bigg( \frac{\beta}{r} \cdot e^{- C \sqrt{\lambda_0 + 1}} \bigg)^{2rt} \ge \big( e^{- 4C \sqrt{\lambda_0}} \big)^{rt} = \delta^{\mu r t/2} = \bigg( \frac{\mu^2}{p} \bigg)^{-\mu r t / 2},$$
+  where the first step holds because $\eps = (\beta / r) e^{- C \sqrt{\lambda_0 + 1}}$ and $|\cB(s)| \le rt$, by~\eqref{eq:Bi:final:bound}, and the second step holds because $\beta = 3^{-4r}$ and $\lambda_0 \ge 2^{10} r^3$. Moreover, we have
+  $$\sum_{j \in \cB(s)} \sqrt{\lambda(j)+1} \le \frac{8r \log(1/\delta)}{\sqrt{\lambda_0}} \cdot t = \frac{2^6Crt}{\mu},$$
+  by Lemma~\ref{lem:sum:of:lambdas} and our choice of $\lambda_0$, and therefore 
+  $$|X(s)| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t / 2} \exp\bigg( - \frac{2^6C^2rt}{\mu} \bigg) - rt > 0,$$
+  for every $s \in \N$, by Lemma~\ref{lem:X:lower:bound} and since $\mu \ge 2^{10} r^3$ and $C = 4r^{3/2}$. It follows that the algorithm produces a monochromatic $(t,m)$-book, as claimed. 
 \end{proof}
