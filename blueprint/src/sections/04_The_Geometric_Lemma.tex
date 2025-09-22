@@ -6,7 +6,7 @@
 % ============================================================================
 
 % [LEMMA] Moments lemma: non-negative expectations
-% Source: source/sections/section_the_proof_of_the_key_lemma.tex line 16-19 (\begin{lemma}\label{lem:moments})
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 16-19 (\begin{lemma}\label{lem:moments})
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 3-13 (\begin{lemma}[Moments Lemma])
 % Lean status: ✓ Implemented as `moments` in Basic.lean
 % Label: lem:moments
@@ -19,7 +19,7 @@
 % ============================================================================
 
 % [REMARK] Properties of cosh√x function
-% Source: source/sections/section_the_proof_of_the_key_lemma.tex line 67 (\begin{remark})
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 67 (\begin{remark})
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 14-36 (Remark with bounds)
 % Lean status: ✓ Partially implemented (various bounds in Basic.lean)
 % No label (remark)
@@ -27,14 +27,14 @@
 % TODO: Add bounds -1 ≤ cosh(√x) ≤ 1 for x < 0, and 2+cosh(x) ≥ 1 for all x
 
 % [LEMMA] Special function lemma part 1: upper bound
-% Source: source/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 37-69 (\begin{lemma}[Special-function lemma (Part 1)])
 % Lean status: ✓ Implemented as `specialFunctionE` in Basic.lean
 % Label: lem:special:function:1
 % TODO: Add bound f(x) ≤ 3ʳ·r·exp(∑ᵢ √(xᵢ + 3r)) for all x
 
 % [LEMMA] Special function lemma part 2: lower bound when negative
-% Source: source/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 70-97 (\begin{lemma}[Special-function lemma (Part 2)])
 % Lean status: ✓ Implemented as `specialFunctionEc` in Basic.lean
 % Label: lem:special:function:2
@@ -45,7 +45,7 @@
 % ============================================================================
 
 % [LEMMA] Geometric lemma: main probabilistic bound
-% Source: source/sections/section_the_proof_of_the_key_lemma.tex line 7-10 (\begin{lemma}\label{lem:lambda})
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 7-10 (\begin{lemma}\label{lem:lambda})
 % Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 98-108 (\begin{lemma}[Geometric lemma])
 % Lean status: ✓ Implemented as `geometric` in GeometricLemma.lean
 % Label: lem:lambda (source) / lem:geometric (blueprint)
@@ -58,7 +58,7 @@
 % ============================================================================
 
 % [PROOF] Proof of key lemma using geometric lemma
-% Source: source/sections/section_the_proof_of_the_key_lemma.tex (proof after geometric lemma)
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (proof after geometric lemma)
 % Deprecated blueprint: deprecated/04_The_Book_Theorem.tex line 22-101 (proof of key lemma)
 % Lean status: ✓ Implemented as `key` in KeyLemma.lean
 % Uses: lem:moments, lem:geometric

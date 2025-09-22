@@ -1,10 +1,10 @@
 % Preliminaries section - basic definitions only
 % This section contains the fundamental definitions needed for the formalization
 
-\subsection{Multinomial coefficients}
+\subsection{Elementary combinatorics}
 
 % [LEMMA] Multinomial coefficient bound (Appendix lemma)
-% Source: source/sections/section_bounding_binomial_coefficients.tex line 5 (\begin{lemma}\label{lem:multibounds})
+% Source: blueprint/paper/sections/section_bounding_binomial_coefficients.tex line 5 (\begin{lemma}\label{lem:multibounds})
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 30-40 (\begin{lemma}[Lemma A.1])
 % Lean status: ✗ Not implemented
 % Label: lem:multibounds
@@ -27,28 +27,28 @@
 % TODO: Add definition of edge colouring as map from edge set to colours
 
 % [DEFINITION] Colour neighbourhood
-% Source: source/sections/section_select_and_boost_strategy.tex line 4 (notation N_i(x))
+% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 4 (notation N_i(x))
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 10-16 (\begin{definition} \label{def:colour-neighborhood})
 % Lean status: ✓ Implemented as SimpleGraph.EdgeColoring.coloredNeighborSet
 % Label: def:colour-neighborhood
 % TODO: Add definition N_i(u) for neighbourhood of vertex u in colour i
 
 % [DEFINITION] Ramsey numbers R_r(k)
-% Source: source/sections/section_introduction.tex line 3-4 (informal definition)
+% Source: blueprint/paper/sections/section_introduction.tex line 3-4 (informal definition)
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:ramsey-number
 % TODO: Add definition R_r(k) = min{n : every r-coloring of E(K_n) contains monochromatic K_k}
 
 % [DEFINITION] Off-diagonal Ramsey numbers R_r(k_1,...,k_r)
-% Source: source/sections/section_the_book_theorem.tex line 7 (R_r(k,...,k,k-t))
+% Source: blueprint/paper/sections/section_the_book_theorem.tex line 7 (R_r(k,...,k,k-t))
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:ramsey-number-off-diagonal
 % TODO: Add definition R_r(k_1,...,k_r) for off-diagonal Ramsey numbers
 
 % [DEFINITION] Books (A,B)
-% Source: source/sections/section_the_book_theorem.tex line 3-5 (book definition)
+% Source: blueprint/paper/sections/section_the_book_theorem.tex line 3-5 (book definition)
 % No deprecated blueprint equivalent
 % Lean status: ✗ Not implemented
 % Label: def:book
@@ -56,16 +56,115 @@
 % TODO: Add definition of (t,m)-book with |A| = t and |B| = m
 
 % [DEFINITION] Function p_i(X,Y) - minimum proportion
-% Source: source/sections/section_select_and_boost_strategy.tex line 3-4 (p_i(X,Y) definition)
+% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 3-4 (p_i(X,Y) definition)
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 18-24 (\begin{definition} \label{def:p})
 % Lean status: ✓ Partially implemented as pY in KeyLemma.lean
 % Label: def:p
 % TODO: Add definition of p_i(X,Y) = min{|N_i(x) ∩ Y|/|Y| : x ∈ X}
 
+% [DEFINITION] Cliques and monochromatic structures
+% Source: blueprint/paper/sections/section_introduction.tex line 6 (monochromatic clique K_k)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: def:monochromatic-clique
+% TODO: Add definition of monochromatic clique in edge coloring
+
+% [DEFINITION] Graph regularity and density
+% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex (colouring is almost regular)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: def:regular-coloring
+% TODO: Add definition of ε-regular coloring with density close to 1/r
+
+\subsection{Algorithmic foundations}
+
+% [DEFINITION] Select and boost algorithm state
+% Source: blueprint/paper/sections/section_select_and_boost_strategy.tex line 11-13 (algorithm description)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: def:algorithm-state
+% TODO: Add formal state space for iterative algorithm with T_1,...,T_r and X,Y_i
+
+% [DEFINITION] Algorithm parameters and updates
+% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex (α_i, λ parameters)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: def:algorithm-parameters
+% TODO: Add α_i boost parameters and λ density improvement tracking
+
+% [LEMMA] Algorithm termination
+% Source: blueprint/paper/sections/section_proof_of_the_book_theorem.tex (termination analysis)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: lem:algorithm-termination
+% TODO: Add proof that algorithm terminates with required book structure
+
+\subsection{Erdős-Szekeres method}
+
+% [DEFINITION] Classical Erdős-Szekeres bound
+% Source: blueprint/paper/sections/section_introduction.tex line 3 (R_r(k) ≤ r^{rk})
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: def:erdos-szekeres-bound
+% TODO: Add classical upper bound construction
+
+% [LEMMA] Erdős-Szekeres greedy process
+% Source: blueprint/paper/sections/section_deducing_the_bound_on_rrk.tex line 11-12 (greedy algorithm)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: lem:erdos-szekeres-greedy
+% TODO: Add greedy clique-finding process with exponential gains
+
+\subsection{Linear algebra and inner products}
+
+% [DEFINITION] Inner products on finite domains
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 25-29 (⟨σᵢ(x),σᵢ(y)⟩)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: def:inner-product-finite
+% TODO: Add inner product structure on functions X → ℝ^V for finite X, V
+
+% [DEFINITION] Tensor products for moments lemma
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (proof of moments lemma)
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: def:tensor-moments
+% TODO: Add tensor product Z = σₐ₁(U) ⊗ ⋯ ⊗ σₐₗ(U') for moments calculation
+
+% [LEMMA] Positive semidefiniteness of moment matrices
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (moments lemma proof)
+% Deprecated blueprint: deprecated/03_The_Geometric_Lemma.tex line 3-13 (related to moments)
+% Lean status: ✓ Partially implemented as `moments` in Basic.lean
+% Label: lem:positive-semidefinite
+% TODO: Add proof that E[ZZ*] ≥ 0 for tensor products
+
+\subsection{Probability theory and measure theory}
+
+% [DEFINITION] Uniform distribution on finite products
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (U, U' i.i.d. uniform)
+% No deprecated blueprint equivalent
+% Lean status: ✓ Partially implemented in GeometricLemma.lean
+% Label: def:uniform-product
+% TODO: Add uniform distribution on X × X with proper measure theory
+
+% [LEMMA] Product measure integration (Fubini)
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
+% No deprecated blueprint equivalent
+% Lean status: ✓ Partially used in GeometricLemma.lean
+% Label: lem:fubini-finite
+% TODO: Add Fubini's theorem for finite product spaces
+
+% [LEMMA] Concentration inequalities
+% Source: implicit in probabilistic arguments throughout
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: lem:concentration
+% TODO: Add concentration bounds for the probabilistic method
+
 \subsection{Trigonometry and special functions}
 
 % [DEFINITION] cosh√x via Taylor series
-% Source: source/sections/section_the_proof_of_the_key_lemma.tex (implicit in special function)
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (implicit in special function)
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 46-52 (\begin{definition} \label{def:coshsqrt})
 % Lean status: ✓ Implemented as coshsqrt in Basic.lean
 % Label: def:coshsqrt
@@ -93,7 +192,7 @@
 % TODO: Add bounds -1 ≤ cosh√x ≤ 1 for x < 0
 
 % [DEFINITION] Special function f(x₁,...,xᵣ)
-% Source: source/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex line 43 (\begin{lemma}\label{lem:special:function})
 % Deprecated blueprint: deprecated/02_Preliminaries.tex line 95-104 (\begin{definition} \label{def:f})
 % Lean status: ✓ Implemented as f in Basic.lean
 % Label: def:f
@@ -105,3 +204,17 @@
 % Lean status: ✗ Not implemented
 % Label: lem:taylor-nonneg
 % TODO: Add proof that f has non-negative Taylor coefficients
+
+% [LEMMA] Exponential function estimates
+% Source: throughout the proof (bounds on exp(c√x))
+% No deprecated blueprint equivalent
+% Lean status: ✗ Not implemented
+% Label: lem:exp-estimates
+% TODO: Add sharp bounds on exp(c√x) for the geometric lemma
+
+% [LEMMA] Integration bounds for improper integrals
+% Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
+% No deprecated blueprint equivalent
+% Lean status: ✓ Partially implemented in Integrals.lean
+% Label: lem:integral-bounds
+% TODO: Add robust integration theory for ∫^∞ exp(-√x) dx type integrals

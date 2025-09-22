@@ -3,7 +3,7 @@
 Lean 4 formalization of "Upper bounds for multicolour Ramsey numbers" ([arXiv:2410.17197](https://arxiv.org/abs/2410.17197)).
 
 ## Structure
-- **source/**: Original paper (PDF and LaTeX source)
+- **blueprint/paper/**: Original paper (PDF and LaTeX source)
 - **blueprint/**: Mathematical blueprint for formalization
 - **MulticolorRamsey/**: Lean 4 source code
   - `Basic.lean`: Foundational definitions
