@@ -225,7 +225,7 @@
     \Pr\left(E \cap \left( \bigcup_{i \in [r]} \left\{ \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \ge \lambda \right\}\right)\right) < \beta r e^{-C\sqrt{\lambda + 1}}.
   \end{align}
 
-  Observe that, since \(x \le 2 + \cosh\sqrt{x}\) (Lemma~\ref{lem:le-coshsqrt}) and using Lemma~\ref{lem:moments} and linearity of expectation,
+  Observe that, since \(x \le 2 + \cosh\sqrt{x}\) (\autoref{lem:le-coshsqrt}) and using \autoref{lem:moments} and linearity of expectation,
   \[
     \Ex\big[ f\big( Z_1,\ldots,Z_r \big) \big] \ge 0
   \]
@@ -238,7 +238,7 @@
     &\le \Ex\left[ 3^r r \exp\bigg( \displaystyle\sum_{i = 1}^r \sqrt{ Z_i + 3r } \bigg)  \mathbf{1}_E \right] + \Ex\big[-1 \cdot \mathbf{1}_{E^c} \big]
   \end{align*}
   %
-  where we use Lemma~\ref{lem:special:function:1} to bound the case for \(E\), and Lemma~\ref{lem:special:function:2} for \(E^c\).
+  where we use \autoref{lem:special:function:1} to bound the case for \(E\), and \autoref{lem:special:function:2} for \(E^c\).
   It follows that
   %
   \begin{equation}\label{eq:eventE:inequality}
@@ -264,7 +264,7 @@
     & \le \, \beta (cr + 1),
   \end{align*}
   %
-  where in the second inequality we used (\ref{eq:max:big:and:E:no}) and \(\Pr(E) \le \beta\); in the third we used \(c \le C - 1\); and in the last inequality we used the fact that \(\int_0^\infty \frac{1}{2\sqrt{x}} e^{-\sqrt{x}} \, \mathrm{d}x = 1\).
+  where in the second inequality we used (\autoref{eq:max:big:and:E:no}) and \(\Pr(E) \le \beta\); in the third we used \(c \le C - 1\); and in the last inequality we used the fact that \(\int_0^\infty \frac{1}{2\sqrt{x}} e^{-\sqrt{x}} \, \mathrm{d}x = 1\).
   Note that the second and third inequalities rely on the non-negativity of the integrand.
   In particular, applying this with \(c = \sqrt{3}r^{3/2}\), and recalling that \(C = 4r^{3/2} \ge c + 1\) and \(\beta = 3^{-4r}\), it follows that
   %

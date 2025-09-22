@@ -11,7 +11,7 @@
   %Let \(\chi\) be an \(r\)-colouring of \(E(K_n)\), let \(X\) and \(Y_1,\ldots, Y_r\) be disjoint sets of vertices of \(K_n\), and 
   Set \(T_1 = \cdots = T_r = \emptyset\), and repeat the following steps until either \(X = \emptyset\) or \(\max\big\{ |T_i| : i \in [r] \big\} = t\). 
   \begin{enumerate}
-  \item\label{Alg:Step1} Applying the key lemma: let the vertex \(x \in X\), the colour \(\ell \in [r]\), the sets \(X' \subset X\) and \(Y'_1,\ldots,Y'_r\), and \(\lambda \ge -1\) be given by Lemma~\ref{lem:key-lemma}, applied with
+  \item\label{Alg:Step1} Applying the key lemma: let the vertex \(x \in X\), the colour \(\ell \in [r]\), the sets \(X' \subset X\) and \(Y'_1,\ldots,Y'_r\), and \(\lambda \ge -1\) be given by \autoref{lem:key-lemma}, applied with
   \begin{equation}\label{def:alpha}
   \alpha_i = \frac{p_i(X,Y_i) - p_0 + \delta}{t}
   \end{equation}
@@ -39,7 +39,7 @@
   \end{enumerate}  
 \end{algorithm}
 
-In this section we will use the multicolour book algorithm to prove Theorem~\ref{thm:book}. To do so, we will first prove a few simple lemmas about the sets produced by the algorithm when applied with arbitrary inputs, and then apply these bounds to our setting. Recall that we are given an \(r\)-colouring \(\chi\) of \(E(K_n)\) and
+In this section we will use the multicolour book algorithm to prove \autoref{thm:book}. To do so, we will first prove a few simple lemmas about the sets produced by the algorithm when applied with arbitrary inputs, and then apply these bounds to our setting. Recall that we are given an \(r\)-colouring \(\chi\) of \(E(K_n)\) and
 sets \(X,Y_1,\ldots,Y_r \subset V(K_n)\), define
 %
 \begin{equation}
@@ -55,7 +55,7 @@ In order to simplify the statements of the lemmas below, let us write \(X(s)\) a
 	p_i(s) = p_i\big( X(s), Y_i(s) \big) \qquad \text{and} \qquad \alpha_i(s) = \frac{p_i(s) - p_0 + \delta}{t}.
 \end{equation*}
 %
-Let us also write \(\ell(s) \in [r]\) and \(\lambda(s) \ge -1\) for the colour and number given by the application of Lemma~\ref{key:lemma} to the sets \(X(s)\) and \(Y_1(s),\dots,Y_r(s)\), and define
+Let us also write \(\ell(s) \in [r]\) and \(\lambda(s) \ge -1\) for the colour and number given by the application of \autoref{key:lemma} to the sets \(X(s)\) and \(Y_1(s),\dots,Y_r(s)\), and define
 %
 \begin{equation*}
 	\cB_i(s) = \big\{ 0 \le j < s \,:\, \ell(j) = i \, \text{ and } \, \lambda(j) > \lambda_0 \big\},
@@ -82,14 +82,14 @@ for each \(i \in [r]\) and \(s \in \N\), to be the set of density-boost steps in
 
 \begin{proof}
   Note first that if \(Y_i(s+1) = Y_i(s)\), then \(p_i(s+1) \ge p_i(s)\), since the minimum degree does not decrease when we take a subset of \(X(s)\). When we perform a colour step in colour \(i\), % (that is, we add \(x\) to \(T_i\)), 
-  we have \(p_i(s+1) \ge p_i(s) - \alpha_i(s)\), by Lemma~\ref{lem:key-lemma}, and hence
+  we have \(p_i(s+1) \ge p_i(s) - \alpha_i(s)\), by \autoref{lem:key-lemma}, and hence
   %
   \begin{equation*}
     p_i(s+1) - p_0 + \delta \ge \bigg( 1 - \frac{1}{t} \bigg) \big( p_i(s) - p_0 + \delta \big),
   \end{equation*}
   %
   by our choice of \(\alpha_i(s)\). Similarly, when we perform a density-boost step in colour \(i\)  
-  we have \(p_i(s+1) \ge p_i(s) + \lambda(s) \alpha_i(s)\), by Lemma~\ref{lem:key-lemma}, and hence
+  we have \(p_i(s+1) \ge p_i(s) + \lambda(s) \alpha_i(s)\), by \autoref{lem:key-lemma}, and hence
   %
   \begin{equation*}
     p_i(s+1) - p_0 + \delta \ge \bigg( 1 + \frac{\lambda(s)}{t} \bigg) \big( p_i(s) - p_0 + \delta \big).
@@ -98,7 +98,7 @@ for each \(i \in [r]\) and \(s \in \N\), to be the set of density-boost steps in
   Recalling that there are at most \(t\) colour steps in colour \(i\), and that \(p_i(0) \ge p_0\), by the definition~\eqref{def:p0} of \(p_0\), the claimed bound follows. 
 \end{proof}
 
-Before continuing, let's note a couple of important consequences of Lemma~\ref{lem:pi:lower:bound}. First, it implies that neither \(p_i(s)\) nor \(\alpha_i(s)\) can get too small. 
+Before continuing, let's note a couple of important consequences of \autoref{lem:pi:lower:bound}. First, it implies that neither \(p_i(s)\) nor \(\alpha_i(s)\) can get too small. 
 
 \begin{lemma}[Minimum bounds on \(p_i\) and \(\alpha_i\)]
   \label{lem:pi:min} % Source paper uses same label
@@ -145,7 +145,7 @@ It also implies the following bound on the number of density-boost steps.
   Since \(t \ge \lambda_0\) and \(\delta \le 1/4\), the claimed bound follows. 
 \end{proof}
 
-Lemmas~\ref{lem:pi:min} and~\ref{lem:Bi:max} together provide a lower bound on the size of the set \(Y_i(s)\). 
+\autoref{lem:pi:min} and~\autoref{lem:Bi:max} together provide a lower bound on the size of the set \(Y_i(s)\). 
 
 \begin{lemma}[Lower bound for \(Y_i\) set sizes]
   \label{lem:Y:lower:bound} % Source paper uses same label
@@ -168,7 +168,7 @@ Lemmas~\ref{lem:pi:min} and~\ref{lem:Bi:max} together provide a lower bound on t
     |Y_i(j+1)| = p_i(j) |Y_i(j)| \ge \bigg( p_0 - \frac{3\delta}{4} \bigg) |Y_i(j)|,
   \end{equation*}
   % 
-  by~\eqref{eq:key:alli} and Lemma~\ref{lem:pi:min}.
+  by~\eqref{eq:key:alli} and \autoref{lem:pi:min}.
 \end{proof}
 
 Finally, we need to bound the size of the set \(X(s)\). To do so, set \(\eps = (\beta / r) e^{- C \sqrt{\lambda_0 + 1}}\), and define \(\cB(s) = \cB_1(s) \cup \cdots \cup \cB_r(s)\) to be the set of all density-boost steps. 
@@ -219,7 +219,7 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
 \end{lemma}
 %
 \begin{proof}
-  Observe first that, by Lemma~\ref{lem:pi:lower:bound}, we have 
+  Observe first that, by \autoref{lem:pi:lower:bound}, we have 
   %
   \begin{equation}\label{eq:B:condition}
     \frac{\delta}{4} \prod_{j \in \cB_i(s)} \bigg( 1 + \frac{\lambda(j)}{t} \bigg) \le 1 + \delta
@@ -295,7 +295,7 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
   %
   and therefore produces a monochromatic \((t,m)\)-book.
   
-  To do so, we just need to bound the sizes of the sets \(X(s)\) and \(Y_i(s)\) from below. Observe that \(t \ge \lambda_0\) and \(\delta \le 1/4\), and therefore, by Lemma~\ref{lem:Bi:max}, that
+  To do so, we just need to bound the sizes of the sets \(X(s)\) and \(Y_i(s)\) from below. Observe that \(t \ge \lambda_0\) and \(\delta \le 1/4\), and therefore, by \autoref{lem:Bi:max}, that
   %
   \begin{equation}\label{eq:Bi:final:bound}
     |\cB_i(s)| \, \le \, \frac{4 \log(1/\delta)}{\lambda_0} \cdot t \, = \, \frac{2^{12} r^3}{\mu^2 \log(1/\delta)} \cdot t \, \le \, t
@@ -307,7 +307,7 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
     |Y_i(s)| \, \ge \, \bigg( p - \frac{3\delta}{4} \bigg)^{t + |\cB_i(s)|} |Y_i| \, \ge \, e^{-2\delta t / p} \, p^{|\cB_i(s)|} \, \big( e^{2^{13} r^3 / \mu^2} \big)^t \, m,
   \end{equation*}
   %
-  where the first inequality holds by Lemma~\ref{lem:Y:lower:bound}, and the second by~\eqref{eq:book:thm:conditions} and~\eqref{eq:Bi:final:bound}. Noting that \(p^{|\cB_i(s)|} \ge e^{-2^{12} r^3 t / \mu^2}\), by~\eqref{eq:Bi:final:bound}, and that \(\delta / p = 1/\mu^2\), it follows that 
+  where the first inequality holds by \autoref{lem:Y:lower:bound}, and the second by~\eqref{eq:book:thm:conditions} and~\eqref{eq:Bi:final:bound}. Noting that \(p^{|\cB_i(s)|} \ge e^{-2^{12} r^3 t / \mu^2}\), by~\eqref{eq:Bi:final:bound}, and that \(\delta / p = 1/\mu^2\), it follows that 
   %
   \begin{equation*}
     |Y_i(s)| \, \ge \, e^{-2 t / \mu^2} \big( e^{2^{12} r^3 / \mu^2} \big)^t \, m \, \ge \, m,
@@ -325,11 +325,11 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
     \sum_{j \in \cB(s)} \sqrt{\lambda(j)+1} \le \frac{8r \log(1/\delta)}{\sqrt{\lambda_0}} \cdot t = \frac{2^6Crt}{\mu},
   \end{equation*}
   %
-  by Lemma~\ref{lem:sum:of:lambdas} and our choice of \(\lambda_0\), and therefore 
+  by \autoref{lem:sum:of:lambdas} and our choice of \(\lambda_0\), and therefore 
   %
   \begin{equation*}
     |X(s)| \ge \bigg( \frac{\mu^2}{p} \bigg)^{\mu r t / 2} \exp\bigg( - \frac{2^6C^2rt}{\mu} \bigg) - rt > 0,
   \end{equation*}
   %
-  for every \(s \in \N\), by Lemma~\ref{lem:X:lower:bound} and since \(\mu \ge 2^{10} r^3\) and \(C = 4r^{3/2}\). It follows that the algorithm produces a monochromatic \((t,m)\)-book, as claimed. 
+  for every \(s \in \N\), by \autoref{lem:X:lower:bound} and since \(\mu \ge 2^{10} r^3\) and \(C = 4r^{3/2}\). It follows that the algorithm produces a monochromatic \((t,m)\)-book, as claimed. 
 \end{proof}
