@@ -4,6 +4,8 @@ import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.MeasureTheory.Integral.IntegrableOn
 import Mathlib.MeasureTheory.Integral.ExpDecay
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+
 
 section
 
@@ -200,5 +202,166 @@ lemma lintegral_Ioc_eq_Ioi (l : ℝ) (f : ℝ → ENNReal) (x : X) (b : X → �
   congr; ext; congr
   exact measurableSet_Ioi
   exact measurableSet_Ioc
+
+end
+
+section
+
+open MeasureTheory ProbabilityTheory Real ENNReal Set Fin
+
+
+noncomputable abbrev ecsq (c : ℝ) := fun y ↦ rexp (c * √(y + 1))
+noncomputable abbrev ecsq' (c : ℝ) := fun x ↦ (rexp (c * √(x + 1)) * (c * (1 / (2 * √(x + 1)))))
+abbrev oℝ := ENNReal.ofReal
+
+
+lemma fundamental (c m : ℝ) (mp : -1 ≤ m) :
+    ∫ (y : ℝ) in (Ioc (-1) m), ecsq' c y = ecsq c m - ecsq c (-1) := by
+
+  have hderiv (x : ℝ) (xi : x ∈ Ioo (-1) m) := by
+    have : x + 1 ≠ 0 := by linarith [mem_Ioo.mp xi]
+    exact ((((hasDerivAt_id' x).add_const (1 : ℝ)).sqrt this).const_mul c).exp
+
+  have hcont : ContinuousOn (ecsq c) (Icc (-1) m) := (continuousOn_add_const.sqrt.const_smul c).rexp
+
+  have hcont' : ContinuousOn (ecsq' c) (Ioc (-1) m) := by
+    have (x : ℝ) (xi : x ∈ Ioc (-1) m) : 2 * √(x + 1) ≠ 0 := by
+      have : 0 < x + 1 := by linarith [xi.1]
+      have : 0 < 2 * √(x + 1) := by positivity
+      linarith
+    let ccon {c  : ℝ} {s : Set ℝ} : ContinuousOn (fun x ↦ c) s := continuousOn_const
+    exact (hcont.mono Ioc_subset_Icc_self).mul (ccon.mul (ccon.div (ccon.mul continuousOn_add_const.sqrt) this))
+
+  have hint : IntervalIntegrable (ecsq' c) volume (-1) m := by
+    refine (intervalIntegrable_iff_integrableOn_Ioc_of_le mp).mpr ?_
+    have : IntegrableOn (fun x ↦ c * (1 / (2 * √(x + 1)))) (Icc (-1) m) ℙ :=
+      ((integrableOn_Icc_iff_integrableOn_Ioc enorm_ne_top).mpr intOn1).continuousOn_mul continuousOn_const isCompact_Icc
+    exact (this.continuousOn_mul hcont isCompact_Icc).mono_set Ioc_subset_Icc_self
+
+  -- fundamental thm of calculus
+  have := intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le mp hcont hderiv hint
+  convert this
+  exact (intervalIntegral.integral_of_le mp).symm
+
+
+theorem integral_ecsq' (c m : ℝ) (mp : -1 ≤ m) (cpos : 0 < c):
+    oℝ (ecsq c m) = ∫⁻ (y : ℝ), oℝ (ecsq' c y) ∂(volume.restrict (Ioc (-1) m)) + oℝ (ecsq c (-1)) := by
+  have fnd := fundamental c m mp
+  rw [← ofReal_integral_eq_lintegral_ofReal]
+  · rw [← ofReal_add (by positivity)]
+    symm; congr; apply add_eq_of_eq_sub
+    convert fnd
+    positivity
+  · by_cases hm : m = -1
+    · simp [hm]
+    · apply MeasureTheory.Integrable.of_integral_ne_zero
+      rw [fnd]
+      simp [ecsq]
+      have : -1 < m := lt_of_le_of_ne mp (hm ∘ Eq.symm)
+      have : 0 < √(m + 1) := by linarith [sqrt_pos_of_pos (neg_lt_iff_pos_add.mp this)]
+      have : 1 < rexp (c * √(m + 1)) := by exact one_lt_exp_iff.mpr (by positivity)
+      nlinarith
+  · refine ae_le_of_forallOn_le measurableSet_Ioc ?_
+    intros; positivity
+
+
+lemma exp_indicator (m : X × X → ℝ) (E : Set (X × X)) (mp : ∀ x, m x < -1 → x ∉ E) (x : X × X)
+    (c : ENNReal) (cpos : 0 < c) (cnt : c ≠ ⊤):
+    oℝ (ecsq c.toReal (m x)) * E.indicator 1 x =
+      (∫⁻ a in (Ioi (-1)), oℝ (ecsq' c.toReal a) * ((E ∩ { x | a ≤ m x}).indicator (fun _ ↦ 1) x)) + E.indicator (fun _ ↦ 1) x := by
+
+  by_cases cm : -1 ≤ m x
+  · have := integral_ecsq' c.toReal (m x) cm (toReal_pos (ne_of_lt cpos).symm cnt)
+    simp at this
+    by_cases hx : x ∈ E
+    · simp [hx, ecsq, ecsq', this, lintegral_Ioc_eq_Ioi]
+      congr; ext y
+      have (a : ℝ) : (E ∩ {x | a ≤ m x}).indicator (1 : (X × X) → ENNReal) x = {x | a ≤ m x}.indicator 1 x := by
+        simp [inter_indicator_one, hx]
+      rw [show ((1 : (X × X) → ENNReal) = (fun x ↦ (1 : ENNReal))) by exact rfl] at this -- TODO whet
+      simp [this y]
+      congr
+    · simp [hx]
+  · push_neg at cm
+    have := mp x cm
+    simp [this]
+
+variable {V : Type} {X : Finset V} [MeasurableSpace X] {ℙᵤ : Measure (X × X)} [dm: DiscreteMeasurableSpace (X × X)]
+
+lemma integral_bound {r : ℕ} {M : (X × X) → ℝ} {E : Set (X × X)} (mp : ∀ x, M x < -1 → x ∉ E)
+    (measInter : Measurable fun (a : (X × X) × ℝ) ↦ (E ∩ {x | a.2 ≤ M x}).indicator (fun _ ↦ (1 : ENNReal)) a.1)
+    {c C : ENNReal} (cpos : 0 < c) (cnt : c ≠ ⊤) (cleC : c.toReal ≤ C.toReal - 1) :
+
+    let β := oℝ ( 3 ^ (-(4 : ℝ) * r))
+
+    ℙᵤ E < β →
+
+    (∀ y, -1 ≤ y → ℙᵤ (E ∩ {x | y ≤ M x}) < oℝ (rexp (-C.toReal * √(y + 1))) * β * r) →
+
+    ∫⁻ x in E, oℝ (ecsq c.toReal (M x)) ∂ℙᵤ ≤ β * (r * c + 1)
+    := by
+  intros β h ch
+
+  let measE := DiscreteMeasurableSpace.forall_measurableSet E
+
+  set cℝ := c.toReal
+
+  -- integral over E is integral over indicator
+  simp only [← lintegral_indicator measE]
+  have (x : X × X) := indicator_one_mul (x := x) (fun x ↦ oℝ (ecsq cℝ (M x))) E
+  simp_rw [← this]
+
+  -- "For any constant c ≤ C-1, we have ..."
+  have exp_bound23:
+      (fun x ↦ (oℝ (ecsq cℝ (M x)) * E.indicator 1 x)) =
+      (fun x ↦ ∫⁻ a in (Ioi (-1)), oℝ (ecsq' cℝ a) * ((E ∩ { x | a ≤ M x}).indicator (fun _ ↦ 1) x)) + E.indicator (fun _ ↦ 1) := by
+    ext x
+    convert exp_indicator M E mp x c cpos cnt
+
+  -- first step
+  have := congrArg (fun (f : (X × X → ENNReal)) ↦ (∫⁻ x, f x ∂ℙᵤ)) exp_bound23
+  simp only [Pi.add_apply] at this
+  rw [lintegral_add_right _ ((measurable_indicator_const_iff 1).mpr measE)] at this
+  simp only [lintegral_indicator_const measE 1] at this
+  simp only [this, ge_iff_le]
+
+--TODO mathlib lintegral_indicator_const integral_indicator_const parameter order
+-- ENNReal.toReal_eq_toReal_iff' same as ENNReal.toReal_eq_toReal?
+
+  -- tonelli
+  rw [lintegral_lintegral_swap ((measEsqc.ennreal_ofReal.comp measurable_snd).aemeasurable.mul measInter.aemeasurable)]
+  simp only [lintegral_const_mul _ Measurable.of_discrete, lintegral_indicator_const MeasurableSet.of_discrete 1, one_mul]
+  apply le_trans (add_le_add_left (le_of_lt h) _) ?_
+
+  -- second step
+  have step2 (y : ℝ) (yge : y ∈ Ioi (-1)) :
+      oℝ (ecsq' cℝ y) * ℙᵤ (E ∩ {x | y ≤ M x}) ≤ oℝ (ecsq' cℝ y) * oℝ (rexp (-C.toReal * √(y + 1))) * β * r := by
+    have := mul_le_mul_of_nonneg_left (le_of_lt (ch y (le_of_lt yge))) (zero_le (oℝ (ecsq' cℝ y)))
+    simpa only [mul_assoc]
+
+  -- third step
+  have step3 (y : ℝ) (yge : y ∈ Ioi (-1)) := by
+    have step3' : ecsq' cℝ y * (rexp (-C.toReal * √(y + 1))) ≤ rexp (- √(y + 1)) * (cℝ * (1 / (2 * √(y + 1)))) := by
+      simp only [mul_comm, mul_assoc, ← exp_add, ecsq']
+      gcongr
+      nlinarith [sqrt_pos_of_pos (neg_lt_iff_pos_add.mp yge)]
+    have := ofReal_le_ofReal step3'
+    rw [ofReal_mul' (exp_nonneg _)] at this
+    have βpos : 0 ≤ β := by positivity
+    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right this βpos) (Nat.cast_nonneg' r)
+
+  -- linearity of integral
+  have measf : Measurable fun x ↦ oℝ (rexp (-√(x + 1)) * (cℝ * (1 / (2 * √(x + 1))))) := by
+    have := (measEsqc (d := -1) (c := cℝ)).ennreal_ofReal
+    simp only [neg_mul, one_mul] at this
+    exact this
+
+  have (y : ℝ) (yge : y ∈ Ioi (-1)) := le_trans (step2 y yge) (step3 y yge)
+  apply le_trans (add_le_add_right (setLIntegral_mono ((measf.mul_const β).mul_const r) this) _) ?_
+
+  rw [lintegral_mul_const r (measf.mul_const β), lintegral_mul_const β measf, terrible c cnt]
+  ring_nf
+  exact Preorder.le_refl _
+
 
 end

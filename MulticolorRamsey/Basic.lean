@@ -14,76 +14,6 @@ import Mathlib.Data.Finset.Insert
 ----------------------------------------------------------------------------------------------------
 --  edge colorings
 
-
-
--- /-- `EC.coloredNeighborFinset c v` is the Finset of vertices that have `c`-colored edge to `v` in
--- `G` under the edge coloring `EC`, in case the `c`-colored subgraph of `G` is locally finite at `v`.
--- -/
--- def EdgeLabelling.coloredNeighborFinset {EC : G.EdgeLabelling C} (c : K) (v : V)
---     [Fintype (EC.coloredNeighborSet c v)] : Finset V :=
---   (EC.coloredNeighborSet c v).toFinset
-
--- lemma EdgeLabelling.color_coloredNeighborSet {EC : G.EdgeLabelling C} (c : K) (v w : V) :
---     w ∈ EC.coloredNeighborSet c v ↔ ∃ (p : G.Adj v w), EC ⟨s(v,w), p⟩ = c := by
---   simp [EdgeLabelling.coloredNeighborSet]
-
-
--- lemma EdgeLabelling.coloredNeighborFinset.symm {EC : G.EdgeLabelling C} (c : K) (v w : V)
---      [Fintype (EC.coloredNeighborSet c v)]  [Fintype (EC.coloredNeighborSet c w)]
---  :
---     w ∈ EC.coloredNeighborFinset c v ↔ v ∈ EC.coloredNeighborFinset c w := by
---   simp [EdgeLabelling.coloredNeighborFinset]
---   sorry
-
--- /-- `EC.monochromatic c T` if all edges within `T` are given color `c` by `EC`. -/
--- def EdgeLabelling.monochromatic {EC : G.EdgeLabelling C} (c : K) (T : Set V) : Prop :=
---   ∀ x ∈ T, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
-
--- lemma EdgeLabelling.monochromatic_subset {EC : G.EdgeLabelling C} {c : K} {S Y : Set V} :
---   S ⊆ Y → EC.monochromatic c Y → EC.monochromatic c S := sorry
-
--- /-- `EC.monochromatic c T` if all edges between `T` and Y are given color `c` by `EC`. -/
--- def EdgeLabelling.monochromaticBetween {EC : G.EdgeLabelling C} (c : K) (T Y : Set V) : Prop :=
---   ∀ x ∈ Y, ∀ y ∈ T, (n : s(x, y) ∈ G.edgeSet) → EC ⟨s(x, y), n⟩ = c
-
--- /-- `EC.monochromatic c T Y` if `T` and `Y` are disjoint, all edges within `T` and all edges between
---  `T` and `Y`are given color `c` by `EC`. -/
--- def EdgeLabelling.monochromaticBook {EC : TopEdgeLabelling V C} (c : K) (T Y : Set V) :=
---   Disjoint T Y ∧ EC.monochromatic c T ∧ EC.monochromaticBetween c T Y
-
-
-
--- lemma EdgeLabelling.monochromaticBetween_neighbors {EC : G.EdgeLabelling C} {c : K} {y : V} {T : Set V} :
---   (∀ x ∈ T, y ∈ EC.coloredNeighborSet c x) →  EC.monochromaticBetween c T {y} := sorry
-
--- lemma EdgeLabelling.monochromaticBetween_insert {EC : G.EdgeLabelling C} (c : K) (t : V) (T Y : Set V) :
---   EC.monochromaticBetween c T Y → EC.monochromaticBetween c {t} Y → EC.monochromaticBetween c (insert t T) Y := sorry
-
--- lemma EdgeLabelling.monochromaticBetween_subset {EC : G.EdgeLabelling C} {c : K} {T S Y : Set V} :
---   S ⊆ Y → EC.monochromaticBetween c T Y → EC.monochromaticBetween c T S := sorry
-
--- lemma EdgeLabelling.monochromaticBetween.symm {EC : G.EdgeLabelling C} (c : K) (T Y : Set V) :
---   EC.monochromaticBetween c T Y → EC.monochromaticBetween c Y T := sorry
-
--- lemma EdgeLabelling.monochromaticBook_subset {EC : TopEdgeLabelling V C} {A B D : Set V}
---     (b : EC.monochromaticBook i A B) (s : D ⊆ B) : EC.monochromaticBook i A D :=
---   ⟨(Set.disjoint_of_subset_right s b.1), b.2.1, EC.monochromaticBetween_subset s b.2.2⟩
-
--- TODO adjusted to work with b-mehta labellings. could generalize to non top labellings and non fin sets
-
--- lemma EdgeLabelling.monochromatic_subset {EC : TopEdgeLabelling V C} {c : K} {S Y : Set V} :
---   S ⊆ Y → EC.MonochromaticOf Y c → EC.MonochromaticOf S c := sorry
-
--- lemma EdgeLabelling.monochromatic_insert {EC : TopEdgeLabelling V C} (c : K) (y : V) (T : Finset V) :
---   EC.MonochromaticOf T c → EC.MonochromaticBetween T {y} c → EC.MonochromaticOf (insert y T) c := sorry
-
--- lemma EdgeLabelling.monochromaticBetween_insert [DecidableEq V] {EC : TopEdgeLabelling V C} (c : K) (t : V) (T Y : Finset V) :
---   EC.MonochromaticBetween T Y c → EC.MonochromaticBetween {t} Y c → EC.MonochromaticBetween (insert t T) Y c := sorry
-
--- lemma EdgeLabelling.monochromaticBetween_subset {EC : TopEdgeLabelling V C} {c : K} {T S Y : Finset V} :
---   S ⊆ Y → EC.MonochromaticBetween T Y c → EC.MonochromaticBetween T S c := sorry
-
-
 open Finset
 open Fintype (card)
 
@@ -96,7 +26,8 @@ namespace EdgeLabelling
 /-- `EC.coloredNeighborSet c v` is the set of vertices that have an edge to `v` in `G` which is
 colored with `c` under the edge coloring `EC`. -/
 def coloredNeighborSet {EC : G.EdgeLabelling K} (c : K) (v : V) : Set V :=
-  {w | ∃ p : G.Adj v w, EC ⟨s(v,w), p⟩ = c}
+  -- {w | ∃ p : G.Adj v w, EC ⟨s(v,w), p⟩ = c}
+  {w | w ∈ G.neighborSet v ∧ ∃ p, EC ⟨s(v, w), p⟩ = c}
 
 lemma coloredNeighborSet_not_mem (c : K) (v : V) :
     v ∉ EC.coloredNeighborSet c v := by
@@ -122,20 +53,9 @@ variable {m : Finset V} {c : K} {EC : TopEdgeLabelling V K}
 
 lemma monochromaticBetween_neighbors {c : K} {y : V} {T : Finset V}
     (h : ∀ x ∈ T, y ∈ EC.coloredNeighborSet c x) : EC.MonochromaticBetween T {y} c := by
-  simp only [MonochromaticBetween, mem_singleton, ne_eq, forall_eq]
+  simp only [MonochromaticBetween, mem_coe, Set.mem_singleton_iff, top_adj, ne_eq, forall_eq]
   intros v vT vny
-  exact (h v vT).2
-
-theorem MonochromaticBetween.image {C : TopEdgeLabelling V' K} {f : V ↪ V'}
-    (h : (C.pullback f).MonochromaticBetween m n c) : C.MonochromaticBetween (m.map f)  (n.map f) c := by
-  simpa [MonochromaticBetween]
-
-lemma monochromaticOf_monochromaticBetween_insert [DecidableEq V] (c : K) (y : V) (T : Finset V) :
-    EC.MonochromaticOf (insert y T) c ↔ EC.MonochromaticOf T c ∧ EC.MonochromaticBetween T {y} c := by
-  rw [Set.insert_eq, ← coe_singleton, Set.union_comm]
-  convert monochromaticOf_union
-  simp
-
+  exact (h v vT).2.choose_spec
 
 /-- `EC.monochromatic c T Y` if `T` and `Y` are disjoint, all edges within `T` and all edges between
  `T` and `Y`are given color `c` by `EC`. -/
@@ -150,9 +70,7 @@ lemma monochromaticBook_pullback {V : Type u_1} {V' : Type u_2} {K : Type u_3}
   {EC : TopEdgeLabelling V K} (f : V' ↪ V) (c : K) (T Y : Finset V') (B : (EC.pullback f).MonochromaticBook c T Y)
    : EC.MonochromaticBook c (T.map f) (Y.map f) := by
   simp [MonochromaticBook] at B ⊢
-  refine ⟨B.1, ⟨?_, ?_⟩⟩
-  exact MonochromaticOf.image B.2.1
-  exact MonochromaticBetween.image B.2.2
+  exact ⟨B.1, ⟨B.2.1, MonochromaticBetween.image B.2.2⟩⟩
 
 lemma monochromaticBook_empty {A : Finset V}
  : EC.MonochromaticBook i ∅ A := by constructor <;> simp
@@ -194,7 +112,8 @@ def evenEquivNat : {n : ℕ // Even n} ≃ ℕ where
   right_inv n := by simp
 
 theorem tsum_double_eq_tsum_even [AddCommMonoid T] [TopologicalSpace T] (f : ℕ → T) :
-    ∑' x : ℕ, f (2 * x) = ∑' x : {n : ℕ | Even n}, f x := evenEquivNat.symm.tsum_eq (fun x ↦ f ↑x)
+    ∑' x : ℕ, f (2 * x) = ∑' x : {n : ℕ | Even n}, f x :=
+  evenEquivNat.symm.tsum_eq <| f ∘ (↑)
 
 ----------------------------------------------------------------------------------------------------
 -- coshsqrt0
@@ -219,7 +138,7 @@ lemma lt_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : x < 2 + coshsqrt x := by
   have : 2 + (1 + x / 2 + x ^ 2 / (Nat.factorial 4) + ∑' (i : ℕ), x ^ (i + 3) / (2 * (i + 3)).factorial) =
       (3 + x / 2 + x ^ 2 / (Nat.factorial 4)) + ∑' (i : ℕ), x ^ (i + 3) / (2 * (i + 3)).factorial := by ring
   simp [this]
-  suffices x < 3 + x / 2 + x ^ 2 / 24 from lt_add_of_lt_of_nonneg this (tsum_nonneg (by intro; positivity))
+  suffices x < 3 + x / 2 + x ^ 2 / 24 from lt_add_of_lt_of_nonneg this <| tsum_nonneg (by intro; positivity)
   nlinarith
 
 lemma ge_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : 2 + coshsqrt x ≤ 3 * Real.exp √x := by
@@ -273,34 +192,31 @@ lemma coshsqrt_mono {x y : ℝ} (xnn : 0 ≤ x) (xly : x ≤ y) : coshsqrt x ≤
   have ynn : 0 ≤ y := by trans x; exact xnn; exact xly
   have : ∑' (a : ℕ), ENNReal.ofReal (x ^ a / (2 * a).factorial) ≤ ∑' (a : ℕ), ENNReal.ofReal (y ^ a / (2 * a).factorial) := by
     gcongr
-  rw [← ENNReal.ofReal_tsum_of_nonneg _ (mew xnn)] at this
-  rw [← ENNReal.ofReal_tsum_of_nonneg _ (mew ynn)] at this
-  rw [← ENNReal.ofReal_le_ofReal_iff]
+  rw [← ENNReal.ofReal_tsum_of_nonneg (by intros; positivity) (mew xnn)] at this
+  rw [← ENNReal.ofReal_tsum_of_nonneg (by intros; positivity) (mew ynn)] at this
+  rw [← ENNReal.ofReal_le_ofReal_iff (by positivity)]
   exact this
-  positivity
-  intros; positivity
-  intros; positivity
 
 lemma one_le_coshsqrt (x : ℝ) : 1 ≤ 2 + coshsqrt x := by
   by_cases h : 0 < x
   · have : 1 ≤ coshsqrt x := by
       trans 1 + ∑' (i : ℕ), x ^ (i + 1) / ↑(2 * (i + 1)).factorial
       simp; positivity
-      simp [coshsqrt, ← Summable.sum_add_tsum_nat_add 1 (mew (le_of_lt h)), Finset.sum, add_comm]
+      simp [coshsqrt, ← Summable.sum_add_tsum_nat_add 1 (mew (le_of_lt h)), Finset.sum]
     linarith
   · have := (Set.mem_Icc.mp (icc_coshsqrt_neg x (le_of_not_gt h))).left
     linarith
 
 -- TODO hmmm. mathlib? there is a version with [IsOrderedMonoid R] but not requiring zero
 -- but the reals are not
-theorem Finset.one_le_prod''' {ι : Type u_1}
+theorem Finset.one_le_prod''' {R ι : Type*}
     [CommMonoidWithZero R] [PartialOrder R] [ZeroLEOneClass R] [PosMulMono R] {f : ι → R} {s : Finset ι}
     (h : ∀ i ∈ s, 1 ≤ f i) :
     1 ≤ ∏ i ∈ s, f i := by
   apply le_trans (le_of_eq prod_const_one.symm)
-  gcongr
-  exact fun i a ↦ zero_le_one' R
-  (expose_names; exact h i h_1)
+  gcongr with i hh
+  exact fun _ _ ↦ zero_le_one' R
+  exact h i hh
 
 ----------------------------------------------------------------------------------------------------
 -- special function lemma
@@ -405,7 +321,7 @@ lemma Fintype.exists_mul_of_sum_bound [Nonempty X] [Fintype X] [AddCommMonoid Y]
   obtain ⟨j, p⟩ : ∃ j, ∀ i, g i ≤ g j := Finite.exists_max g
   use j
   calc ∑ i : X, g i ≤ ∑ i : X, g j           := by exact sum_le_sum fun i a ↦ p i
-                  _ = (Fintype.card X) • g j := by simp only [sum_const, card_univ, nsmul_eq_mul]
+                  _ = (Fintype.card X) • g j := by simp only [sum_const, card_univ]
 
 lemma Finset.exists_mul_of_sum_bound [Nonempty X] [Fintype X] [AddCommMonoid Y] [LinearOrder Y] [IsOrderedAddMonoid Y]
     (s : Finset X) (g : X → Y) (ns : s.Nonempty) :
@@ -443,7 +359,7 @@ lemma probabilistic_method {X : Type} [Fintype X] [MeasurableSpace X] (U : Measu
     (0 : ℝ≥0∞) < (U.prod U) { x : X × X | p x.1 x.2 } → ∃ x : X, ∃ x' : X , p x x' := by
       intro a
       by_contra c
-      simp_all only [not_exists, not_and, coe_mem, ite_false, integral_zero, Set.setOf_false, measure_empty, lt_self_iff_false]
+      simp_all only [not_exists, Set.setOf_false, measure_empty, lt_self_iff_false]
 
 
 lemma pidgeon_sum {X Y : Type} [nenx: Nonempty X] [fin: Fintype X] [nen: Nonempty Y] [fin: Fintype Y]
@@ -503,8 +419,7 @@ section
 open Set Finset
 
 lemma prod_set_eq_union {X Y : Type} (f : X × Y → Prop) : {a | f a} = ⋃ x, {x} ×ˢ {y : Y | f (x, y)} := by
-  ext ⟨x, y⟩
-  simp only [mem_setOf_eq, mem_iUnion, mem_prod, mem_singleton_iff, exists_eq_left']
+  ext; simp
 
 lemma Fintype.argmax' {X Y : Type} [Fintype X] [Nonempty X] (f : X → Y) [LinearOrder Y] :
     ∃ x : X, ∀ y : X, f y ≤ f x := by
@@ -593,18 +508,20 @@ end
 
 
 lemma three_ineq_ENN {r : ℕ} (rpos: 0 < r) :
-    r * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 + r ^ 2 * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * ENNReal.ofReal (r * √3 * √r) * 3 ^ r * 3 ≤ 1 := by
+    r * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 + r ^ 3 * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * ENNReal.ofReal (√3) * ENNReal.ofReal (√r) * 3 ^ r * 3 ≤ 1 := by
   sorry
 
 -- TODO i just put here everything that annoyed me
-lemma omg {a b : ℝ} (p : b ≠ 0) : a = a / b * b := by
-  have := invertibleOfNonzero p
-  exact (div_mul_cancel_of_invertible a b).symm
-lemma omg2 {a b c : ℝ} (p : b ≠ 0) : a ≤ c ↔ a / b ≤ c / b := by sorry
-lemma omg3 {a b : ℝ} (p : b ≠ 0) : a = a * b / b := (mul_div_cancel_right₀ a p).symm
-lemma omg4 {a b c : ℝ} (bnn : 0 ≤ b) : a ≤ c ↔ a * b ≤ c * b := by sorry
-lemma omg5 {a b c : ENNReal} : b ≤ c ↔ a * b ≤ a * c := by sorry
-lemma omg6 {a b : ℝ} : - a ≤ a * b ↔ -1 ≤ b := by
-  sorry
+lemma omg5 {a b c : ENNReal} : a * b ≤ a * c ↔ b ≤ c := by
+  constructor
+  · sorry
+  · exact fun a_1 ↦ mul_le_mul_left' a_1 a
 
-lemma omg7 (a b c : ENNReal) (ab : a < b) (ac : a < c) (bc : b < c) : c - b < c - a := by sorry
+lemma omg6 {a b : ℝ} (ap : 0 ≤ a) : - a ≤ a * b ↔ -1 ≤ b := by
+  constructor
+  · intro h
+    sorry
+  · intro h
+    have : -a = a * (-1) := by ring
+    rw [this]
+    gcongr
