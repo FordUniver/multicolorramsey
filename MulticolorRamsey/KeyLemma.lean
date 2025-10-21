@@ -137,6 +137,38 @@ lemma pk_le_one (ki : Saga χ) (i : Fin r) :
     (ki.p i) ≤ 1 := by
   sorry
 
+lemma p_monoX (χ : TopEdgeLabelling V (Fin r)) {X X' : Finset V}
+    (xsub : X' ⊆ X) (h : X'.Nonempty) (Y : Fin r → Finset V) (i : Fin r) :
+    p'p χ X Y i ≤ p'p χ X' Y i := by
+  simp [p'p, ppY]
+  gcongr
+  simp [h, h.mono xsub]
+  intro a ax
+  trans (image (fun x ↦ #(N χ i x ∩ Y i)) X').min' (image_nonempty.mpr h)
+  exact min'_subset _ (image_subset_image xsub)
+  apply min'_le
+  simp only [mem_image]
+  use a, ax
+
+
+lemma p_monoY (χ : TopEdgeLabelling V (Fin r)) {X : Finset V} (Y Y' : Fin r → Finset V) (h : ∀ i, Y' i ⊆ Y i) (i : Fin r) :
+    p'p χ X Y i ≤ p'p χ X Y' i := by
+  simp [p'p, ppY]
+  gcongr
+  by_cases h : X.Nonempty
+  sorry
+  -- · simp [h, h.mono xsub]
+  --   intro a ax
+  --   trans (image (fun x ↦ #(N χ i x ∩ Y i)) X').min' (image_nonempty.mpr h)
+  --   exact min'_subset _ (image_subset_image xsub)
+  --   apply min'_le
+  --   simp only [mem_image]
+  --   use a, ax
+  · simp [h]
+    sorry
+  sorry
+  sorry
+
 lemma pk_le_mem {ki : Saga χ} (i : Fin r) (xin : x ∈ ki.X) :
     (ki.pY i) ≤ #(N χ i x ∩ ki.Y i) := by
   simp [Saga.pY, ppY]
@@ -212,20 +244,9 @@ lemma keyk [Nonempty (Fin r)] -- {cardV : Fintype.card V = n}
       probge
 
   exists x; simp only [coe_mem, neg_mul, true_and]
-  -- exists X'
-
-  -- have : Nonempty { x // x ∈ X' } := by
-  --   apply Fintype.card_pos_iff.mp
-  --   have : 0 < (3 ^ (-(4 : ℝ) * ↑r)) * rexp (-((4 : ℝ) * r * √r) * √(Λ + 1)) * ↑(Fintype.card { x // x ∈ ki.X }) := by positivity
-  --   convert lt_of_lt_of_le this X'card
-  --   simp only [Fintype.card_coe, card_pos, Nat.cast_pos]
-
-  -- exists this
 
   -- "Setting $Y'_i = N'_i(x)$ for each $i \in [r]$,..."
   let Y' (i : Fin r) : Finset V := N' i x
-  -- exists fun i => Y' i
-
 
   have Y'card {i : Fin r} : #(Y' i) = (ki.p i) * #(ki.Y i) := by
     simp_rw [Y', N'card, Saga.p]
