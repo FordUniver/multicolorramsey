@@ -1,0 +1,161 @@
+\documentclass[12pt,reqno]{amsart}
+\usepackage{amsmath,amssymb,amsthm,bbm,mathtools,calc,verbatim,enumitem,tikz,url,mathrsfs,cite,fullpage,hyperref}
+\usepackage{float}
+\usepackage{subcaption}
+%\usepackage{setspace}
+\renewcommand{\baselinestretch}{1.1}
+\addtolength{\footskip}{\baselineskip/2}
+
+%\usepackage{showlabels}
+\usepackage{comment}
+
+%\parskip=12pt plus 1pt
+
+\newcommand\marginal[1]{\marginpar{\raggedright\parindent=0pt\tiny #1}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{construction}[theorem]{Construction}
+
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{obs}[theorem]{Observation}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{fact}[theorem]{Fact}
+
+\theoremstyle{definition}
+\newtheorem{defn}[theorem]{Definition}
+\newtheorem*{RBalg}{The Multicolour Book Algorithm}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newenvironment{clmproof}[1]{\begin{proof}[Proof of Claim~\ref{#1}]\let\qednow\qedsymbol\renewcommand{\qedsymbol}{}}{\; \qednow \end{proof}}
+
+\newcommand\N{\mathbb{N}}
+\newcommand\R{\mathbb{R}}
+\newcommand\Z{\mathbb{Z}}
+\newcommand\cA{\mathcal{A}}
+\newcommand\cB{\mathcal{B}}
+\newcommand\cN{\mathcal{N}}
+\newcommand\cP{\mathcal{P}}
+\newcommand\cQ{\mathcal{Q}}
+\newcommand\cZ{\mathcal{Z}}
+\newcommand\rN{\tilde{N}}
+\newcommand\cT{\mathcal{T}}
+\newcommand\cE{\mathcal{E}}
+\def\Pr{\mathbb{P}}
+\def\cS{\mathcal{S}}
+\newcommand\Ex{\mathbb{E}}
+\newcommand\id{\hbox{$1\mkern-6.5mu1$}}
+\newcommand\lcm{\operatorname{lcm}}
+\newcommand\eps{\varepsilon}
+
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\renewcommand{\to}{\rightarrow}
+\renewcommand{\Re}{\re}
+
+\def\ds{\displaystyle}
+
+\def\eps{\varepsilon}
+	\def\p{\partial}
+		
+	\def\HH{\mathcal{H}}
+	\def\E{\mathbb{E}}
+	\def\C{\mathbb{C}}
+		\def\cM{\mathcal{M}}
+		\def\cF{\mathcal{F}}
+		\def\cI{\mathcal{I}}
+	\def\R{\mathbb{R}}
+	\def\bS{\mathbb{S}}
+	\def\bH{\mathbb{H}}	
+	\def\Z{\mathbb{Z}}
+	\def\N{\mathbb{N}}
+	\def\PP{\mathbb{P}}
+	\def\1{\mathbbm{1}}
+	\def\l{}
+	\def\k{\kappa}
+	\def\w{\omega}
+	\def\s{\sigma}
+	\def\t{\theta}
+	\def\a{\alpha}
+	\def\g{\gamma}
+	\def\z{\zeta}	
+	\def\zbar{\bar{z}}
+	\def\<{\langle}
+	\def\>{\rangle}	
+	%\def\endproof{{\hfill $\square$} }
+	\def\Xt{\widetilde{X}}
+	\def\Pt{\widetilde{P}}
+	
+	\def\cN{\mathcal{N}}
+	\def\cC{\mathcal{C}}
+	\def\cD{\mathcal{D}}
+	\def\cR{\mathcal{R}}
+	\def\cB{\mathcal{B}}
+	\def\cG{\mathcal{G}}
+	\def\EE{\mathbb{E}}
+		\def\FF{\mathbb{F}}
+		\def\T{\mathbb{T}}
+	\def\cA{\mathcal{A}}
+	\def\cQ{\mathcal{Q}}	
+	\def\cC{\mathcal{C}}
+	\def\F{\mathbb{F}}
+	\def\tm{\tilde{\mu}}
+	\def\ts{\tilde{\sigma}}
+	\def\Q{\mathcal{Q}}
+	\def\vp{\varphi}
+
+\pagestyle{plain}
+
+\begin{document}
+
+\title{Upper bounds for multicolour Ramsey numbers}
+
+\author{Paul Balister \and B\'ela Bollob\'as \and Marcelo Campos \and Simon Griffiths \and Eoin Hurley\and Robert Morris \and Julian Sahasrabudhe \and Marius Tiba}
+
+%\author{Paul Balister}
+\address{Mathematical Institute, University of Oxford, Radcliffe Observatory Quarter, Woodstock Road, Oxford, OX2 6GG, UK}
+\email{Paul.Balister@maths.ox.ac.uk}
+
+%\author{B\'ela Bollob\'as}
+\address{Department of Pure Mathematics and Mathematical Statistics, Wilberforce Road, Cambridge, CB3 0WA, UK, and Department of Mathematical Sciences, University of Memphis, Memphis, TN 38152, USA}
+\email{bb12@cam.ac.uk}
+
+%\author{Marcelo Campos}
+\address{Trinity College, Cambridge, CB2 1TQ, UK}
+\email{mc2482@cam.ac.uk}
+
+%\author{Simon Griffiths}
+\address{Departamento de Matem\'atica, PUC-Rio, Rua Marqu\^{e}s de S\~{a}o Vicente 225, G\'avea, 22451-900 Rio de Janeiro, Brasil}
+\email{simon@mat.puc-rio.br}
+
+%\author{Eoin Hurley}
+\address{Mathematical Institute, University of Oxford, Radcliffe Observatory Quarter, Woodstock Road, Oxford, OX2 6GG, UK}
+\email{hurley@maths.ox.ac.uk}
+
+%\author{Robert Morris}
+\address{IMPA, Estrada Dona Castorina 110, Jardim Bot\^anico, Rio de Janeiro, 22460-320, Brasil}\email{rob@impa.br}
+
+%\author{Julian Sahasrabudhe}
+\address{Department of Pure Mathematics and Mathematical Statistics, Wilberforce Road, Cambridge, CB3 0WA, UK}
+\email{jdrs2@cam.ac.uk}
+
+%\author{Marius Tiba}
+\address{Department of Mathematics, King’s College London, Strand, London, WC2R 2LS, UK}
+\email{marius.tiba@kcl.ac.uk}
+
+\thanks{SG was partially supported by FAPERJ (Proc.~201.194/2022) and by CNPq (Proc.~407970/2023-1); EH by the Gravitation Programme NETWORKS (024.002.003) of NWO; and RM by FAPERJ (Proc.~E-26/200.977/2021) and by CNPq (Procs~303681/2020-9 and~407970/2023-1)}
+
+\begin{abstract}
+The $r$-colour Ramsey number $R_r(k)$ is the minimum $n \in \N$ such that every $r$-colouring of the edges of the complete graph $K_n$ on $n$ vertices contains a monochromatic copy of $K_k$. We prove, for each fixed $r \ge 2$, that 
+$$R_r(k) \le e^{-\delta k} r^{rk}$$ 
+for some constant $\delta = \delta(r) > 0$ and all sufficiently large $k \in \N$. For each $r \ge 3$, this is the first exponential improvement over the upper bound of~Erd\H{o}s and Szekeres from 1935. In the case $r = 2$, it gives a different (and significantly shorter) proof of a recent result of Campos, Griffiths, Morris and Sahasrabudhe.  
+\end{abstract}
+
+\maketitle

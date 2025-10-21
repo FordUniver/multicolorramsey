@@ -167,7 +167,7 @@ noncomputable def step (bin : BookIn param) (Tlt : ∀ i, (bin.T i).card < param
     have {i : Fin r} : param.s.p i ≤ p'p param.χ kout.X (newYb kout) i := by
       apply le_trans bin.mono
       apply le_trans (p_monoX (χ := param.χ) kout.X'sub kout.nen bin.Y i)
-      apply le_trans le_rfl (p_monoY param.χ _ bin.Y (newYb kout) _ i)
+      apply le_trans le_rfl (p_monoY param.χ bin.Y (newYb kout) _ i)
       intro k
       convert ite_subset_union _ _ _
       apply (union_eq_right.mpr _).symm

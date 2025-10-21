@@ -53,3 +53,7 @@ blueprint/lean_decls
 *.xdy
 *.xml
 *blx.bib
+*.bak*
+
+# GitHub CLI installation
+gh_*

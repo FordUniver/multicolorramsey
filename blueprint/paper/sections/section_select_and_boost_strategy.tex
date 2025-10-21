@@ -1,0 +1,60 @@
+\section{Select and Boost Strategy}\label{sec:algorithm}
+
+The algorithm that we will use to prove Theorem~\ref{thm:book} is somewhat simpler than the one introduced in~\cite{CGMS}. It is based on the following key lemma, which we will use in each step. Given sets $X,Y \subset V(K_n)$ and a colour $i \in [r]$, define 
+$$p_i(X,Y) = \min\bigg\{ \frac{|N_i(x) \cap Y|}{|Y|} : x \in X \bigg\},$$
+and note that $p_i(X',Y) \ge p_i(X,Y)$ for every subset $X' \subset X$. Set $\beta = 3^{-4r}$ and $C = 4r^{3/2}$.
+ 
+\begin{lemma}\label{key:lemma}
+Let\/ $\chi$ be an\/ $r$-colouring of\/ $E(K_n)$, let\/ $X,Y_1,\ldots,Y_r \subset V(K_n)$ be non-empty sets of vertices, and let $\alpha_1,\ldots,\alpha_r > 0$. There exists a vertex $x \in X$, a colour $\ell \in [r]$, sets $X' \subset X$ and\/ $Y'_1,\ldots,Y'_r\,$ with\/ $Y'_i \subset N_i(x) \cap Y_i\,$ for each $i \in [r]$, and\/ $\lambda \ge -1$, such that 
+\begin{equation}\label{eq:key:ell}
+|X'| \ge \beta e^{- C \sqrt{\lambda + 1}} |X| \qquad \text{and} \qquad p_\ell( X', Y'_\ell ) \ge p_\ell(X,Y_\ell) + \lambda \alpha_\ell,
+\end{equation}
+and moreover
+\begin{equation}\label{eq:key:alli}
+|Y'_i| = p_i(X,Y_i) |Y_i| \qquad \text{and} \qquad p_i( X', Y'_i ) \ge p_i(X,Y_i) - \alpha_i
+\end{equation}
+for every $i \in [r]$.
+\end{lemma}
+
+Since the statement of the lemma might seem a little confusing at first sight, before continuing let us explain roughly how we use it in the algorithm below. We will build a collection of sets $T_1,\ldots,T_r$, with each $T_i$ being a monochromatic clique in colour $i$, and replace the sets $X$ and $Y_1,\ldots,Y_r$ by subsets satisfying
+$$X \subset \bigcap_{j \in [r]} \bigcap_{u \in T_j} N_j(u) \qquad \text{and} \qquad Y_i \subset \bigcap_{u \in T_i} N_i(u)$$
+for each $i \in [r]$, and such that $p_i(X,Y_i)$ does not decrease too much below its initial value. In each step we will apply Lemma~\ref{key:lemma} and then, depending on the value of $\lambda$, either add the vertex $x$ to one of the sets $T_j$ (a `colour step'), or replace $X$ and $Y_\ell$ by $X'$ and $Y_\ell'$, and observe that $p_\ell(X,Y_\ell)$ increases significantly (a `density-boost step'). 
+
+To be more precise, if the $\lambda$ given by Lemma~\ref{key:lemma} is `small', then we will choose a colour $j \in [r]$ such that the set $X'' = N_j(x) \cap X'$ is as large as possible, and update as follows:
+$$X \to X'', \qquad Y_j \to Y'_j \qquad \text{and} \qquad T_j \to T_j \cup \{x\}.$$
+This update does not cause $p_j(X,Y_j)$ to decrease too much (by~\eqref{eq:key:alli}), and does not cause $p_i(X,Y_i)$ to decrease at all if $i \ne j$, since the set $Y_i$ does not change and $X'' \subset X$. Moreover, since $\lambda$ is small, the update does not cause the set $X$ to shrink too much. 
+
+If $\lambda$ is `large', on the other hand, then we instead update the sets as follows:
+$$X \to X' \qquad \text{and} \qquad Y_\ell \to Y'_\ell,$$
+with all other sets staying the same. This time $X$ shrinks by a much larger factor, but to compensate, $p_\ell(X,Y_\ell)$ increases by $\lambda \alpha_\ell$. It will turn out that we are happy with this trade-off because the function $e^{- C \sqrt{\lambda + 1}}$ that appears in our bound~\eqref{eq:key:ell} on the size of $X'$ is sub-exponential in $\lambda$ (see below for discussion of why this is sufficient). 
+
+We are now ready to define the algorithm that we will use to prove Theorem~\ref{thm:book}. The inputs to the algorithm are an $r$-colouring $\chi$ of $E(K_n)$, %disjoint 
+sets $X,Y_1,\ldots, Y_r \subset V(K_n)$, and parameters $t \in \N$ (the size of the book that we are trying to build), $\lambda_0 \ge -1$ (the cut-off between values of $\lambda$ that are `small' and `large'), and $\delta > 0$ (a small constant that bounds the total decrease in $p_i(X,Y_i)$). We also set  
+%\begin{equation}\label{def:p0}
+$$p_0 = \min\big\{ p_i(X,Y_i) : i \in [r] \big\},$$
+%\end{equation}
+and emphasize that $t$, $\lambda_0$, $\delta$ and $p_0$ remain fixed throughout the algorithm. 
+
+\begin{RBalg}
+%Let $\chi$ be an $r$-colouring of $E(K_n)$, let $X$ and $Y_1,\ldots, Y_r$ be disjoint sets of vertices of $K_n$, and 
+Set $T_1 = \cdots = T_r = \emptyset$, and repeat the following steps until either $X = \emptyset$ or $\max\big\{ |T_i| : i \in [r] \big\} = t$. 
+\begin{enumerate}[label=\arabic*., ref=\arabic*] 
+\item\label{Alg:Step1} Applying the key lemma: let the vertex $x \in X$, the colour $\ell \in [r]$, the sets $X' \subset X$ and $Y'_1,\ldots,Y'_r$, and $\lambda \ge -1$ be given by Lemma~\ref{key:lemma}, applied with
+\begin{equation}\label{def:alpha}
+\alpha_i = \frac{p_i(X,Y_i) - p_0 + \delta}{t}
+\end{equation}
+for each $i \in [r]$, and go to Step~2.\smallskip
+\item\label{Alg:Step2} Colour step: If $\lambda \le \lambda_0$, then choose a colour $j \in [r]$ such that the set
+$$X'' = N_j(x) \cap X'$$ 
+has at least $(|X'| - 1)/r$ elements, and update the sets as follows:
+$$X \to X'', \qquad Y_j \to Y'_j \qquad \text{and} \qquad T_j \to T_j \cup \{x\}$$
+and go to Step~1. Otherwise go to Step~3.\smallskip
+\item\label{Alg:Step3} Density-boost step: If $\lambda > \lambda_0$, then we update the sets as follows:
+$$X \to X' \qquad \text{and} \qquad Y_\ell \to Y'_\ell,$$
+and go to Step~1.
+\end{enumerate}  
+\end{RBalg} 
+
+We remark that in our application of the algorithm, both $\lambda_0$ and $\delta$ will be polynomial functions of $r$, and our sets and colouring will satisfy $p_0 \ge 1/r - \delta$. Let us also emphasize once again that we only update one of the sets $Y_i$ in each round of the algorithm (either the set $Y_j$ in Step~2 or the set $Y_\ell$ in Step~3), and at most one of the sets $T_i$. 
+
+It remains to explain our choice of $\alpha_i$, and why it is important that the bound on the size of $X'$ given by Lemma~\ref{key:lemma} is sub-exponential in $\lambda$. The definition of $\alpha_i$ is just a continuous version of the definition of the parameter $\alpha$ from~\cite{CGMS}, with the parameter $\delta$ controlling the minimum value that it can take. The function~\eqref{def:alpha} has two important properties: it will never be smaller than $\delta / 4t$, and it increases linearly with $p_i(X,Y_i)$, which implies (see Lemma~\ref{lem:Bi:max}) that the total number of density-boost steps is much smaller than $t$, as long as $\lambda_0 \gg \log(1/\delta)$. This second property of $\alpha_i$ moreover allows us to bound the sum of the $\lambda$s that are used in density-boost steps by $O\big( \log(1/\delta) \cdot t \big)$, which in turn implies that our reservoir set $X$ does not shrink too much as a result of density-boost steps (see Lemmas~\ref{lem:X:lower:bound} and~\ref{lem:sum:of:lambdas}). It is here that we require the factor by which $X$ shrinks to be a sub-exponential function of $\lambda$.

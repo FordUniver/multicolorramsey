@@ -1,0 +1,39 @@
+\section{Introduction}
+
+One of the most classical (and notorious) problems in combinatorics is to estimate the $r$-colour Ramsey numbers $R_r(k)$, the minimum $n \in \N$ such that every $r$-colouring of the edges of the complete graph on $n$ vertices contains a monochromatic clique on $k$ vertices. Ramsey~\cite{R30} proved in 1930 that $R_r(k)$ is finite for every $k,r \in \N$, and a few years later his theorem was rediscovered in a famous paper of Erd\H{o}s and Szekeres~\cite{ESz35}, who gave the first reasonable upper bound on the Ramsey numbers, showing that $R_r(k) \le r^{rk}$. %For fixed $r$ and large $k$ 
+This bound turns out to be not too far from the truth: Erd\H{o}s~\cite{E47} proved in 1947 that $R_r(k) \ge r^{k/2}$, in one of the earliest applications of the probabilistic method, and Lefmann~\cite{L87} observed in 1987 that the inequality 
+$$R_{r+s}(k) \ge \big( R_r(k) - 1 \big) \big( R_s(k) - 1 \big) + 1$$
+follows from a simple product construction, and hence Erd\H{o}s' lower bound can be used to deduce that
+\begin{equation}\label{eq:Rrk:known:bounds}
+c^{rk} \le R_r(k) \le r^{rk}
+\end{equation}
+for some constant $c > 1$. The value of the constant $c$ in~\eqref{eq:Rrk:known:bounds} has been improved in recent years, first by Conlon and Ferber~\cite{CF}, and subsequently by Wigderson~\cite{W} and Sawin~\cite{S}, though in the case $r = 2$ the best known bound (proved in~\cite{S77}) still uses Erd\H{o}s' random colouring, and only improves the bound from~\cite{E47} by a factor of $2$. 
+
+Progress on the upper bound has been much slower, except in the case $r = 2$, where the upper bound of Erd\H{o}s and Szekeres was improved by R\"odl (see~\cite{GR}) and Thomason~\cite{T88} in the 1980s, by Conlon~\cite{C09} in 2009, and by Sah~\cite{S23} in 2023, leading to a bound of the form
+$$R_2(k) \le e^{- c(\log k)^2} 4^k$$
+for some constant $c > 0$. An exponential improvement was finally obtained last year by Campos, Griffiths, Morris and Sahasrabudhe~\cite{CGMS}, who showed that
+$$R_2(k) \le (4 - \eps)^k$$ 
+for some constant $\eps > 0$ and all sufficiently large $k \in \N$. The method of~\cite{CGMS} has since been adapted and optimised by Gupta, Ndiaye, Norin and Wei~\cite{GNNW}, who obtained the bound
+$$R_2(k) \le 3.8^k.$$ 
+The authors of~\cite{GNNW} also noted that the method of~\cite{CGMS} can easily be extended to certain multicolour off-diagonal Ramsey numbers (see below), but when $r \ge 3$ it does not seem to be strong enough to give any improvement at all over the %Erd\H{o}s--Szekeres 
+bound from~\cite{ESz35} for $r$-colour Ramsey numbers that are close to the diagonal. In fact, we are not aware of \emph{any} previous improvement\footnote{Conlon suggested in his PhD thesis~\cite[page~46]{CPhD} that it may be possible to adapt his method to give a similar improvement for $R_r(k)$ when $r \ge 3$, but also noted several obstructions to obtaining such a result that would seem to require significant additional ideas to overcome.} %, and no such extension of his method seems to have been published.} % \footnote{Other than by a constant factor, which follows just by improving small cases.} %
+on the upper bound of Erd\H{o}s and Szekeres for %the $r$-colour diagonal Ramsey numbers 
+$R_r(k)$ when $r \ge 3$. 
+
+In this paper we will introduce a new approach to proving upper bounds on $R_r(k)$, and use it to give an exponential improvement over~\cite{ESz35} for all fixed $r \ge 2$. 
+ 
+\begin{theorem}\label{thm:Ramsey:multicolour}
+For each $r \ge 2$, there exists $\delta = \delta(r) > 0$ such that 
+$$R_r(k) \le e^{-\delta k} r^{rk}$$ 
+for all sufficiently large $k \in \N$. 
+\end{theorem}
+
+In particular, in the case $r = 2$ we will provide a different (and much shorter) proof of the main result from~\cite{CGMS}. Moreover, the constant $\delta(r)$ given by our proof is polynomial in $r$, so we obtain an improvement over the bound of Erd\H{o}s and Szekeres for all $r = k^{o(1)}$. 
+
+The main new ingredient in our proof of Theorem~\ref{thm:Ramsey:multicolour} %(compared with that of~\cite{CGMS}) 
+is a geometric lemma (see Lemma~\ref{lem:lambda}, below) which (roughly speaking) says that if $r$ functions $f_1,\ldots,f_r \colon X \to \R^n$ defined on a finite set $X$ exhibit a large amount of negative correlation, in the sense that 
+$$\Pr\Big( \big\< f_i(x), f_i(y) \big\> > - 1 \,\text{ for all }\, i \in [r] \Big) \approx 0,$$
+%$$\Pr\Big( \min\big\{ \big\< f_i(x), f_i(y) \big\> : i \in [r] \big\} < - 1 \Big) \approx 1,$$
+where $x$ and $y$ are independent random elements of $X$, then one of the functions $f_\ell$ must exhibit a significant amount of `clustering', in the sense that it maps many pairs of elements of $X$ to pairs of points with large inner product. The second key new idea is to build $r$ monochromatic books (instead of only one, as in~\cite{CGMS}), using the geometric lemma to significantly boost the density of edges of colour $\ell$ between our reservoir set and the book of colour~$\ell$ whenever performing a `normal' (Erd\H{o}s--Szekeres) step in any of the colours would cause the density of edges in that colour between the reservoir and the corresponding book to decrease too much. As a consequence, we will be able to build a $(t,m)$-book (that is, a clique of size $t$ connected to $m$ extra vertices) with $t = \eps k$ for some small constant $\eps > 0$, and $m \approx n / r^t$ pages, avoiding the delicate tradeoffs and calculations of~\cite{CGMS}. 
+
+The rest of this short paper is organised as follows. In Section~\ref{sec:book:thm} we will state our main technical result about the existence of monochromatic books in $r$-colourings, and define the algorithm that we will use to prove it. In Section~\ref{sec:key:lemma} we will prove the key lemma, and in Section~\ref{sec:book:proof} we will use it to deduce the book theorem. Finally, in Section~\ref{sec:final:proof}, we will deduce our bound on $R_r(k)$ from the book theorem.

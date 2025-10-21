@@ -1,0 +1,129 @@
+% The Key Lemma section - statement and algorithm overview
+% This section states the key lemma and explains the select-and-boost algorithm
+
+\section{The Key Lemma}
+
+% ============================================================================
+% KEY LEMMA STATEMENT
+% ============================================================================
+
+We can deduce \autoref{key:lemma} from \autoref{lem:lambda}.
+
+\begin{lemma}[Key lemma]
+  \label{lem:key-lemma} % Source paper uses label key:lemma
+  \paperref{Lemma 2.2}
+  \uses{def:p, lem:geometric}
+  \lean{key}
+  %
+  Let \(r, n\in\N\). Set \(\beta = 3^{-4r}\) and \(C = 4r^{3/2}\).
+  Let \(\chi\) be an \(r\)-colouring of \(E(K_n)\), let \(X,Y_1,\ldots,Y_r \subset V(K_n)\) be non-empty sets of vertices, and let \(\alpha_1,\ldots,\alpha_r > 0\). There exists a vertex \(x \in X\), a colour \(\ell \in [r]\), sets \(X' \subset X\) and \(Y'_1,\ldots,Y'_r\,\) with \(Y'_i \subset N_i(x) \cap Y_i\,\) for each \(i \in [r]\), and \(\lambda \ge -1\), such that
+  %
+  \begin{equation}\label{eq:key:ell}
+    \beta e^{- C \sqrt{\lambda + 1}} |X| \le |X'| \qquad \text{and} \qquad p_\ell(X,Y_\ell) + \lambda \alpha_\ell \le p_\ell( X', Y'_\ell ) ,
+  \end{equation}
+  %
+  and moreover
+  %
+  \begin{equation}\label{eq:key:alli}
+    |Y'_i| = p_i(X,Y_i) |Y_i| \qquad \text{and} \qquad  p_i(X,Y_i) - \alpha_i \le p_i( X', Y'_i )
+  \end{equation}
+  %
+  for every \(i \in [r]\).
+\end{lemma}
+%
+\begin{proof}
+  \uses{def:p, lem:geometric}
+
+  For each colour \(i \in [r]\), define a function \(\sigma_i \colon X \to \R^{\cup_i Y_i}\) as follows: for each \(x \in X\), choose a set \(N'_i(x) \subset N_i(x) \cap Y_i\) of size exactly \(p_i|Y_i|\), where \(p_i = p_i(X,Y_i)\), and set
+  %
+  \begin{equation*}
+    \sigma_i(x) = \frac{\id_{N'_i(x)} - p_i\id_{Y_i}}{\sqrt{\alpha_ip_i|Y_i|}},
+  \end{equation*}
+  %
+  where \(\id_S \in \{0,1\}^{\cup_i Y_i}\) denotes the indicator function of the set \(S\). Note that, for any \(x,y\in X\),
+  %TODO why? mp direction suffices
+  %
+  \begin{equation*}
+    \lambda \le \big\langle \sigma_i(x),\sigma_i(y) \big\rangle \quad \Leftrightarrow \quad \big( p_i + \lambda\alpha_i \big) p_i |Y_i| \le |N'_i(x) \cap N'_i(y)|.
+  \end{equation*}
+  %
+  Indeed, for every \(x,y\in X\), we have 
+  %
+  \begin{multline}
+    \begin{aligned}
+            \alpha_ip_i|Y_i| \langle \sigma_i(x),\sigma_i(y) \rangle &= \langle \id_{N'_i(x)}- p_i\id_{Y_i},\id_{N'_i(y)}- p_i\id_{Y_i}\rangle\\
+            &= \Bigl(\big\langle \id_{N'_i(x)},\id_{N'_i(y)}\big\rangle +p_i^2\langle \id_{Y_i},
+            \id_{Y_i}\rangle - p_i \langle \id_{N'_i(x)},\id_{Y_i}\rangle- p_i \langle \id_{N'_i(y)},\id_{Y_i}\rangle\Bigr)\\
+            &= \Bigl(|N'_i(x) \cap N'_i(y)|-p_i^2|Y_i| \Bigr),
+    \end{aligned}
+  \end{multline}
+  %
+  Where the last ineqaulity follows since \(|N'_i(x)|= N'_i(y)|= p_i|Y_i|\) and both sets are subsets of \(Y_i\).
+  Now, by \autoref{lem:geometric}, there exists \(\lambda \ge -1\) and colour \(\ell \in [r]\) such that
+  %
+  \begin{equation}
+    \label{eq: geometric-app}
+    \beta e^{- C\sqrt{\lambda + 1}} \le \Pr\Big( \lambda  \le \big\langle \sigma_\ell(U),\sigma_\ell(U') \big\rangle \, \text{ and } \, -1 \le \big\langle \sigma_i(U), \sigma_i(U') \big\rangle \, \text{ for all } \, i \ne \ell \Big) .
+  \end{equation}
+  %
+  where \(U\), \(U'\) are independent random variables distributed uniformly in the set~\(X\). We claim that there exists a vertex \(x \in X\) and a set \(X' \subset X\)
+   %TODO
+  such that,
+  %
+  \begin{equation*}
+    \beta e^{- C \sqrt{\lambda + 1}} |X| \le |X'|
+  \end{equation*}
+  % %TODO why?
+  %
+  and
+  %
+  \begin{equation*}
+    \big( p_\ell + \lambda\alpha_\ell \big) p_\ell |Y_\ell | \le |N'_\ell(x) \cap N'_\ell(y)|
+  \end{equation*}
+  %
+  for every \(y \in X'\), and
+  %
+  \begin{equation*}
+    \big( p_i - \alpha_i \big) p_i |Y_i| \le |N'_i(x) \cap N'_i(y)|
+  \end{equation*}
+  %
+  for every \(y \in X'\) and \(i \in [r]\). To see this, we let 
+  %
+  \begin{equation*}
+     P= \Biggl\{(x,x'): x,x' \in X , \lambda  \le \big\langle \sigma_\ell(x),\sigma_\ell(x') \big\rangle \, \text{ and } \, -1 \le \big\langle \sigma_i(x), \sigma_i(x') \big\rangle \, \text{ for all } \, i \ne \ell  \Biggr\}.
+  \end{equation*}
+  %
+  Since \(U\) and \(U'\) are independent and uniformly distributed over \(x\), Equation \autoref{eq: geometric-app} implies that
+  %
+  \begin{equation}
+    |P|\geq \beta e^{-C\sqrt{\lambda + 1}}|X|^2.
+  \end{equation} 
+  %
+  However, by averaging, there must then exist a vertex \(x \in X\) such that:
+  %
+  \begin{equation}
+    |X'|:=\bigl|\{y: (x,y) \in P  \} \bigr| \ge \frac{\beta e^{-C\sqrt{\lambda+1}}|X|^2}{|X|}\geq  \beta e^{-C\sqrt{\lambda+1}}|X|.
+  \end{equation}
+  %
+  We can them simply pick this \(X'\) to be the desired subset.
+  Setting \(Y'_i = N'_i(x)\) for each \(i \in [r]\), it follows that
+  %
+  \begin{multline}
+      \begin{aligned}
+      p_\ell(X,Y_\ell) + \lambda \alpha_\ell &= \frac{ \big( p_\ell + \lambda\alpha_\ell \big) p_\ell |Y_\ell |}{p_\ell |Y_\ell|}\\
+      &= \frac{ \big( p_\ell + \lambda\alpha_\ell \big) p_\ell |Y_\ell |}{| N'_\ell (x)|}\\
+      &= \min\bigg\{ \frac{ \big( p_\ell + \lambda\alpha_\ell \big) p_\ell |Y_\ell |}{| N'_\ell (x)|} : x' \in X' \bigg\}\\
+      &\le \min\bigg\{ \frac{|N'_\ell(x') \cap  N'_\ell (x)|}{| N'_\ell (x)|} : x' \in X' \bigg\}\\
+      &= \min\bigg\{ \frac{|N_\ell(x') \cap  N'_\ell (x)|}{| N'_\ell (x)|} : x' \in X' \bigg\}\\
+      &= p_\ell\big( X', N'_\ell (x) \big) = p_\ell\big( X', Y'_\ell \big) \\
+    \end{aligned}
+  \end{multline}
+  %
+  and
+  %
+  \begin{equation*}
+    p_i(X,Y_i) - \alpha_i \le \qquad p_i\big( X', Y'_i \big)
+  \end{equation*}
+  %
+  for every \(i \in [r]\), as required.
+\end{proof}
