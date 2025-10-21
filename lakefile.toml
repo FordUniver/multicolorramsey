@@ -21,7 +21,8 @@ rev = "main"
 
 [[require]]
 name = "ExponentialRamsey"
-git = "https://github.com/b-mehta/ExponentialRamsey.git"
+git = "https://github.com/ooovi/ExponentialRamsey.git"
+rev = "version-bump"
 
 [[lean_lib]]
 name = "MulticolorRamsey"

@@ -9,6 +9,37 @@ open Finset SimpleGraph
 
 
 ----------------------------------------------------------------------------------------------------
+-- the "Erdős-Szekeres bound"
+theorem ramseyNumber_le_pow[Fintype K] [DecidableEq K] (n : K → ℕ) (hr : 2 ≤ Fintype.card K) :
+    ramseyNumber n ≤ (Fintype.card K) ^ ∑ k, n k := by
+  by_cases h : ∀ k, 1 < n k
+  · let sub_one (l : K) := Function.update n l (n l - 1)
+    have sum_le_single : 1 ≤ ∑ k, n k := by
+      trans ∑ k : K, 2
+      · simp only [sum_const, card_univ, smul_eq_mul]; linarith [hr]
+      · exact sum_le_sum (by simp only [mem_univ, forall_const]; exact h)
+    have sub_one_sum (l : K) : ∑ k, sub_one l k = ∑ k, n k - 1 := by
+      simp only [mem_univ, sum_update_of_mem, sdiff_singleton_eq_erase, add_comm, sub_one]
+      rw [← Nat.add_sub_assoc (le_of_lt (h l)), Finset.sum_erase_add]
+      exact mem_univ l
+    apply le_trans (ramseyNumber_multicolour_bound h)
+    trans ∑ l, (Fintype.card K) ^ ∑ k, sub_one l k
+    · trans ∑ l, ramseyNumber (sub_one l)
+      · simp [sub_one, hr]
+      · gcongr; exact ramseyNumber_le_pow (sub_one _) hr
+    · simp_rw [sub_one_sum, ← Nat.pow_sub_mul_pow (Fintype.card K) (sum_le_single)]
+      simp [mul_comm]
+  · push_neg at h
+    apply le_trans (ramseyNumber_le_one h)
+    exact Nat.one_le_pow (∑ k, n k) (Fintype.card K) (Nat.zero_lt_of_lt hr)
+termination_by ∑ k, n k
+decreasing_by
+  rw [sub_one_sum]
+  simp only [tsub_lt_self_iff, zero_lt_one, and_true, gt_iff_lt]
+  exact sum_le_single
+
+
+----------------------------------------------------------------------------------------------------
 -- connection between monochromatic books and monochromatic cliques
 
 -- this is kinda central, its how we get mono cliques from books in the first place
@@ -40,7 +71,7 @@ lemma monochromaticOf_of_monochromaticBook
   · apply χ.monochromaticOf_union.mpr
     simp only [coe_image]
     refine ⟨(TMbook c).2.1, ⟨rc.1.image, (TMbook c).2.2.subset_right ?_⟩⟩
-    sorry
+    norm_cast
   · simp at rc
     apply le_trans rc.2
     rw [Finset.card_union_of_disjoint]
@@ -61,37 +92,6 @@ lemma blo (χ : TopEdgeLabelling (Fin n) (Fin r)) (c : Fin r)
   by_cases h : i = c
   simp [h]; exact TMbook
   simp [h]; exact TopEdgeLabelling.monochromaticBook_empty
-
-
-----------------------------------------------------------------------------------------------------
--- the "Erdős-Szekeres bound"
-theorem ramseyNumber_le_pow[Fintype K] [DecidableEq K] (n : K → ℕ) (hr : 2 ≤ Fintype.card K) :
-    ramseyNumber n ≤ (Fintype.card K) ^ ∑ k, n k := by
-  by_cases h : ∀ k, 1 < n k
-  · let sub_one (l : K) := Function.update n l (n l - 1)
-    have sum_le_single : 1 ≤ ∑ k, n k := by
-      trans ∑ k : K, 2
-      · simp only [sum_const, card_univ, smul_eq_mul]; linarith [hr]
-      · exact sum_le_sum (by simp only [mem_univ, forall_const]; exact h)
-    have sub_one_sum (l : K) : ∑ k, sub_one l k = ∑ k, n k - 1 := by
-      simp only [mem_univ, sum_update_of_mem, sdiff_singleton_eq_erase, add_comm, sub_one]
-      rw [← Nat.add_sub_assoc (le_of_lt (h l)), Finset.sum_erase_add]
-      exact mem_univ l
-    apply le_trans (ramseyNumber_multicolour_bound h)
-    trans ∑ l, (Fintype.card K) ^ ∑ k, sub_one l k
-    · trans ∑ l, ramseyNumber (sub_one l)
-      · simp [sub_one, hr]
-      · gcongr; exact ramseyNumber_le_pow (sub_one _) hr
-    · simp_rw [sub_one_sum, ← Nat.pow_sub_mul_pow (Fintype.card K) (sum_le_single)]
-      simp [mul_comm]
-  · push_neg at h
-    apply le_trans (ramseyNumber_le_one h)
-    exact Nat.one_le_pow (∑ k, n k) (Fintype.card K) (Nat.zero_lt_of_lt hr)
-termination_by ∑ k, n k
-decreasing_by
-  rw [sub_one_sum]
-  simp only [tsub_lt_self_iff, zero_lt_one, and_true, gt_iff_lt]
-  exact sum_le_single
 
 
 ----------------------------------------------------------------------------------------------------
