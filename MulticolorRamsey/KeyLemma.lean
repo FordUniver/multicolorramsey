@@ -374,20 +374,37 @@ lemma key [Nonempty (Fin r)] -- {cardV : Fintype.card V = n}
     let indNy := Set.indicator (↑Ny : Set V) (1 : V → ℝ)
     let indY := Set.indicator (↑Y' : Set V) (1 : V → ℝ)
 
-    -- The RHS equals: ⟨indNx - p·indY, indNy - p·indY⟩
-    -- Key: σ(x) = (1/√(α·pY)) • (indNx - p·indY), so ⟨σ(x),σ(y)⟩ = (1/√(α·pY))^2 · ⟨...,  ...⟩
-    -- Then α·pY · ⟨σ(x),σ(y)⟩ = α·pY · (1/(α·pY)) · ⟨..., ...⟩ = ⟨..., ...⟩
-    have inner_expanded : α' * pY' * (σ i x ⬝ᵥ σ i y) =
-        dotProduct (indNx - p' • indY) (indNy - p' • indY) := by
-      -- TODO: After unfolding σ and bilinearity, need to show (α·pY)*(1/√(α·pY))² = 1
-      -- Blocker: Pattern matching issues with mixed scalar/vector multiplication
-      -- The cancellation lemma works, but combining s*s into s^2 when mixed with
-      -- the inner product requires careful tactic work beyond current approach
-      sorry
-
-    -- Step 3: Expand the dot product using bilinearity
-    have dot_expanded : dotProduct (indNx - p' • indY) (indNy - p' • indY) =
+    -- Combined: expand σ and simplify in one step to avoid pattern matching issues
+    -- Key: σ(x) = (1/√(α·pY)) • (indNx - p·indY), so:
+    -- α·pY · ⟨σ(x),σ(y)⟩ = α·pY · (1/√(α·pY))² · ⟨indNx - p·indY, indNy - p·indY⟩
+    --                     = ⟨indNx - p·indY, indNy - p·indY⟩ (since α·pY · 1/(α·pY) = 1)
+    -- Then expand the dot product using bilinearity
+    have inner_and_dot_expanded : α' * pY' * (σ i x ⬝ᵥ σ i y) =
         ((Nx ∩ Ny).card : ℝ) - p' * p' * (Y'.card : ℝ) := by
+      -- Unfold σ
+      show α' * pY' * ((↑1 / Real.sqrt (α' * pY')) • (indNx - p' • indY) ⬝ᵥ
+                       (↑1 / Real.sqrt (α' * pY')) • (indNy - p' • indY))
+           = ((Nx ∩ Ny).card : ℝ) - p' * p' * (Y'.card : ℝ)
+      -- Use bilinearity of dot product
+      simp only [dotProduct_smul_left, dotProduct_smul_right]
+      -- After bilinearity, we have: α' * pY' * (1/√... * (1/√... * ⟨v1, v2⟩))
+      -- Need to show: α' * pY' * (1/√(α'·pY'))² * ⟨v1, v2⟩ = ⟨v1, v2⟩
+      have h_pos : 0 < α' * pY' := mul_pos α'_pos pY'_pos
+      have : α' * pY' * (1 / Real.sqrt (α' * pY') * (1 / Real.sqrt (α' * pY') *
+             ((indNx - p' • indY) ⬝ᵥ (indNy - p' • indY)))) =
+             (indNx - p' • indY) ⬝ᵥ (indNy - p' • indY) := by
+        calc α' * pY' * (1 / Real.sqrt (α' * pY') * (1 / Real.sqrt (α' * pY') *
+                        ((indNx - p' • indY) ⬝ᵥ (indNy - p' • indY))))
+            _ = (α' * pY' * (1 / Real.sqrt (α' * pY') * (1 / Real.sqrt (α' * pY')))) *
+                ((indNx - p' • indY) ⬝ᵥ (indNy - p' • indY)) := by ring
+            _ = 1 * ((indNx - p' • indY) ⬝ᵥ (indNy - p' • indY)) := by
+                have : α' * pY' * (1 / Real.sqrt (α' * pY') * (1 / Real.sqrt (α' * pY'))) = 1 := by
+                  field_simp
+                  rw [Real.sq_sqrt (le_of_lt h_pos)]
+                rw [this]
+            _ = (indNx - p' • indY) ⬝ᵥ (indNy - p' • indY) := by ring
+      rw [this]
+      -- Now expand the dot product
       rw [dotProduct_sub_right, dotProduct_sub_left, dotProduct_sub_left]
       rw [dotProduct_smul_right, dotProduct_smul_right, dotProduct_smul_left, dotProduct_smul_left]
       simp only [indNx, indNy, indY]
@@ -396,12 +413,8 @@ lemma key [Nonempty (Fin r)] -- {cardV : Fintype.card V = n}
       rw [dotProduct_comm, indicator_dotProduct_subset Ny Y' Ny_sub]
       rw [indicator_dotProduct_self Y']
       rw [Nx_card, Ny_card]
-      -- Goal: ↑(#(Nx ∩ Ny)) - p' * ↑pY' * 2 + p'^2 * ↑(#Y') = ↑(#(Nx ∩ Ny)) - p'^2 * ↑(#Y')
-      -- Need: p' * pY' * 2 = p'^2 * |Y'| * 2, i.e., p' * pY' = p'^2 * |Y'|
-      -- Since p' = pY'/|Y'|, we have: (pY'/|Y'|) * pY' = (pY'/|Y'|)^2 * |Y'|
       have h : p' * (pY' : ℝ) = p' ^ 2 * (Y'.card : ℝ) := by
-        rw [p'_eq, sq]
-        rw [mul_assoc]
+        rw [p'_eq, sq, mul_assoc]
         rw [div_mul_cancel₀ _ (ne_of_gt Y'_pos)]
       linarith
 
@@ -410,8 +423,7 @@ lemma key [Nonempty (Fin r)] -- {cardV : Fintype.card V = n}
     calc (p' + Λ * α') * pY'
         _ = p' * pY' + Λ * α' * pY' := by ring
         _ ≤ p' * pY' + α' * pY' * (σ i x ⬝ᵥ σ i y) := by linarith [key_ineq]
-        _ = p' * pY' + dotProduct (indNx - p' • indY) (indNy - p' • indY) := by rw [inner_expanded]
-        _ = p' * pY' + (((Nx ∩ Ny).card : ℝ) - p' * p' * (Y'.card : ℝ)) := by rw [dot_expanded]
+        _ = p' * pY' + (((Nx ∩ Ny).card : ℝ) - p' * p' * (Y'.card : ℝ)) := by rw [inner_and_dot_expanded]
         _ = p' * pY' + ((Nx ∩ Ny).card : ℝ) - p' * p' * (Y'.card : ℝ) := by ring
         _ = p' ^ 2 * (Y'.card : ℝ) + ((Nx ∩ Ny).card : ℝ) - p' * p' * (Y'.card : ℝ) := by
             have h : p' * (pY' : ℝ) = p' ^ 2 * (Y'.card : ℝ) := by
