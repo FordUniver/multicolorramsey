@@ -517,10 +517,12 @@ lemma omg5 {a b c : ENNReal} : a * b ≤ a * c ↔ b ≤ c := by
   · sorry
   · exact fun a_1 ↦ mul_le_mul_left' a_1 a
 
-lemma omg6 {a b : ℝ} (ap : 0 ≤ a) : - a ≤ a * b ↔ -1 ≤ b := by
+lemma omg6 {a b : ℝ} (ap : 0 < a) : - a ≤ a * b ↔ -1 ≤ b := by
   constructor
   · intro h
-    sorry
+    calc -1 = -a / a := by rw [neg_div, div_self (ne_of_gt ap)]
+          _ ≤ (a * b) / a := by exact div_le_div_of_nonneg_right h (le_of_lt ap)
+          _ = b := by rw [mul_div_cancel_left₀ b (ne_of_gt ap)]
   · intro h
     have : -a = a * (-1) := by ring
     rw [this]
