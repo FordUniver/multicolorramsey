@@ -244,7 +244,17 @@ lemma pk_le_mem {ki : Saga χ} (i : Fin r) (xin : x ∈ ki.X) :
   simp
 
 
-lemma nonempty_of_ppos {ki : Saga χ} (ppos : ∀ i, 0 < ki.pY i) : Nonempty ki.X := sorry
+lemma nonempty_of_ppos [Nonempty (Fin r)] {ki : Saga χ} (ppos : ∀ i, 0 < ki.pY i) : Nonempty ki.X := by
+  by_contra h
+  inhabit Fin r
+  have h' : ¬ki.X.Nonempty := by
+    intro ⟨x, hx⟩
+    exact h ⟨⟨x, hx⟩⟩
+  have : ki.pY default = 0 := by
+    simp only [Saga.pY]
+    unfold ppY
+    simp [h']
+  linarith [ppos default]
 
 
 lemma key [Nonempty (Fin r)] -- {cardV : Fintype.card V = n}
