@@ -59,6 +59,43 @@ lemma tr {X : Finset V} {X' : Finset { x // x ∈ X }} {p : V → Prop} (e : ∀
   exact e ⟨x, xi⟩ h
 
 ----------------------------------------------------------------------------------------------------
+-- Helper lemmas for indicator dot products
+
+section IndicatorHelpers
+
+variable {V : Type*} [Fintype V] [DecidableEq V]
+
+-- Dot product of two indicator functions equals intersection size
+lemma indicator_dotProduct_indicator (s t : Finset V) :
+    dotProduct (Set.indicator (↑s : Set V) (1 : V → ℝ)) (Set.indicator (↑t : Set V) 1)
+      = (s ∩ t).card := by
+  simp only [dotProduct, Set.indicator, Pi.one_apply]
+  have h : ∀ v : V, (if v ∈ (↑s : Set V) then (1 : ℝ) else 0) * (if v ∈ (↑t : Set V) then 1 else 0)
+                    = if v ∈ s ∩ t then 1 else 0 := by
+    intro v
+    by_cases hs : v ∈ s <;> by_cases ht : v ∈ t <;> simp [hs, ht, Finset.mem_inter]
+  simp_rw [h]
+  rw [Finset.sum_ite]
+  simp only [Finset.filter_mem_eq_inter, Finset.sum_const_zero, add_zero]
+  rw [Finset.inter_comm, Finset.inter_univ]
+  simp only [Finset.card_eq_sum_ones, Nat.cast_sum, Nat.cast_one]
+
+-- Dot product of indicator with itself
+lemma indicator_dotProduct_self (s : Finset V) :
+    dotProduct (Set.indicator (↑s : Set V) (1 : V → ℝ)) (Set.indicator (↑s : Set V) 1)
+      = s.card := by
+  rw [indicator_dotProduct_indicator, Finset.inter_self]
+
+-- When s ⊆ t, dot product of indicators
+lemma indicator_dotProduct_subset (s t : Finset V) (h : s ⊆ t) :
+    dotProduct (Set.indicator (↑s : Set V) (1 : V → ℝ)) (Set.indicator (↑t : Set V) 1)
+      = s.card := by
+  rw [indicator_dotProduct_indicator]
+  rw [Finset.inter_eq_left.mpr h]
+
+end IndicatorHelpers
+
+----------------------------------------------------------------------------------------------------
 -- key lemma
 
 open MeasureTheory ProbabilityTheory Finset Real
