@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master # Trigger on pushes to the default branch
+  pull_request:   # Trigger on all pull requests to run checks
   workflow_dispatch:        # Allow manual triggering of the workflow from the GitHub Actions interface
 
 # Cancel previous runs if a new commit is pushed to the same PR or branch
@@ -18,7 +19,7 @@ permissions:
   id-token: write # Write access to ID tokens
 
 jobs:
-  build_project:
+  build_and_check:
     runs-on: ubuntu-latest
     name: Build project
     steps:
@@ -113,15 +114,36 @@ jobs:
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: JEKYLL_ENV=production bundle exec jekyll build  # Note this will also copy the blueprint and API doc into home_page/_site
 
-      - name: "Upload website (API documentation, blueprint and any home page)"
+      - name: Upload build artifacts for deployment
+        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-build
+          path: ${{ env.HOME_PAGE_EXISTS == 'true' && 'home_page/_site' || 'home_page/' }}
+          retention-days: 1
+
+  deploy:
+    needs: build_and_check
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    name: Deploy to GitHub Pages
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: site-build
+          path: site-build
+
+      - name: Upload website to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ env.HOME_PAGE_EXISTS == 'true' && 'home_page/_site' || 'home_page/' }}
+          path: site-build
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: Make sure the API documentation cache works
-        run: mv home_page/docs .lake/build/doc
      
