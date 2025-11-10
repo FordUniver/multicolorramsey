@@ -241,7 +241,7 @@ decreasing_by
 -- thm 2.1
 lemma book (t m : ℕ) (χ : TopEdgeLabelling V (Fin r))
   (tpos : 0 < t) (mpos : 0 < m)
-  (X : Finset V) [nenX : Nonempty X]
+  (X : Finset V) -- [nenX : Nonempty X]
   (Y : Fin r → (Finset V))
   (p : ℝ) (ppos : 0 < p)
   (μ : ℝ) (μge : 2^10 * r^3 ≤ μ)
