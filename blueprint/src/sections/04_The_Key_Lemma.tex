@@ -40,13 +40,16 @@ We can deduce \autoref{key:lemma} from \autoref{lem:lambda}.
     \sigma_i(x) = \frac{\id_{N'_i(x)} - p_i\id_{Y_i}}{\sqrt{\alpha_ip_i|Y_i|}},
   \end{equation*}
   %
-  where \(\id_S \in \{0,1\}^{\cup_i Y_i}\) denotes the indicator function of the set \(S\). Note that, for any \(x,y\in X\),
-  %TODO why? mp direction suffices
+  where \(\id_S \in \{0,1\}^{\cup_i Y_i}\) denotes the indicator function of the set \(S\).
+  %
+  We now verify a key equivalence.
+  For any \(x,y\in X\), we claim that
   %
   \begin{equation*}
     \lambda \le \big\langle \sigma_i(x),\sigma_i(y) \big\rangle \quad \Leftrightarrow \quad \big( p_i + \lambda\alpha_i \big) p_i |Y_i| \le |N'_i(x) \cap N'_i(y)|.
   \end{equation*}
   %
+  (In the proof below, we will only use the forward direction.)
   Indeed, for every \(x,y\in X\), we have 
   %
   \begin{multline}
@@ -58,7 +61,20 @@ We can deduce \autoref{key:lemma} from \autoref{lem:lambda}.
     \end{aligned}
   \end{multline}
   %
-  Where the last ineqaulity follows since \(|N'_i(x)|= N'_i(y)|= p_i|Y_i|\) and both sets are subsets of \(Y_i\).
+  where the last equality follows since \(|N'_i(x)|= |N'_i(y)|= p_i|Y_i|\) and both sets are subsets of \(Y_i\).
+  %
+  Thus, for any \(\lambda \in \R\), we have
+  %
+  \begin{align*}
+    \lambda \le \langle \sigma_i(x),\sigma_i(y) \rangle
+    &\iff \lambda \alpha_ip_i|Y_i| \le \alpha_ip_i|Y_i| \langle \sigma_i(x),\sigma_i(y) \rangle \\
+    &\iff \lambda \alpha_ip_i|Y_i| \le |N'_i(x) \cap N'_i(y)|-p_i^2|Y_i| \\
+    &\iff p_i^2|Y_i| + \lambda \alpha_ip_i|Y_i| \le |N'_i(x) \cap N'_i(y)| \\
+    &\iff \big( p_i + \lambda\alpha_i \big) p_i |Y_i| \le |N'_i(x) \cap N'_i(y)|,
+  \end{align*}
+  %
+  where the first equivalence uses the positivity \(\alpha_ip_i|Y_i| > 0\), and the last follows by factoring.
+  This establishes the claimed equivalence.
   Now, by \autoref{lem:geometric}, there exists \(\lambda \ge -1\) and colour \(\ell \in [r]\) such that
   %
   \begin{equation}

@@ -1,0 +1,9 @@
+[project]
+name = "multicolorramsey"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "leanblueprint>=0.0.18",
+    "plastex>=3.1",
+]
