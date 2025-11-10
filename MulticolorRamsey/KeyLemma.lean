@@ -201,7 +201,18 @@ noncomputable abbrev Saga.p (ki : Saga χ) (i : Fin r) : ℝ := p'p χ ki.X ki.Y
 
 lemma pk_le_one (ki : Saga χ) (i : Fin r) :
     (ki.p i) ≤ 1 := by
-  sorry
+  simp only [Saga.p, p'p]
+  by_cases h : (ki.Y i).card = 0
+  · simp [h]
+  · have card_pos : 0 < (ki.Y i).card := Nat.pos_of_ne_zero h
+    rw [div_le_one (Nat.cast_pos.mpr card_pos)]
+    apply Nat.cast_le.mpr
+    simp only [ppY]
+    split_ifs with hX
+    · obtain ⟨x, hx⟩ := hX
+      apply le_trans (min'_le _ _ (mem_image_of_mem _ hx))
+      exact card_le_card (inter_subset_right)
+    · exact Nat.zero_le _
 
 lemma p_monoX (χ : TopEdgeLabelling V (Fin r)) {X X' : Finset V}
     (xsub : X' ⊆ X) (h : X'.Nonempty) (Y : Fin r → Finset V) (i : Fin r) :
