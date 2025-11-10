@@ -181,7 +181,7 @@ lemma pk_le_mem {ki : Saga χ} (i : Fin r) (xin : x ∈ ki.X) :
 lemma nonempty_of_ppos {ki : Saga χ} (ppos : ∀ i, 0 < ki.pY i) : Nonempty ki.X := sorry
 
 
-lemma keyk [Nonempty (Fin r)] -- {cardV : Fintype.card V = n}
+lemma key [Nonempty (Fin r)] -- {cardV : Fintype.card V = n}
   (χ : TopEdgeLabelling V (Fin r))
   (ki : Saga χ)
   (ppos : ∀ (i : Fin r), 0 < ki.pY i)

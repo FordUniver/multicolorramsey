@@ -71,6 +71,8 @@ for each \(i \in [r]\) and \(s \in \N\), to be the set of density-boost steps in
   \label{lem:pi:lower:bound} % Source paper uses same label
   \paperref{Lemma 4.1}
   \uses{alg:book, lem:key-lemma}
+  \lean{l41color}
+  \leanok
   %
   For each \(i \in [r]\) and \(s \in \N\), 
   %
@@ -101,21 +103,41 @@ for each \(i \in [r]\) and \(s \in \N\), to be the set of density-boost steps in
 Before continuing, let's note a couple of important consequences of \autoref{lem:pi:lower:bound}. First, it implies that neither \(p_i(s)\) nor \(\alpha_i(s)\) can get too small. 
 
 \begin{lemma}[Minimum bounds on \(p_i\) and \(\alpha_i\)]
-  \label{lem:pi:min} % Source paper uses same label
+  \label{lem:pi:minp} % Source paper uses same label
   \paperref{Lemma 4.2}
   \uses{lem:pi:lower:bound, alg:book}
+  \lean{l42p}
   %
   If \(t \ge 2\), then 
   %
   \begin{equation*}
-    p_i(s) \, \ge \, p_0 - \frac{3\delta}{4} \qquad \text{and} \qquad \alpha_i(s) \, \ge \, \frac{\delta}{4t}
+    p_i(s) \, \ge \, p_0 - \frac{3\delta}{4}
   \end{equation*}
   %
   for every \(i \in [r]\) and \(s \in \N\). 
 \end{lemma}
 %
 \begin{proof}
-  Both bounds follow immediately from~\eqref{eq:pi:lower:bound} and the definition of \(\alpha_i(s)\). 
+  Bound follows immediately from~\eqref{eq:pi:lower:bound} and the definition of \(\alpha_i(s)\). 
+\end{proof}
+
+\begin{lemma}[Minimum bounds on \(p_i\) and \(\alpha_i\)]
+  \label{lem:pi:mina} % Source paper uses same label
+  \paperref{Lemma 4.2}
+  \uses{lem:pi:lower:bound, alg:book}
+  \lean{l42α}
+  %
+  If \(t \ge 2\), then 
+  %
+  \begin{equation*}
+    \alpha_i(s) \, \ge \, \frac{\delta}{4t}
+  \end{equation*}
+  %
+  for every \(i \in [r]\) and \(s \in \N\). 
+\end{lemma}
+%
+\begin{proof}
+  Bound follows immediately from~\eqref{eq:pi:lower:bound} and the definition of \(\alpha_i(s)\). 
 \end{proof}
 
 It also implies the following bound on the number of density-boost steps. 
@@ -123,7 +145,8 @@ It also implies the following bound on the number of density-boost steps.
 \begin{lemma}[Upper bound on density-boost steps]
   \label{lem:Bi:max} % Source paper uses same label
   \paperref{Lemma 4.3}
-  \uses{lem:pi:min}
+  \uses{lem:pi:minp, lem:pi:mina}
+  \lean{l43}
   %
   If \(t \ge \lambda_0\) and \(\delta \le 1/4\), then
   %
@@ -145,12 +168,14 @@ It also implies the following bound on the number of density-boost steps.
   Since \(t \ge \lambda_0\) and \(\delta \le 1/4\), the claimed bound follows. 
 \end{proof}
 
-\autoref{lem:pi:min} and~\autoref{lem:Bi:max} together provide a lower bound on the size of the set \(Y_i(s)\). 
+\autoref{lem:pi:minp} and~\autoref{lem:Bi:max} together provide a lower bound on the size of the set \(Y_i(s)\). 
 
 \begin{lemma}[Lower bound for \(Y_i\) set sizes]
   \label{lem:Y:lower:bound} % Source paper uses same label
   \paperref{Lemma 4.4}
-  \uses{lem:pi:min, lem:Bi:max, alg:book}
+  \uses{lem:pi:minp, lem:pi:mina, lem:Bi:max, alg:book}
+  \lean{l44color}
+  \leanok
   %
   If \(t \ge 2\), then
   %
@@ -168,7 +193,7 @@ It also implies the following bound on the number of density-boost steps.
     |Y_i(j+1)| = p_i(j) |Y_i(j)| \ge \bigg( p_0 - \frac{3\delta}{4} \bigg) |Y_i(j)|,
   \end{equation*}
   % 
-  by~\eqref{eq:key:alli} and \autoref{lem:pi:min}.
+  by~\eqref{eq:key:alli} and \autoref{lem:pi:mina}.
 \end{proof}
 
 Finally, we need to bound the size of the set \(X(s)\). To do so, set \(\eps = (\beta / r) e^{- C \sqrt{\lambda_0 + 1}}\), and define \(\cB(s) = \cB_1(s) \cup \cdots \cup \cB_r(s)\) to be the set of all density-boost steps. 
@@ -177,6 +202,7 @@ Finally, we need to bound the size of the set \(X(s)\). To do so, set \(\eps = (
   \label{lem:X:lower:bound} % Source paper uses same label
   \paperref{Lemma 4.5}
   \uses{lem:sum:of:lambdas, alg:book}
+  \lean{l45color}
   %
   For each \(s \in \N\), 
   %
@@ -208,6 +234,7 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
   \label{lem:sum:of:lambdas} % Source paper uses same label
   \paperref{Lemma 4.6}
   \uses{lem:Bi:max, alg:book}
+  \lean{l46}
   %
   If \(t \ge \lambda_0 / \delta > 0\) and \(\delta \le 1/4\), then
   %
@@ -247,7 +274,8 @@ We will use the following lemma to bound the right-hand side of~\eqref{eq:X:lowe
 \begin{theorem}[Book theorem]
   \label{thm:book} % Source paper uses same label
   \paperref{Theorem 2.1}
-  \uses{def:book, def:edge-colouring, def:colour-neighborhood, alg:book, lem:pi:lower:bound, lem:pi:min, lem:Bi:max, lem:Y:lower:bound, lem:X:lower:bound, lem:sum:of:lambdas}
+  \uses{def:book, def:edge-colouring, def:colour-neighborhood, alg:book, lem:pi:lower:bound, lem:pi:mina, lem:pi:minp, lem:Bi:max, lem:Y:lower:bound, lem:X:lower:bound, lem:sum:of:lambdas}
+  \lean{book}
   %
   Let \(\chi\) be an \(r\)-colouring of \(E(K_n)\), and let \(X,Y_1,\ldots,Y_r \subset V(K_n)\). % be disjoint sets. 
   For every \(p > 0\) and \(\mu \ge 2^{10} r^3\), and every \(t,m \in \N\) with \(t \ge \mu^5 / p\), the following holds. If 

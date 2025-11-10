@@ -153,7 +153,7 @@ structure KeyOut (bin : KeyIn param) extends Saga param.χ where
 -- call key lemma with an input KeyIn
 noncomputable def keybi (bin : KeyIn param)
 : KeyOut bin := by
-  have := keyk param.χ bin.toSaga bin.pYpos bin.α (αpos bin)
+  have := key param.χ bin.toSaga bin.pYpos bin.α (αpos bin)
   choose l Λ Λge x xX s nen Xs Xprop d e f g using this
   exact ⟨s, l, Λ, Λge, x, xX, Xs, Xprop, d, e, f, g, nen⟩
 
