@@ -59,6 +59,34 @@ lemma tr {X : Finset V} {X' : Finset { x // x ∈ X }} {p : V → Prop} (e : ∀
   exact e ⟨x, xi⟩ h
 
 ----------------------------------------------------------------------------------------------------
+-- Helper lemmas for dotProduct bilinearity (missing from Mathlib)
+-- TODO: These should be upstreamed to Mathlib (see README for PR tracking)
+
+section DotProductBilinearity
+
+variable {V : Type*} [Fintype V] {R : Type*} [CommRing R]
+
+lemma dotProduct_sub_left (a b c : V → R) :
+    dotProduct (a - b) c = dotProduct a c - dotProduct b c := by
+  simp only [dotProduct, Pi.sub_apply, sub_mul, Finset.sum_sub_distrib]
+
+lemma dotProduct_sub_right (a b c : V → R) :
+    dotProduct a (b - c) = dotProduct a b - dotProduct a c := by
+  simp only [dotProduct, Pi.sub_apply, mul_sub, Finset.sum_sub_distrib]
+
+lemma dotProduct_smul_left (r : R) (a b : V → R) :
+    dotProduct (r • a) b = r * dotProduct a b := by
+  simp only [dotProduct, Pi.smul_apply, smul_eq_mul, mul_assoc, Finset.mul_sum]
+
+lemma dotProduct_smul_right (r : R) (a b : V → R) :
+    dotProduct a (r • b) = r * dotProduct a b := by
+  simp only [dotProduct, Pi.smul_apply, smul_eq_mul]
+  conv_lhs => arg 2; ext; rw [mul_comm, mul_assoc, mul_comm (b _)]
+  rw [Finset.mul_sum]
+
+end DotProductBilinearity
+
+----------------------------------------------------------------------------------------------------
 -- Helper lemmas for indicator dot products
 
 section IndicatorHelpers
@@ -189,14 +217,31 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
     let indY := Set.indicator (↑Y' : Set V) (1 : V → ℝ)
 
     -- The RHS equals: ⟨indNx - p·indY, indNy - p·indY⟩
+    -- Key: σ(x) = (1/√(α·pY)) • (indNx - p·indY), so ⟨σ(x),σ(y)⟩ = (1/√(α·pY))^2 · ⟨...,  ...⟩
+    -- Then α·pY · ⟨σ(x),σ(y)⟩ = α·pY · (1/(α·pY)) · ⟨..., ...⟩ = ⟨..., ...⟩
     have inner_expanded : α' * pY' * (σ i x ⬝ᵥ σ i y) =
         dotProduct (indNx - p' • indY) (indNy - p' • indY) := by
-      sorry -- algebraic manipulation involving sqrt cancellation
+      -- σ(x) = (1/√(α·pY)) • (indNx - p'·indY)
+      -- ⟨σ(x), σ(y)⟩ = (1/√(α·pY))² · ⟨indNx - p'·indY, indNy - p'·indY⟩
+      -- α·pY · ⟨σ(x), σ(y)⟩ = α·pY · (1/(α·pY)) · ⟨..., ...⟩ = ⟨..., ...⟩
+      -- TODO: Technicality with sqrt notation (1/√x vs √x⁻¹) and expansion
+      sorry
 
-    -- Step 3: Expand the dot product
+    -- Step 3: Expand the dot product using bilinearity
     have dot_expanded : dotProduct (indNx - p' • indY) (indNy - p' • indY) =
         ((Nx ∩ Ny).card : ℝ) - p' * p' * (Y'.card : ℝ) := by
-      sorry -- use indicator lemmas and algebra
+      rw [dotProduct_sub_right, dotProduct_sub_left, dotProduct_sub_left]
+      rw [dotProduct_smul_right, dotProduct_smul_right, dotProduct_smul_left, dotProduct_smul_left]
+      simp only [indNx, indNy, indY]
+      rw [indicator_dotProduct_indicator Nx Ny]
+      rw [indicator_dotProduct_subset Nx Y' Nx_sub]
+      rw [dotProduct_comm, indicator_dotProduct_subset Ny Y' Ny_sub]
+      rw [indicator_dotProduct_self Y']
+      rw [Nx_card, Ny_card]
+      -- TODO: field_simp times out here. Need manual algebra.
+      -- Goal: ↑(#(Nx ∩ Ny)) - p' * ↑pY' * 2 + p'^2 * ↑(#Y') = ↑(#(Nx ∩ Ny)) - p'^2 * ↑(#Y')
+      -- Reduces to: p' * pY' = p'^2 * |Y'| where p' = pY'/|Y'|
+      sorry
 
     sorry
 
