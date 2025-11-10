@@ -88,7 +88,8 @@ instance lift.Nonempty {X : Finset V} (X' : Finset { x // x ∈ X }) [nen : None
  simp [lift, x'X']
 
 lemma lift_nonempty {X : Finset V} (X' : Finset { x // x ∈ X }) (nen : X'.Nonempty) :  (lift X').Nonempty := by
-  sorry
+  obtain ⟨x', hx'⟩ := nen
+  exact ⟨(Function.Embedding.subtype fun x => x ∈ X) x', by simp [lift, hx']⟩
 
 lemma lift_subset {X : Finset V} (X' : Finset { x // x ∈ X }) : (lift X') ⊆ X := by
   simp [lift]
