@@ -91,7 +91,7 @@ We can deduce \autoref{key:lemma} from \autoref{lem:lambda}.
 
   % ========================================================================
   % STEP 1: Construct N'_i(x) and define σ_i
-  % Lean: lines 92-109 (defines N', proves N'sub, N'subN, N'card, defines σ)
+  % Lean: defines N', proves N'sub, N'subN, N'card, defines σ
   % ========================================================================
 
   For each colour \(i \in [r]\), we will define a function \(\sigma_i \colon X \to \R^{\cup_i Y_i}\).
@@ -100,7 +100,7 @@ We can deduce \autoref{key:lemma} from \autoref{lem:lambda}.
   %
   \begin{remark}
     Such a choice is always possible: by definition of \(p_i(X,Y_i)\), we have \(p_i|Y_i| \le \min_{x \in X} |N_i(x) \cap Y_i|\), so every vertex \(x \in X\) has at least \(p_i|Y_i|\) neighbors of color \(i\) in \(Y_i\).
-    In Lean (lines 92-95), this is proven formally via \texttt{p'} and \texttt{exists\_subset\_card\_eq}.
+    In Lean, this is proven formally via \texttt{p'} and \texttt{exists\_subset\_card\_eq}.
   \end{remark}
   %
   We record the following properties of \(N'_i(x)\):
@@ -120,7 +120,7 @@ We can deduce \autoref{key:lemma} from \autoref{lem:lambda}.
 
   % ========================================================================
   % STEP 2: Apply the Geometric Lemma
-  % Lean: lines 117-122 (setup measure space, call geometric, destructure)
+  % Lean: setup measure space, call geometric, destructure
   % ========================================================================
 
   By \autoref{lem:geometric}, applied with these functions \(\sigma_i\) and with \(U\), \(U'\) independent random variables distributed uniformly in the set~\(X\), there exists \(\lambda \ge -1\) and colour \(\ell \in [r]\) such that
@@ -133,11 +133,11 @@ We can deduce \autoref{key:lemma} from \autoref{lem:lambda}.
 
   % ========================================================================
   % STEP 3: Derandomization via averaging (pigeonhole principle)
-  % Lean: lines 124-139 (calls pidgeon_thing, proves X' nonempty)
+  % Lean: calls pidgeon_thing, proves X' nonempty
   % ========================================================================
 
   We now convert this probabilistic statement into a deterministic existence statement via an averaging argument.
-  (In Lean, this corresponds to the \texttt{pidgeon\_thing} lemma at lines 124-139.)
+  (In Lean, this corresponds to the \texttt{pidgeon\_thing} lemma.)
 
   Define the set of ``good pairs''
   %
@@ -162,7 +162,7 @@ We can deduce \autoref{key:lemma} from \autoref{lem:lambda}.
 
   % ========================================================================
   % STEP 4: Define Y'_i and verify the inequalities
-  % Lean: lines 141-201 (defines Y', proves Y'card, proves Y'lee with factor function)
+  % Lean: defines Y', proves Y'card, proves Y'lee with factor function
   % ========================================================================
 
   Set \(Y'_i = N'_i(x)\) for each \(i \in [r]\).
@@ -215,7 +215,7 @@ We can deduce \autoref{key:lemma} from \autoref{lem:lambda}.
   which establishes the second part of \eqref{eq:key:alli} for all \(i \ne \ell\).
 
   \begin{remark}[Lean structure]
-    In the Lean proof (lines 152-201), both cases are handled simultaneously using a \texttt{factor} function defined as \(\text{factor}(i) = \lambda\) if \(i = \ell\) and \(-1\) otherwise.
+    In the Lean proof, both cases are handled simultaneously using a \texttt{factor} function defined as \(\text{factor}(i) = \lambda\) if \(i = \ell\) and \(-1\) otherwise.
     This allows a unified treatment via the auxiliary functions \texttt{f} and \texttt{g}.
   \end{remark}
 \end{proof}
