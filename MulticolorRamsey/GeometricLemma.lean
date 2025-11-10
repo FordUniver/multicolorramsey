@@ -173,7 +173,10 @@ lemma geometric :
     simp only [le_refl, neg_add_cancel, sqrt_zero, mul_zero, exp_zero, mul_one, ne_eq, true_and, this]
 
     have (x : X × X) : (∀ (b : Fin r), -1 ≤ τ x b) ↔ (∀  (i : Fin r), -3 * r ≤ (Z i x)) := by
-      have : ∀ i, (-3 * r ≤ 3 * r * τ x i ↔ -1 ≤ τ x i) := by simp [omg6]
+      have rpos' : 0 < (3 : ℝ) * r := by
+        have : 0 < (r : ℝ) := Nat.cast_pos.mpr Fin.pos'
+        linarith
+      have : ∀ i, (-3 * r ≤ 3 * r * τ x i ↔ -1 ≤ τ x i) := by simp [omg6 rpos']
       simp_rw [Z, this]
     simp_rw [this, ← eE, ofReal_le_of_le_toReal h]
 
@@ -254,9 +257,12 @@ lemma geometric :
       ext x
       simp only [and_comm, neg_mul, mem_inter_iff, mem_setOf_eq, and_congr_right_iff, E, τ]
       intro l
-      refine ⟨?_ , fun xM j _ ↦ (omg6 (by positivity)).mp (xM j)⟩
+      have a_pos : 0 < (3 : ℝ) * r := by
+        have : 0 < (r : ℝ) := Nat.cast_pos.mpr Fin.pos'
+        linarith
+      refine ⟨?_ , fun xM j _ ↦ (omg6 a_pos).mp (xM j)⟩
       · intro nj j
-        refine (omg6 (by positivity)).mpr ?_
+        refine (omg6 a_pos).mpr ?_
         by_cases jeqi : j = i
         · subst jeqi
           exact le_trans minus1leΛ l
