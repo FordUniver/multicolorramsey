@@ -221,6 +221,10 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
     -- Then α·pY · ⟨σ(x),σ(y)⟩ = α·pY · (1/(α·pY)) · ⟨..., ...⟩ = ⟨..., ...⟩
     have inner_expanded : α' * pY' * (σ i x ⬝ᵥ σ i y) =
         dotProduct (indNx - p' • indY) (indNy - p' • indY) := by
+      -- TODO: After unfolding σ and bilinearity, need to show (α·pY)*(1/√(α·pY))² = 1
+      -- Blocker: Pattern matching issues with mixed scalar/vector multiplication
+      -- The cancellation lemma works, but combining s*s into s^2 when mixed with
+      -- the inner product requires careful tactic work beyond current approach
       sorry
 
     -- Step 3: Expand the dot product using bilinearity
@@ -243,7 +247,20 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
         rw [div_mul_cancel₀ _ (ne_of_gt Y'_pos)]
       linarith
 
-    sorry -- TODO: Complete the calc chain combining inner_expanded and dot_expanded
+    -- Step 4: Combine all inequalities to reach the final goal
+    show (p' + Λ * α') * pY' ≤ ((Nx ∩ Ny).card : ℝ)
+    calc (p' + Λ * α') * pY'
+        _ = p' * pY' + Λ * α' * pY' := by ring
+        _ ≤ p' * pY' + α' * pY' * (σ i x ⬝ᵥ σ i y) := by linarith [key_ineq]
+        _ = p' * pY' + dotProduct (indNx - p' • indY) (indNy - p' • indY) := by rw [inner_expanded]
+        _ = p' * pY' + (((Nx ∩ Ny).card : ℝ) - p' * p' * (Y'.card : ℝ)) := by rw [dot_expanded]
+        _ = p' * pY' + ((Nx ∩ Ny).card : ℝ) - p' * p' * (Y'.card : ℝ) := by ring
+        _ = p' ^ 2 * (Y'.card : ℝ) + ((Nx ∩ Ny).card : ℝ) - p' * p' * (Y'.card : ℝ) := by
+            have h : p' * (pY' : ℝ) = p' ^ 2 * (Y'.card : ℝ) := by
+              rw [p'_eq, sq, mul_assoc, div_mul_cancel₀ _ (ne_of_gt Y'_pos)]
+            rw [h]
+        _ = ((Nx ∩ Ny).card : ℝ) := by ring
+        _ ≤ ((Nx ∩ Ny).card : ℝ) := by linarith
 
 
   -- "Now by Lemma 7, there exists Λ ≥ -1 and colour l ∈ [r] such that..."
