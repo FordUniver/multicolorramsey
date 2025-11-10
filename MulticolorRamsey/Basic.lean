@@ -512,10 +512,18 @@ lemma three_ineq_ENN {r : ℕ} (rpos: 0 < r) :
   sorry
 
 -- TODO i just put here everything that annoyed me
-lemma omg5 {a b c : ENNReal} : a * b ≤ a * c ↔ b ≤ c := by
+lemma omg5 {a b c : ENNReal} (ha : a ≠ 0) (ha_top : a ≠ ⊤) : a * b ≤ a * c ↔ b ≤ c := by
   constructor
-  · sorry
-  · exact fun a_1 ↦ mul_le_mul_left' a_1 a
+  · intro h
+    calc b = 1 * b := by rw [one_mul]
+         _ = (a⁻¹ * a) * b := by rw [ENNReal.inv_mul_cancel ha ha_top]
+         _ = a⁻¹ * (a * b) := by rw [mul_assoc]
+         _ ≤ a⁻¹ * (a * c) := by gcongr
+         _ = (a⁻¹ * a) * c := by rw [mul_assoc]
+         _ = 1 * c := by rw [ENNReal.inv_mul_cancel ha ha_top]
+         _ = c := by rw [one_mul]
+  · intro h
+    gcongr
 
 lemma omg6 {a b : ℝ} (ap : 0 ≤ a) : - a ≤ a * b ↔ -1 ≤ b := by
   constructor
