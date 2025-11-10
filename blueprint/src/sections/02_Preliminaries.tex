@@ -40,7 +40,7 @@
 \begin{definition}[Edge colouring]
   \label{def:edge-colouring}
   \uses{def:complete-graph}
-  \lean{SimpleGraph.EdgeColoring}
+  \lean{SimpleGraph.EdgeLabelling}
   \leanok
   %
   An edge colouring of a graph \(G\) with colours \(C\) is a map from the edge set \(E(G)\) to \(C\).
@@ -49,7 +49,7 @@
 \begin{definition}[Colour neighbourhood]
   \label{def:colour-neighborhood}
   \uses{def:edge-colouring}
-  \lean{SimpleGraph.EdgeColoring.coloredNeighborSet}
+  \lean{EdgeLabelling.coloredNeighborSet}
   \leanok
   %
   Given an edge colouring, we write \(N_i(u)\) to denote the neighbourhood of vertex \(u\) in colour \(i\).
@@ -58,7 +58,7 @@
 \begin{definition}[Function \(p_i(X,Y)\)]
   \label{def:p}
   \uses{def:colour-neighborhood}
-  \lean{p}
+  \lean{p'p}
   %
   Let \(r, n\in\N\). Given sets \(X,Y \subset V(K_n)\) and a colour \(i \in [r]\), define
   %
