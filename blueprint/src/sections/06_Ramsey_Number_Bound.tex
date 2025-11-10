@@ -16,6 +16,7 @@ In order to apply \autoref{thm:book}, we need to find a suitable collection of s
   \label{lem:ESz:steps} % Source paper uses same label
   \paperref{Lemma 5.2}
   \uses{def:edge-colouring, def:colour-neighborhood, def:book}
+  \lean{lemma52}
   %
   Given \(n,r \in \N\) and \(\eps > 0\), and an \(r\)-colouring of \(E(K_n)\), the following holds. There exist disjoint sets of vertices \(S_1,\dots,S_r\) and \(W\) such that, for every \(i \in [r]\), 
   %
@@ -60,6 +61,7 @@ The next lemma, which is an immediate consequence of the Erd\H{o}s--Szekeres bou
   \label{lem:many:ESz:steps} % Source paper uses same label
   \paperref{Lemma 5.3}
   \uses{lem:ESz:steps, def:ramsey-number-off-diagonal}
+  \lean{lemma53r}
   %
   Let \(k,r \ge 2\) and \(\eps \in (0,1)\). We have 
   %
@@ -84,6 +86,7 @@ The next lemma, which is an immediate consequence of the Erd\H{o}s--Szekeres bou
   \label{thm:Ramsey:multicolour:quant} % Source paper uses same label
   \paperref{Theorem 5.1}
   \uses{def:ramsey-number, lem:ESz:steps, lem:many:ESz:steps, thm:book, lem:multibounds}
+  \lean{thm51r}
   %
   Let \(r \ge 2\), and set \(\delta = 2^{-160} r^{-12}\). Then
   %

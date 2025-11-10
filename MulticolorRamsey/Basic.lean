@@ -4,32 +4,81 @@ import Mathlib.Probability.Distributions.Uniform
 
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 
+import Mathlib.Combinatorics.SimpleGraph.Subgraph
+
+import ExponentialRamsey.Prereq.Ramsey
+
+import Mathlib.Data.Finset.SDiff
+import Mathlib.Data.Finset.Insert
+
 ----------------------------------------------------------------------------------------------------
 --  edge colorings
 
+open Finset
+open Fintype (card)
+
 namespace SimpleGraph
 
-variable {V : Type α} {G : SimpleGraph V}
+variable {V V' : Type*} {G : SimpleGraph V} {K K' : Type*} {c : K} {EC : G.EdgeLabelling K}
 
-/-- An edge coloring maps each member of the graph's edge set to a colour in `C` --/
-abbrev EdgeColoring (C : Type) := G.edgeSet → C
+namespace EdgeLabelling
 
 /-- `EC.coloredNeighborSet c v` is the set of vertices that have an edge to `v` in `G` which is
 colored with `c` under the edge coloring `EC`. -/
-def EdgeColoring.coloredNeighborSet {EC : G.EdgeColoring C} (c : C) (v : V) : Set V :=
-  {w | ∃ p : G.Adj v w, EC ⟨s(v,w), p⟩ = c}
+def coloredNeighborSet {EC : G.EdgeLabelling K} (c : K) (v : V) : Set V :=
+  -- {w | ∃ p : G.Adj v w, EC ⟨s(v,w), p⟩ = c}
+  {w | w ∈ G.neighborSet v ∧ ∃ p, EC ⟨s(v, w), p⟩ = c}
 
-instance EdgeColoring.coloredNeighborSetFintype [Fintype V] [DecidableRel G.Adj] [DecidableEq C]
-    {EC : G.EdgeColoring C} : Fintype (EC.coloredNeighborSet c v) := by
-  simp [EdgeColoring.coloredNeighborSet]
+lemma coloredNeighborSet_not_mem (c : K) (v : V) :
+    v ∉ EC.coloredNeighborSet c v := by
+  simp [EdgeLabelling.coloredNeighborSet]
+
+instance coloredNeighborSetFintype [Fintype V] [DecidableRel G.Adj] [DecidableEq K] :
+    Fintype (EC.coloredNeighborSet c v) := by
+  simp [coloredNeighborSet]
   exact Subtype.fintype _
 
-/-- `EC.coloredNeighborFinset c v` is the Finset of vertices that have `c`-colored edge to `v` in
-`G` under the edge coloring `EC`, in case the `c`-colored subgraph of `G` is locally finite at `v`.
--/
-def EdgeColoring.coloredNeighborFinset {EC : G.EdgeColoring C} (c : C) (v : V)
-    [Fintype (EC.coloredNeighborSet c v)] : Finset V :=
-  (EC.coloredNeighborSet c v).toFinset
+lemma coloredNeighborSet.symm (c : K) (v w : V) :
+    w ∈ EC.coloredNeighborSet c v ↔ v ∈ EC.coloredNeighborSet c w := by
+  simp [EdgeLabelling.coloredNeighborSet]
+  sorry
+
+end EdgeLabelling
+
+namespace TopEdgeLabelling
+
+open EdgeLabelling
+
+variable {m : Finset V} {c : K} {EC : TopEdgeLabelling V K}
+
+lemma monochromaticBetween_neighbors {c : K} {y : V} {T : Finset V}
+    (h : ∀ x ∈ T, y ∈ EC.coloredNeighborSet c x) : EC.MonochromaticBetween T {y} c := by
+  simp only [MonochromaticBetween, mem_coe, Set.mem_singleton_iff, top_adj, ne_eq, forall_eq]
+  intros v vT vny
+  exact (h v vT).2.choose_spec
+
+/-- `EC.monochromatic c T Y` if `T` and `Y` are disjoint, all edges within `T` and all edges between
+ `T` and `Y`are given color `c` by `EC`. -/
+def MonochromaticBook (c : K) (T Y : Finset V) :=
+  Disjoint T Y ∧ EC.MonochromaticOf T c ∧ EC.MonochromaticBetween T Y c
+
+lemma monochromaticBook_subset {A B D : Finset V}
+    (b : EC.MonochromaticBook i A B) (s : D ⊆ B) : EC.MonochromaticBook i A D :=
+  ⟨(Finset.disjoint_of_subset_right s b.1), b.2.1, b.2.2.subset_right s ⟩
+
+lemma monochromaticBook_pullback {V : Type u_1} {V' : Type u_2} {K : Type u_3}
+  {EC : TopEdgeLabelling V K} (f : V' ↪ V) (c : K) (T Y : Finset V') (B : (EC.pullback f).MonochromaticBook c T Y)
+   : EC.MonochromaticBook c (T.map f) (Y.map f) := by
+  simp [MonochromaticBook] at B ⊢
+  exact ⟨B.1, ⟨B.2.1, MonochromaticBetween.image B.2.2⟩⟩
+
+lemma monochromaticBook_empty {A : Finset V}
+ : EC.MonochromaticBook i ∅ A := by constructor <;> simp
+
+
+
+end TopEdgeLabelling
+
 
 end SimpleGraph
 
@@ -56,17 +105,15 @@ end
 ----------------------------------------------------------------------------------------------------
 --idk mathlib?
 
-theorem tsum_even_nat [TopologicalSpace T] [AddCommMonoid T] (f : Nat → T) :
-    ∑' (x : {n : ℕ | Even n}), f x = ∑' (x : ℕ), f (2 * x) := by
-  rw [← Equiv.tsum_eq (Equiv.ofBijective (fun n : {n : ℕ | Even n} => (n : ℕ) / 2) ?_)]
-  · congr; ext x; congr; simp; exact (Nat.two_mul_div_two_of_even (x.prop)).symm
-  · constructor
-    · rintro ⟨_, hn⟩ ⟨_, hm⟩ h
-      simp_all
-      exact (Nat.div_left_inj (even_iff_two_dvd.mp hn) (even_iff_two_dvd.mp hm)).mp h
-    · intro n
-      exact ⟨⟨2 * n, (by simp)⟩, by simp⟩
+def evenEquivNat : {n : ℕ // Even n} ≃ ℕ where
+  toFun := fun ⟨n, _⟩ => n / 2
+  invFun n := ⟨2 * n, even_two_mul n⟩
+  left_inv := fun ⟨_, en⟩ => by simp [Nat.mul_div_cancel' en.two_dvd]
+  right_inv n := by simp
 
+theorem tsum_double_eq_tsum_even [AddCommMonoid T] [TopologicalSpace T] (f : ℕ → T) :
+    ∑' x : ℕ, f (2 * x) = ∑' x : {n : ℕ | Even n}, f x :=
+  evenEquivNat.symm.tsum_eq <| f ∘ (↑)
 
 ----------------------------------------------------------------------------------------------------
 -- coshsqrt0
@@ -91,7 +138,7 @@ lemma lt_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : x < 2 + coshsqrt x := by
   have : 2 + (1 + x / 2 + x ^ 2 / (Nat.factorial 4) + ∑' (i : ℕ), x ^ (i + 3) / (2 * (i + 3)).factorial) =
       (3 + x / 2 + x ^ 2 / (Nat.factorial 4)) + ∑' (i : ℕ), x ^ (i + 3) / (2 * (i + 3)).factorial := by ring
   simp [this]
-  suffices x < 3 + x / 2 + x ^ 2 / 24 from lt_add_of_lt_of_nonneg this (tsum_nonneg (by intro; positivity))
+  suffices x < 3 + x / 2 + x ^ 2 / 24 from lt_add_of_lt_of_nonneg this <| tsum_nonneg (by intro; positivity)
   nlinarith
 
 lemma ge_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : 2 + coshsqrt x ≤ 3 * Real.exp √x := by
@@ -100,7 +147,7 @@ lemma ge_coshsqrt (x : ℝ) (xnn : 0 ≤ x) : 2 + coshsqrt x ≤ 3 * Real.exp �
     -- "compare coefficients"
     have : ∑' (a : ℕ), ENNReal.ofReal (x ^ a / (2 * a).factorial) ≤ ∑' (a : ℕ), ENNReal.ofReal (√x ^ a / a.factorial) := by
       nth_rw 2 [← Summable.tsum_add_tsum_compl (s := { n : ℕ | Even n}) (by simp) (by simp)]
-      rw [tsum_even_nat (fun n ↦ ENNReal.ofReal (√x ^ n / (n : ℕ).factorial))]
+      rw [← tsum_double_eq_tsum_even (fun n ↦ ENNReal.ofReal (√x ^ n / (n : ℕ).factorial))]
       simp_rw [pow_mul, Real.sq_sqrt xnn]
       exact le_self_add
     rw [← ENNReal.ofReal_tsum_of_nonneg] at this
@@ -145,13 +192,10 @@ lemma coshsqrt_mono {x y : ℝ} (xnn : 0 ≤ x) (xly : x ≤ y) : coshsqrt x ≤
   have ynn : 0 ≤ y := by trans x; exact xnn; exact xly
   have : ∑' (a : ℕ), ENNReal.ofReal (x ^ a / (2 * a).factorial) ≤ ∑' (a : ℕ), ENNReal.ofReal (y ^ a / (2 * a).factorial) := by
     gcongr
-  rw [← ENNReal.ofReal_tsum_of_nonneg _ (mew xnn)] at this
-  rw [← ENNReal.ofReal_tsum_of_nonneg _ (mew ynn)] at this
-  rw [← ENNReal.ofReal_le_ofReal_iff]
+  rw [← ENNReal.ofReal_tsum_of_nonneg (by intros; positivity) (mew xnn)] at this
+  rw [← ENNReal.ofReal_tsum_of_nonneg (by intros; positivity) (mew ynn)] at this
+  rw [← ENNReal.ofReal_le_ofReal_iff (by positivity)]
   exact this
-  positivity
-  intros; positivity
-  intros; positivity
 
 lemma one_le_coshsqrt (x : ℝ) : 1 ≤ 2 + coshsqrt x := by
   by_cases h : 0 < x
@@ -165,15 +209,14 @@ lemma one_le_coshsqrt (x : ℝ) : 1 ≤ 2 + coshsqrt x := by
 
 -- TODO hmmm. mathlib? there is a version with [IsOrderedMonoid R] but not requiring zero
 -- but the reals are not
-theorem Finset.one_le_prod''' {ι : Type u_1}
+theorem Finset.one_le_prod''' {R ι : Type*}
     [CommMonoidWithZero R] [PartialOrder R] [ZeroLEOneClass R] [PosMulMono R] {f : ι → R} {s : Finset ι}
     (h : ∀ i ∈ s, 1 ≤ f i) :
-1 ≤ ∏ i ∈ s, f i := by
-  trans ∏ i ∈ s, 1
-  · simp
-  · gcongr
-    exact fun i a ↦ zero_le_one' R
-    (expose_names; exact h i h_1)
+    1 ≤ ∏ i ∈ s, f i := by
+  apply le_trans (le_of_eq prod_const_one.symm)
+  gcongr with i hh
+  exact fun _ _ ↦ zero_le_one' R
+  exact h i hh
 
 ----------------------------------------------------------------------------------------------------
 -- special function lemma
@@ -368,7 +411,6 @@ lemma pidgeon_thing {X Y : Type} [Nonempty X] [Fintype X] [Nonempty Y] [Fintype 
     exact ne_of_lt (ENNReal.div_lt_top (ENNReal.natCast_ne_top _) nz)
 
 
-
 ----------------------------------------------------------------------------------------------------
 
 section
@@ -377,8 +419,7 @@ section
 open Set Finset
 
 lemma prod_set_eq_union {X Y : Type} (f : X × Y → Prop) : {a | f a} = ⋃ x, {x} ×ˢ {y : Y | f (x, y)} := by
-  ext ⟨x, y⟩
-  simp only [mem_setOf_eq, mem_iUnion, mem_prod, mem_singleton_iff, exists_eq_left']
+  ext; simp
 
 lemma Fintype.argmax' {X Y : Type} [Fintype X] [Nonempty X] (f : X → Y) [LinearOrder Y] :
     ∃ x : X, ∀ y : X, f y ≤ f x := by
@@ -467,18 +508,20 @@ end
 
 
 lemma three_ineq_ENN {r : ℕ} (rpos: 0 < r) :
-    r * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 + r ^ 3 * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * ENNReal.ofReal √3 * ENNReal.ofReal √r * 3 ^ r * 3 ≤ 1 := by
+    r * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * 3 ^ r * 3 + r ^ 3 * ENNReal.ofReal (3 ^ (-((r : ℝ) * 4))) * ENNReal.ofReal (√3) * ENNReal.ofReal (√r) * 3 ^ r * 3 ≤ 1 := by
   sorry
 
 -- TODO i just put here everything that annoyed me
-lemma omg {a b : ℝ} (p : b ≠ 0) : a = a / b * b := by
-  have := invertibleOfNonzero p
-  exact (div_mul_cancel_of_invertible a b).symm
-lemma omg2 {a b c : ℝ} (p : b ≠ 0) : a ≤ c ↔ a / b ≤ c / b := by sorry
-lemma omg3 {a b : ℝ} (p : b ≠ 0) : a = a * b / b := (mul_div_cancel_right₀ a p).symm
-lemma omg4 {a b c : ℝ} (bnn : 0 ≤ b) : a ≤ c ↔ a * b ≤ c * b := by sorry
-lemma omg5 {a b c : ENNReal} : b ≤ c ↔ a * b ≤ a * c := by sorry
-lemma omg6 {a b : ℝ} : - a ≤ a * b ↔ -1 ≤ b := by
-  sorry
+lemma omg5 {a b c : ENNReal} : a * b ≤ a * c ↔ b ≤ c := by
+  constructor
+  · sorry
+  · exact fun a_1 ↦ mul_le_mul_left' a_1 a
 
-lemma omg7 (a b c : ENNReal) (ab : a < b) (ac : a < c) (bc : b < c) : c - b < c - a := by sorry
+lemma omg6 {a b : ℝ} (ap : 0 ≤ a) : - a ≤ a * b ↔ -1 ≤ b := by
+  constructor
+  · intro h
+    sorry
+  · intro h
+    have : -a = a * (-1) := by ring
+    rw [this]
+    gcongr

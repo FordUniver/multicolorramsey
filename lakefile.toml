@@ -19,9 +19,10 @@ name = "«doc-gen4»"
 git = "https://github.com/leanprover/doc-gen4"
 rev = "main"
 
+[[require]]
+name = "ExponentialRamsey"
+git = "https://github.com/ooovi/ExponentialRamsey.git"
+rev = "version-bump"
+
 [[lean_lib]]
 name = "MulticolorRamsey"
-
-[[require]]
-name = "Canonical"
-scope = "chasenorman"
