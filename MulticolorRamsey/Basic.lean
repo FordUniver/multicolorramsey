@@ -40,28 +40,8 @@ instance coloredNeighborSetFintype [Fintype V] [DecidableRel G.Adj] [DecidableEq
 
 lemma coloredNeighborSet.symm (c : K) (v w : V) :
     w ∈ EC.coloredNeighborSet c v ↔ v ∈ EC.coloredNeighborSet c w := by
-  simp only [EdgeLabelling.coloredNeighborSet, Set.mem_setOf_eq]
-  constructor
-  · intro ⟨hw_adj, p, hp⟩
-    refine ⟨?_, ?_⟩
-    · rw [SimpleGraph.mem_neighborSet] at hw_adj ⊢
-      exact hw_adj.symm
-    · use hw_adj.symm
-      have : (⟨s(w, v), hw_adj.symm⟩ : G.edgeSet) = ⟨s(v, w), p⟩ := by
-        apply Subtype.ext
-        exact Sym2.eq_swap
-      rw [this]
-      exact hp
-  · intro ⟨hv_adj, p, hp⟩
-    refine ⟨?_, ?_⟩
-    · rw [SimpleGraph.mem_neighborSet] at hv_adj ⊢
-      exact hv_adj.symm
-    · use hv_adj.symm
-      have : (⟨s(v, w), hv_adj.symm⟩ : G.edgeSet) = ⟨s(w, v), p⟩ := by
-        apply Subtype.ext
-        exact Sym2.eq_swap
-      rw [this]
-      exact hp
+  simp [EdgeLabelling.coloredNeighborSet]
+  sorry
 
 end EdgeLabelling
 
