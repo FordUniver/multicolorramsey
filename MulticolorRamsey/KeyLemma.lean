@@ -148,7 +148,57 @@ lemma key {n : ℕ} [Nonempty (Fin r)] (V : Type) [DecidableEq V] [Nonempty V] [
   -- "... Note that, for any x,y ∈ X,..."
   -- TODO issue #14
   have Λiff (Λ : ℝ) (i : Fin r) {x y : X} (lam_ge : Λ ≤ ((σ i x) ⬝ᵥ (σ i y))) : -- we only need mp direction, paper says iff
-      ((p X (Y i) χ i) + Λ * (α i)) * ((pY X (Y i) χ i) : ℝ) ≤ ((N' i x) ∩ (N' i y)).card := sorry
+      ((p X (Y i) χ i) + Λ * (α i)) * ((pY X (Y i) χ i) : ℝ) ≤ ((N' i x) ∩ (N' i y)).card := by
+    -- Abbreviations for readability
+    let α' := α i
+    let p' := p X (Y i) χ i
+    let pY' := pY X (Y i) χ i
+    let Y' := Y i
+    let Nx := N' i x
+    let Ny := N' i y
+
+    -- Key facts about N'
+    have Nx_card : (Nx.card : ℝ) = pY' := by
+      show ((N' i x).card : ℝ) = (pY X (Y i) χ i : ℝ)
+      exact congrArg Nat.cast N'card
+    have Ny_card : (Ny.card : ℝ) = pY' := by
+      show ((N' i y).card : ℝ) = (pY X (Y i) χ i : ℝ)
+      exact congrArg Nat.cast N'card
+    have Nx_sub : Nx ⊆ Y' := (Finset.subset_inter_iff.mp (N'sub i)).2
+    have Ny_sub : Ny ⊆ Y' := (Finset.subset_inter_iff.mp (N'sub i)).2
+    have p'_eq : p' = pY' / (Y'.card : ℝ) := rfl
+    have pY'_pos : (0 : ℝ) < pY' := Nat.cast_pos.mpr (ppos i)
+    have α'_pos : (0 : ℝ) < α' := αpos i
+    have Y'_pos : (0 : ℝ) < Y'.card := Nat.cast_pos.mpr (Ypos i)
+
+    -- Following the blueprint calculation (lines 36-56)
+    -- We need to show: (p + Λα)·pY ≤ |Nx ∩ Ny|
+
+    -- Step 1: From Λ ≤ ⟨σ(x), σ(y)⟩, multiply by α·pY > 0
+    have key_ineq : Λ * α' * pY' ≤ α' * pY' * (σ i x ⬝ᵥ σ i y) := by
+      have h : (0 : ℝ) < α' * pY' := mul_pos α'_pos pY'_pos
+      calc Λ * α' * pY'
+          _ = Λ * (α' * pY') := by ring
+          _ ≤ (σ i x ⬝ᵥ σ i y) * (α' * pY') := (mul_le_mul_right h).mpr lam_ge
+          _ = α' * pY' * (σ i x ⬝ᵥ σ i y) := by ring
+
+    -- Step 2: Expand the inner product using indicator functions
+    -- σ(x) = (1/√(α·pY)) • (indNx - p·indY)
+    let indNx := Set.indicator (↑Nx : Set V) (1 : V → ℝ)
+    let indNy := Set.indicator (↑Ny : Set V) (1 : V → ℝ)
+    let indY := Set.indicator (↑Y' : Set V) (1 : V → ℝ)
+
+    -- The RHS equals: ⟨indNx - p·indY, indNy - p·indY⟩
+    have inner_expanded : α' * pY' * (σ i x ⬝ᵥ σ i y) =
+        dotProduct (indNx - p' • indY) (indNy - p' • indY) := by
+      sorry -- algebraic manipulation involving sqrt cancellation
+
+    -- Step 3: Expand the dot product
+    have dot_expanded : dotProduct (indNx - p' • indY) (indNy - p' • indY) =
+        ((Nx ∩ Ny).card : ℝ) - p' * p' * (Y'.card : ℝ) := by
+      sorry -- use indicator lemmas and algebra
+
+    sorry
 
 
   -- "Now by Lemma 7, there exists Λ ≥ -1 and colour l ∈ [r] such that..."
