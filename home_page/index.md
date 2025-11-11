@@ -13,7 +13,7 @@ The purpose of this repository is to hold a LEAN4 formalization of [Upper bounds
 * [Olivia Röhrig](https://iol.zib.de/team/olivia-roehrig.html)
 * [Christoph Spiegel](https://iol.zib.de/team/christoph-spiegel.html)
 
-## 🔗 Mathlib Contributions
+## Mathlib PRs
 
 {% assign data = site.data.mathlib_contributions %}
 
