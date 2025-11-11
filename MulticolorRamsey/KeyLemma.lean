@@ -32,9 +32,6 @@ lemma min_le_ℕ {f : V → ℝ} {g : V → ℕ} {X : Finset V} [nen: Nonempty X
   convert le_trans (min'_le _ (f xg) (mem_image_of_mem f xgm)) (le xg xgm)
   exact xgn.symm
 
--- lemma min_le_mem_ℕ {f : V → ℕ} {X : Finset V} {v : X} [Nonempty X] : mymin f X ≤ f v :=
---   min'_le _ _ (mem_image_of_mem f (coe_mem v))
-
 lemma min_le_mem {f : V → W} {X : Finset V} [Nonempty X] (v : X) : mymin f X ≤ f v :=
   min'_le _ _ (mem_image_of_mem f (coe_mem v))
 
