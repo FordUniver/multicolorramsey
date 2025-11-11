@@ -113,8 +113,8 @@ noncomputable def step (bin : BookIn param) (Tlt : ∀ i, (bin.T i).card < param
 
     have {i : Fin r} : param.s.p i ≤ p'p param.χ X' Y' i := by
       apply le_trans bin.mono
-      apply le_trans <| p_monoX _ (inter_subset_right.trans kout.X'sub) nenX' _ i
-      apply le_trans (p_monoY _ _ Y' _ i) le_rfl
+      apply le_trans <| p_mono_x _ (inter_subset_right.trans kout.X'sub) nenX' _ i
+      apply le_trans (p_mono_y _ _ Y' _ i) le_rfl
       intros k
       convert ite_subset_union _ _ _
       apply (union_eq_right.mpr _).symm
@@ -166,8 +166,8 @@ noncomputable def step (bin : BookIn param) (Tlt : ∀ i, (bin.T i).card < param
   · -- boost step!
     have {i : Fin r} : param.s.p i ≤ p'p param.χ kout.X (newYb kout) i := by
       apply le_trans bin.mono
-      apply le_trans (p_monoX (χ := param.χ) kout.X'sub kout.nen bin.Y i)
-      apply le_trans le_rfl (p_monoY param.χ bin.Y (newYb kout) _ i)
+      apply le_trans (p_mono_x (χ := param.χ) kout.X'sub kout.nen bin.Y i)
+      apply le_trans le_rfl (p_mono_y param.χ bin.Y (newYb kout) _ i)
       intro k
       convert ite_subset_union _ _ _
       apply (union_eq_right.mpr _).symm

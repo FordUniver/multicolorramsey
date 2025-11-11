@@ -214,7 +214,7 @@ lemma pk_le_one (ki : Saga χ) (i : Fin r) :
       exact card_le_card (inter_subset_right)
     · exact Nat.zero_le _
 
-lemma p_monoX (χ : TopEdgeLabelling V (Fin r)) {X X' : Finset V}
+lemma p_mono_x (χ : TopEdgeLabelling V (Fin r)) {X X' : Finset V}
     (xsub : X' ⊆ X) (h : X'.Nonempty) (Y : Fin r → Finset V) (i : Fin r) :
     p'p χ X Y i ≤ p'p χ X' Y i := by
   simp [p'p, ppY]
@@ -228,7 +228,7 @@ lemma p_monoX (χ : TopEdgeLabelling V (Fin r)) {X X' : Finset V}
   use a, ax
 
 
-lemma p_monoY (χ : TopEdgeLabelling V (Fin r)) {X : Finset V} (Y Y' : Fin r → Finset V) (h : ∀ i, Y' i ⊆ Y i) (i : Fin r) :
+lemma p_mono_y (χ : TopEdgeLabelling V (Fin r)) {X : Finset V} (Y Y' : Fin r → Finset V) (h : ∀ i, Y' i ⊆ Y i) (i : Fin r) :
     p'p χ X Y i ≤ p'p χ X Y' i := by
   simp [p'p, ppY]
   gcongr
@@ -268,7 +268,7 @@ lemma nonempty_of_ppos [Nonempty (Fin r)] {ki : Saga χ} (ppos : ∀ i, 0 < ki.p
   linarith [ppos default]
 
 
-lemma Λiff [Nonempty (Fin r)]
+lemma le_dotProduct_iff_le_card_inter [Nonempty (Fin r)]
   (χ : TopEdgeLabelling V (Fin r))
   (ki : Saga χ)
   (ppos : ∀ (i : Fin r), 0 < ki.pY i)
@@ -444,7 +444,7 @@ lemma key [Nonempty (Fin r)] -- {cardV : Fintype.card V = n}
       ((Set.indicator ↑(N' i x) (fun _ ↦ 1)) - (ki.p i) • (Set.indicator ↑(ki.Y i) (fun _ ↦ 1)))
 
   -- "... Note that, for any x,y ∈ X,..."
-  -- Proved as separate lemma above (see Λiff)
+  -- Proved as separate lemma above (see le_dotProduct_iff_le_card_inter)
 
 
   -- "Now by Lemma 7, there exists Λ ≥ -1 and colour l ∈ [r] such that..."
@@ -508,7 +508,7 @@ lemma key [Nonempty (Fin r)] -- {cardV : Fintype.card V = n}
         · exact (xp.2 i h)
 
       have le : #(N' i ↑x' ∩ N' i ↑x) ≤ #(N χ i ↑x' ∩ N' i ↑x) := card_le_card (inter_subset_inter_right N'subN)
-      have := le_trans (Λiff χ ki ppos α αpos N' N'sub N'card σ (fun i x ↦ rfl) (factor i) i (this i)) (Nat.cast_le.mpr le)
+      have := le_trans (le_dotProduct_iff_le_card_inter χ ki ppos α αpos N' N'sub N'card σ (fun i x ↦ rfl) (factor i) i (this i)) (Nat.cast_le.mpr le)
       assumption
 
 
