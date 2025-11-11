@@ -11,6 +11,8 @@ import ExponentialRamsey.Prereq.Ramsey
 import Mathlib.Data.Finset.SDiff
 import Mathlib.Data.Finset.Insert
 
+import ToMathlib.SumExpectationBounds.Basic
+
 ----------------------------------------------------------------------------------------------------
 --  edge colorings
 
@@ -310,45 +312,6 @@ lemma specialFunctionEc (rpos : 0 < r) (x : Fin r → ℝ) (h : ∃ i, x i < -3 
 
 end
 
-----------------------------------------------------------------------------------------------------
--- TODO maybe mathlib wants some of this
-
-section
-open MeasureTheory ProbabilityTheory Finset Real
-
-lemma Fintype.exists_mul_of_sum_bound [Nonempty X] [Fintype X] [AddCommMonoid Y] [LinearOrder Y] [IsOrderedAddMonoid Y] (g : X → Y) :
-    ∃ j, ∑ i, g i ≤ (Fintype.card X) • g j := by
-  obtain ⟨j, p⟩ : ∃ j, ∀ i, g i ≤ g j := Finite.exists_max g
-  use j
-  calc ∑ i : X, g i ≤ ∑ i : X, g j           := by exact sum_le_sum fun i a ↦ p i
-                  _ = (Fintype.card X) • g j := by simp only [sum_const, card_univ]
-
-lemma Finset.exists_mul_of_sum_bound [Nonempty X] [Fintype X] [AddCommMonoid Y] [LinearOrder Y] [IsOrderedAddMonoid Y]
-    (s : Finset X) (g : X → Y) (ns : s.Nonempty) :
-    ∃ j ∈ s, ∑ i ∈ s, g i ≤ (#s) • g j := by
-  obtain ⟨j, ⟨js, p⟩⟩ := exists_max_image s g ns
-  use j
-  use js
-  exact sum_le_card_nsmul s g (g j) (fun x a ↦ p x a)
-
-
-lemma Finset.exists_le_expect.{u_1, u_2} {ι : Type u_1} {α : Type u_2} [AddCommMonoid α] [LinearOrder α] [IsOrderedAddMonoid α] [Module ℚ≥0 α]
-  [PosSMulMono ℚ≥0 α] {s : Finset ι} {f : ι → α} (hs : s.Nonempty) :
-    ∃ x ∈ s, s.expect f ≤ f x := by
-  by_contra h
-  push_neg at h
-  obtain ⟨m, ⟨ms, mmin⟩⟩ := exists_max_image s f hs
-  obtain ⟨z, ⟨zs, mltz⟩⟩ := exists_lt_of_lt_expect hs (h m ms)
-  exact not_lt_of_ge (mmin z zs) mltz
-
-open scoped ENNReal
-
-lemma Fin.exists_mul_of_sum_bound [Nonempty (Fin r)] (g : Fin r → ℝ≥0∞) : ∃ j, ∑ i, g i ≤ r * g j := by
-  have := Fintype.exists_mul_of_sum_bound g
-  simp only [Fintype.card_fin, nsmul_eq_mul] at this
-  assumption
-
-end
 ----------------------------------------------------------------------------------------------------
 -- probabilistic method
 
