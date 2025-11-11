@@ -263,7 +263,10 @@ lemma geometric :
         · exact nj j jeqi
 
     simp only [Eiff]
-    refine omg5.mp (le_trans ?_ pip)
+    have r_ne_zero : (r : ENNReal) ≠ 0 := by
+      simp [ENNReal.coe_ne_zero, Nat.cast_ne_zero, ne_of_gt Fin.pos']
+    have r_ne_top : (r : ENNReal) ≠ ⊤ := ENNReal.natCast_ne_top r
+    refine (omg5 r_ne_zero r_ne_top).mp (le_trans ?_ pip)
 
     have union_bound := measure_iUnion_fintype_le ℙᵤ fun i ↦ (E ∩ {x | Λ ≤ τ x i})
     have union :=
