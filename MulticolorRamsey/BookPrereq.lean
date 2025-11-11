@@ -100,12 +100,6 @@ variable {param : BookParams V r}
 
 -- instance (kin : KeyIn param) : Nonempty kin.X := kin.nenX
 
--- noncomputable def KeyIn.p (kin : KeyIn param) (i : Fin r) : ℝ :=
---   kin.p i -- i should do this everywhere
-
--- lemma p'_nonneg (kin : KeyIn param) (i : Fin r) : 0 ≤ kin.p i :=
---   p_nonneg _ _ _
-
 lemma p'_le_one (kin : KeyIn param) (i : Fin r) : kin.p i ≤ 1 :=
   pk_le_one kin.toSaga i
 

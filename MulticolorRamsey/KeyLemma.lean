@@ -35,37 +35,6 @@ lemma min_le_ℕ {f : V → ℝ} {g : V → ℕ} {X : Finset V} [nen: Nonempty X
 lemma min_le_mem {f : V → W} {X : Finset V} [Nonempty X] (v : X) : mymin f X ≤ f v :=
   min'_le _ _ (mem_image_of_mem f (coe_mem v))
 
--- -- this is pᵢ|Yᵢ| in the text
--- def p'Y {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nenX: Nonempty X] (χ : TopEdgeLabelling V (Fin r))
---     (i : Fin r) : ℕ :=
---   mymin (fun x => ((N χ i x) ∩ Y).card) X
-
--- -- this is pᵢ in the text
--- noncomputable def p {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nenX : Nonempty X] (EC : TopEdgeLabelling V (Fin r))
---     (i : Fin r) : ℝ := (p'Y X Y EC i) / (Y.card : ℝ)
-
--- lemma p_subset {V : Type} [Fintype V] [DecidableEq V] {χ : TopEdgeLabelling V (Fin r)} {X X' Y : Finset V} [nenX : Nonempty X] [Nonempty X'] : X' ⊆ X → (p X Y χ i) ≤ (p X' Y χ i) := sorry
-
--- lemma p_nonneg {V : Type} [Fintype V] [DecidableEq V] (χ : TopEdgeLabelling V (Fin r)) (X Y : Finset V) [nenX : Nonempty X] :
---     0 ≤ (p X Y χ i) := by unfold p; positivity
-
--- lemma pY_pos {V : Type} [Fintype V] [DecidableEq V] (χ : TopEdgeLabelling V (Fin r)) (X Y : Finset V) [nenX : Nonempty X] (nen : ∀ x, (N χ i x) ∩ Y ≠ ∅):
---     0 < (p'Y X Y χ i) := by
---   unfold p'Y mymin; refine (lt_min'_iff (image (fun x ↦ (N χ i x ∩ Y).card) X) _).mpr ?_
---   intros c cc
---   have : ∀ x, 0 < (N χ i x ∩ Y).card := by intro xx; simp only [card_pos]; exact nonempty_iff_ne_empty.mpr (nen xx)
---   obtain ⟨z, ⟨zl, zc⟩⟩ := mem_image.mp cc
---   rw [← zc]
---   exact this z
-
--- lemma p_pos {V : Type} [Fintype V] [DecidableEq V] (χ : TopEdgeLabelling V (Fin r)) (X Y : Finset V) [nenX : Nonempty X] (_ : ∀ x, (N χ i x) ∩ Y ≠ ∅):
---     0 < (p X Y χ i) := by unfold p; sorry
-
--- lemma p_le_one {V : Type} [Fintype V] [DecidableEq V] (χ : TopEdgeLabelling V (Fin r)) (X Y : Finset V) [nenX : Nonempty X] :
---     (p X Y χ i) ≤ 1 := by
---   sorry
-
-
 ----------------------------------------------------------------------------------------------------
 -- lifting finset elements
 
