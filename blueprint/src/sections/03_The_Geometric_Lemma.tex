@@ -177,6 +177,27 @@
 	implies that functions satisfying \((a)\) and \((b)\) must grow at least as fast as \(\exp\big( \Omega(\sqrt{x}) \big)\) on the positive real axis.  Thus the bound on the growth of \(f\) given by the lemma is essentially best possible for constructions of this type.
 \end{remark}
 
+\begin{lemma}[Expectation of \(f\) is non-negative]
+  \label{lem:expPos}
+  \paperref{Equation (6) in proof of Lemma 3.1}
+  \uses{lem:moments, def:f, lem:taylor-nonneg}
+  \lean{expPos}
+  %
+  Let \(r, n\in\N\).
+  Let \(U\) and \(U'\) be i.i.d.~random variables taking values in a finite set~\(X\), and let \(\sigma_1,\ldots,\sigma_r \colon X \to \R^n\) be arbitrary functions.
+  For each \(i \in [r]\), define \(\tau_i(U,U') = \big\langle \sigma_i(U),\sigma_i(U') \big\rangle\) and \(Z_i = 3r \cdot \tau_i(U,U')\).
+  Then
+  %
+  \begin{equation}\label{eq:Ex:f:positive}
+    \Ex\big[ f\big( Z_1,\ldots,Z_r \big) \big] \ge 0.
+  \end{equation}
+  %
+\end{lemma}
+%
+\begin{proof}
+  This follows from \autoref{lem:moments} and linearity of expectation, since all of the coefficients of the Taylor expansion of \(f\) are non-negative (\autoref{lem:taylor-nonneg}).
+\end{proof}
+
 % ============================================================================
 % GEOMETRIC LEMMA
 % ============================================================================
@@ -184,7 +205,7 @@
 \begin{lemma}[Geometric lemma]
   \label{lem:geometric} % Source paper uses label lem:lambda
   \paperref{Lemma 3.1}
-  \uses{lem:moments, lem:special:function:1, lem:special:function:2, lem:taylor-nonneg, lem:integral-exp-decay}
+  \uses{lem:expPos, lem:special:function:1, lem:special:function:2, lem:integral-exp-decay}
   \lean{geometric}
   %
   Let \(r, n\in\N\). Set \(\beta = 3^{-4r}\) and \(C = 4r^{3/2}\).
@@ -197,7 +218,7 @@
 \end{lemma}
 
 \begin{proof}
-  \uses{def:p, lem:special:function:1, lem:special:function:2, lem:moments, def:f, lem:le-coshsqrt}
+  \uses{def:p, lem:expPos, lem:special:function:1, lem:special:function:2}
   For each \(i \in [r]\), define \(Z_i = 3r\big\langle \sigma_i(U),\sigma_i(U') \big\rangle\), and let \(E\) be the event that \(Z_i \ge -3r\) for every \(i \in [r]\).
 
   Consider two cases:
@@ -225,10 +246,10 @@
     \Pr\left(E \cap \left( \bigcup_{i \in [r]} \left\{ \big\langle \sigma_i(U),\sigma_i(U') \big\rangle \ge \lambda \right\}\right)\right) < \beta r e^{-C\sqrt{\lambda + 1}}.
   \end{align}
 
-  Observe that, since \(x \le 2 + \cosh\sqrt{x}\) (\autoref{lem:le-coshsqrt}) and using \autoref{lem:moments} and linearity of expectation,
-  \[
-    \Ex\big[ f\big( Z_1,\ldots,Z_r \big) \big] \ge 0
-  \]
+  By \autoref{lem:expPos}, we have
+  \begin{equation}\label{eq:Ex:f:positive:ref}
+    \Ex\big[ f\big( Z_1,\ldots,Z_r \big) \big] \ge 0.
+  \end{equation}
 
   We hence have
   %
