@@ -35,10 +35,6 @@ lemma min_le_ℕ {f : V → ℝ} {g : V → ℕ} {X : Finset V} [nen: Nonempty X
 lemma min_le_mem {f : V → W} {X : Finset V} [Nonempty X] (v : X) : mymin f X ≤ f v :=
   min'_le _ _ (mem_image_of_mem f (coe_mem v))
 
--- lemma min_ge {f : V → W} {X : Finset V} [Nonempty X] (v : X) (c : W) (le : ∀ v, c ≤ f v) :
---     c ≤ mymin f X :=
--- sorry
-
 -- -- this is pᵢ|Yᵢ| in the text
 -- def p'Y {V : Type} [Fintype V] [DecidableEq V] (X Y : Finset V) [nenX: Nonempty X] (χ : TopEdgeLabelling V (Fin r))
 --     (i : Fin r) : ℕ :=
