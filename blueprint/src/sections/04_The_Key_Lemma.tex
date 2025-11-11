@@ -60,7 +60,7 @@ This corresponds to the \texttt{Λiff} statement in the Lean code.
 % KEY LEMMA STATEMENT
 % ============================================================================
 
-We can deduce \autoref{key:lemma} from \autoref{lem:lambda}.
+We can deduce \autoref{lem:key-lemma} from \autoref{lem:geometric}.
 
 \begin{lemma}[Key lemma]
   \label{lem:key-lemma} % Source paper uses label key:lemma
@@ -85,12 +85,12 @@ We can deduce \autoref{key:lemma} from \autoref{lem:lambda}.
 %
 \begin{proof}
   \uses{def:p, lem:geometric, lem:inner-product-equivalence}
-
+  %
   % ========================================================================
   % STEP 1: Construct N'_i(x) and define σ_i
   % Lean: defines N', proves N'sub, N'subN, N'card, defines σ
   % ========================================================================
-
+  %
   For each colour \(i \in [r]\), we will define a function \(\sigma_i \colon X \to \R^{\cup_i Y_i}\).
   %
   First, for each \(x \in X\), we choose a set \(N'_i(x) \subset N_i(x) \cap Y_i\) of size exactly \(p_i|Y_i|\), where \(p_i = p_i(X,Y_i)\).
