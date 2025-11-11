@@ -12,10 +12,6 @@ variable {V W : Type} [LinearOrder W] {G : SimpleGraph V} {r : ℕ}
 abbrev N {C} [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeLabelling C) (i : C) x :=
   (χ.coloredNeighborSet i x).toFinset
 
--- lemma N_not_mem  [DecidableRel G.Adj] [DecidableEq C] [Fintype V] (χ : G.EdgeLabelling C) (i : C) x :
---     x ∉ N χ i x := by
---   simp [N, EdgeLabelling.coloredNeighborSet]
-
 ----------------------------------------------------------------------------------------------------
 -- p
 -- TODO maybe mathlib wants some of this.
