@@ -5,6 +5,11 @@ __pycache__
 
 bpvenv
 
+# Python project files
+.python-version
+pyproject.toml
+uv.lock
+
 blueprint/web
 blueprint/lean_decls
 
