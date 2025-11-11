@@ -27,11 +27,10 @@
 
 
 % Paper reference command - highlights which paper lemma/theorem this corresponds to
+% Place after \label, renders inline with theorem header
 \usepackage{xcolor}
 \newcommand{\paperref}[1]{%
-  \par\noindent%
-  \colorbox{blue!10}{\textcolor{blue!80!black}{#1}}%
-  \par\vspace{0.5em}%
+  \unskip\nolinebreak\space\textcolor{blue!80!black}{[#1]}\space\ignorespaces%
 }
 
 % definitions from the original paper
