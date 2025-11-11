@@ -207,15 +207,81 @@
   %
 \end{definition}
 
-\begin{lemma}
+\begin{lemma}[Non-negativity of Taylor coefficients]
   \label{lem:taylor-nonneg}
-  \uses{def:f}
+  \uses{def:f, def:coshsqrt}
   %
-  All of the coefficients of the Taylor expansion of \(f\) are non-negative.
+  The function \(f : \R^r \to \R\) has a Taylor expansion
+  %
+  \begin{equation*}
+    f(x_1,\dots,x_r) = \sum_{j=1}^r \sum_{\alpha \in \N^r : \alpha_j \ge 1} c_{j,\alpha} \, x_1^{\alpha_1} \cdots x_r^{\alpha_r}
+  \end{equation*}
+  %
+  where all coefficients \(c_{j,\alpha} \ge 0\) are non-negative.
 \end{lemma}
 %
 \begin{proof}
-  By definition \(2+\cosh\sqrt{x}\) has positive coefficients. It suffices to observe that the product and sum of two Taylor series with only positive coefficients has again positive coefficients. Since \(f\) is such a combination of sums and products of Taylor series with only positive coefficients, we get the claim.
+  Recall from \autoref{def:f} that
+  %
+  \begin{equation*}
+    f(x_1,\dots,x_r) = \sum_{j = 1}^r x_j \prod_{i \ne j} \big( 2 + \cosh\sqrt{x_i} \big),
+  \end{equation*}
+  %
+  and from \autoref{def:coshsqrt} that
+  %
+  \begin{equation*}
+    \cosh\sqrt{x} = \sum_{n=0}^\infty \frac{x^n}{(2n)!}.
+  \end{equation*}
+  %
+  For a fixed \(j \in [r]\), consider the term
+  %
+  \begin{equation*}
+    x_j \prod_{i \ne j} \big( 2 + \cosh\sqrt{x_i} \big) = x_j \prod_{i \ne j} \Bigl( 2 + \sum_{n=0}^\infty \frac{x_i^n}{(2n)!} \Bigr).
+  \end{equation*}
+  %
+  To expand the product \(\prod_{i \ne j} (\cdots)\), we make an independent choice for each \(i \ne j\): either select the constant term \(2\), or select a power term \(x_i^{n_i}/(2n_i)!\) for some \(n_i \ge 0\).
+
+  Let \(S \subseteq [r] \setminus \{j\}\) be the set of indices where we choose a power term (rather than the constant \(2\)).
+  For each \(i \in S\), let \(n_i \ge 0\) be the exponent chosen.
+  This gives the expansion:
+  %
+  \begin{equation*}
+    x_j \prod_{i \ne j} \Bigl( 2 + \sum_{n=0}^\infty \frac{x_i^n}{(2n)!} \Bigr) = \sum_{S \subseteq [r] \setminus \{j\}} \sum_{\substack{n_i \ge 0 \\ i \in S}} 2^{|[r] \setminus (\{j\} \cup S)|} \prod_{i \in S} \frac{1}{(2n_i)!} \cdot x_j \prod_{i \in S} x_i^{n_i}.
+  \end{equation*}
+  %
+  Equivalently, using multi-index notation \(\alpha = (\alpha_1,\dots,\alpha_r) \in \N^r\) where \(\alpha_j = 1\) (from the leading \(x_j\) factor) and \(\alpha_i = n_i\) for \(i \in S\), \(\alpha_i = 0\) for \(i \notin S \cup \{j\}\), we can write:
+  %
+  \begin{equation*}
+    x_j \prod_{i \ne j} \big( 2 + \cosh\sqrt{x_i} \big) = \sum_{\substack{\alpha \in \N^r \\ \alpha_j \ge 1}} c_{j,\alpha} \, x_1^{\alpha_1} \cdots x_r^{\alpha_r}
+  \end{equation*}
+  %
+  where
+  %
+  \begin{equation*}
+    c_{j,\alpha} = 2^{|\{i \ne j : \alpha_i = 0\}|} \prod_{i \ne j : \alpha_i > 0} \frac{1}{(2\alpha_i)!}.
+  \end{equation*}
+  %
+  Since factorials are positive and powers of \(2\) are positive, each coefficient \(c_{j,\alpha} > 0\).
+
+  Summing over \(j \in [r]\), we obtain
+  %
+  \begin{equation*}
+    f(x_1,\dots,x_r) = \sum_{j=1}^r \sum_{\substack{\alpha \in \N^r \\ \alpha_j \ge 1}} c_{j,\alpha} \, x_1^{\alpha_1} \cdots x_r^{\alpha_r},
+  \end{equation*}
+  %
+  where all coefficients \(c_{j,\alpha} > 0\) are strictly positive, hence certainly non-negative.
+
+  \textbf{Example for \(r = 2\):}
+  We have
+  %
+  \begin{align*}
+    f(x_1,x_2) &= x_1(2 + \cosh\sqrt{x_2}) + x_2(2 + \cosh\sqrt{x_1})\\
+    &= 2x_1 + x_1 \sum_{n=0}^\infty \frac{x_2^n}{(2n)!} + 2x_2 + x_2 \sum_{m=0}^\infty \frac{x_1^m}{(2m)!}\\
+    &= 2(x_1 + x_2) + \sum_{n=0}^\infty \frac{x_1 x_2^n}{(2n)!} + \sum_{m=0}^\infty \frac{x_2 x_1^m}{(2m)!}.
+  \end{align*}
+  %
+  Each term has the form \(c \cdot x_1^{\alpha_1} x_2^{\alpha_2}\) where \(c > 0\).
+  For instance, the term \(x_1 x_2^3/(2 \cdot 3)! = x_1 x_2^3 / 720\) has coefficient \(1/720 > 0\).
 \end{proof}
 
 
