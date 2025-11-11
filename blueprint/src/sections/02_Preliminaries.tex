@@ -248,6 +248,27 @@
   % Source paper uses exponential decay estimates
 \end{lemma}
 
+\begin{lemma}[Integral with exponential decay]
+  \label{lem:integral-exp-decay}
+  \paperref{Equation in proof of Lemma 3.1, page 8}
+  \lean{integral_exp_neg_sqrt}
+  \leanok
+  %
+  \begin{equation*}
+    \int_0^\infty \frac{1}{2\sqrt{x}} e^{-\sqrt{x}} \, \mathrm{d}x = 1.
+  \end{equation*}
+  %
+\end{lemma}
+%
+\begin{proof}
+  By substitution \(u = \sqrt{x}\), we have \(x = u^2\) and \(\mathrm{d}x = 2u \, \mathrm{d}u\), so
+  %
+  \begin{equation*}
+    \int_0^\infty \frac{1}{2\sqrt{x}} e^{-\sqrt{x}} \, \mathrm{d}x = \int_0^\infty \frac{1}{2u} e^{-u} \cdot 2u \, \mathrm{d}u = \int_0^\infty e^{-u} \, \mathrm{d}u = 1.
+  \end{equation*}
+  %
+\end{proof}
+
 % [LEMMA] Integration by parts for special functions
 % Source: blueprint/paper/sections/section_the_proof_of_the_key_lemma.tex (geometric lemma proof)
 % No deprecated blueprint equivalent
