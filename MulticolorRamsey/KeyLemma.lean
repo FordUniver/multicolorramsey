@@ -241,7 +241,7 @@ lemma p_monoY (χ : TopEdgeLabelling V (Fin r)) {X : Finset V} (Y Y' : Fin r →
   --   apply min'_le
   --   simp only [mem_image]
   --   use a, ax
-  · simp [h]
+  · simp
     sorry
   sorry
   sorry
@@ -311,7 +311,7 @@ lemma Λiff [Nonempty (Fin r)]
           -- N' i x ⊆ Y', so if Y' is empty, N' i x is empty
           have Nx_empty : Nx = ∅ := by
             ext v
-            simp only [Finset.not_mem_empty, iff_false]
+            simp only [Finset.notMem_empty, iff_false]
             intro hv
             have : v ∈ Y' := Nx_sub hv
             rw [Y'_empty] at this
@@ -332,7 +332,7 @@ lemma Λiff [Nonempty (Fin r)]
     have h : (0 : ℝ) < α' * pY' := mul_pos α'_pos pY'_pos
     calc Λ * α' * pY'
         _ = Λ * (α' * pY') := by ring
-        _ ≤ (σ i x ⬝ᵥ σ i y) * (α' * pY') := (mul_le_mul_right h).mpr lam_ge
+        _ ≤ (σ i x ⬝ᵥ σ i y) * (α' * pY') := mul_le_mul_of_nonneg_right lam_ge (le_of_lt h)
         _ = α' * pY' * (σ i x ⬝ᵥ σ i y) := by ring
 
   -- Step 2: Expand the inner product using indicator functions
