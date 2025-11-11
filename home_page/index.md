@@ -12,3 +12,15 @@ The purpose of this repository is to hold a LEAN4 formalization of [Upper bounds
 * [Aldo Kiem](https://iol.zib.de/team/aldo-kiem.html)
 * [Olivia Röhrig](https://iol.zib.de/team/olivia-roehrig.html)
 * [Christoph Spiegel](https://iol.zib.de/team/christoph-spiegel.html)
+
+## 🔗 Mathlib Contributions
+
+{% assign data = site.data.mathlib_contributions %}
+
+This project has contributed **{{ data.summary.merged | default: 0 }}** merged PRs to Mathlib.
+
+{% for contrib in data.contributions %}
+- **{{ contrib.name }}** ([PR #{{ contrib.pr_number }}]({{ contrib.pr_url }}))
+  {% if contrib.status == "merged" %}✅ Merged{% endif %} {% if contrib.merged_date %}on {{ contrib.merged_date }}{% endif %}
+  *{{ contrib.description | strip }}*
+{% endfor %}

@@ -1,0 +1,16 @@
+name: SimpleGraph abbrev refactor
+status: merged
+pr_number: 23838
+pr_url: https://github.com/leanprover-community/mathlib4/pull/23838
+target_file: Mathlib.Combinatorics.SimpleGraph.Basic
+description: >
+  Refactored completeGraph and emptyGraph to be abbreviations for
+  the lattice operations ⊤ and ⊥ on SimpleGraph.
+merged_date: 2025-05-10
+contents:
+  - completeGraph as abbrev for ⊤
+  - emptyGraph as abbrev for ⊥
+original_location: N/A (refactoring of existing Mathlib code)
+notes: >
+  This was a refactoring of existing Mathlib code, not new functionality
+  from this project. Kept for historical tracking.
