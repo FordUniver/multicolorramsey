@@ -10,6 +10,15 @@ Lean 4 formalization of "Upper bounds for multicolour Ramsey numbers" ([arXiv:24
   - `Integrals.lean`: Integral calculations
   - `GeometricLemma.lean`: Geometric lemma proofs
   - `KeyLemma.lean`: Key lemma formalization
+- **ToMathlib/**: Lemmas destined for contribution to Mathlib
+  - Each contribution in its own subdirectory (e.g., `ToMathlib/IndicatorOneMul/`)
+  - Each subdirectory contains:
+    - `Basic.lean`: The Lean code for the contribution
+    - `metadata.yaml`: Metadata tracking PR status and details
+  - `ToMathlib.lean`: Root file (required by lakefile.toml)
+- **home_page/**: Jekyll website for project homepage
+  - `_plugins/mathlib_tracker.rb`: Automatically aggregates `ToMathlib/*/metadata.yaml` into `_data/mathlib_contributions.yaml`
+  - `index.md`: Homepage with tabular display of Mathlib contributions
 - **tools/texclean/**: LaTeX normalisation CLI
   - `cli.py`, `core.py`
   - `tests/cases/*/` holds per-case fixtures (`input.tex`, `expected.tex`, optional `arguments.json`)
@@ -23,6 +32,16 @@ Lean 4 formalization of "Upper bounds for multicolour Ramsey numbers" ([arXiv:24
 - **Blueprint PDF**: `leanblueprint pdf`
 - **Blueprint web**: `leanblueprint web`
 - We are doing one line per sentence in latex
+
+## ToMathlib Contributions
+
+Each potential Mathlib contribution lives in `ToMathlib/ContributionName/` with:
+- `Basic.lean`: The Lean code
+- `metadata.yaml`: Tracking info (status, PR number, target file, etc.)
+
+Run `python3 scripts/generate_mathlib_data.py` to aggregate all `metadata.yaml` files into `home_page/_data/mathlib_contributions.yaml` for display on the homepage. This is run automatically in CI.
+
+Status values: `tentative`, `branch_created`, `ready_to_submit`, `submitted`, `merged`, `cleaned`
 
 ## Blueprint Organization Principles
 
