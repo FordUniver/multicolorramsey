@@ -1,0 +1,15 @@
+name: IntegrableFin
+status: tentative
+pr_number: null
+pr_url: null
+target_file: Mathlib.MeasureTheory.Integral.Bochner
+description: >
+  Any function on a finite type with a finite measure is integrable.
+  Simple but useful fact that eliminates the need for explicit integrability proofs
+  in finite measure spaces.
+merged_date: null
+contents:
+  - IntegrableFin
+original_location: MulticolorRamsey/Integrals.lean:24-25
+notes: >
+  Clean one-line lemma. Could alternatively go in Mathlib.MeasureTheory.Measure.FiniteMeasure.
