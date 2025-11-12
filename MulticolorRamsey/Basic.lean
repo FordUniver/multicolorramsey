@@ -2,14 +2,13 @@ import Mathlib.Combinatorics.SimpleGraph.Basic
 
 import Mathlib.Probability.Distributions.Uniform
 
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
-
 import Mathlib.Combinatorics.SimpleGraph.Subgraph
 
 import ExponentialRamsey.Prereq.Ramsey
 
 import Mathlib.Data.Finset.SDiff
 import Mathlib.Data.Finset.Insert
+import ToMathlib.FinsetOneLeProd.Basic
 
 ----------------------------------------------------------------------------------------------------
 --  edge colorings
@@ -207,16 +206,6 @@ lemma one_le_coshsqrt (x : ℝ) : 1 ≤ 2 + coshsqrt x := by
   · have := (Set.mem_Icc.mp (icc_coshsqrt_neg x (le_of_not_gt h))).left
     linarith
 
--- TODO hmmm. mathlib? there is a version with [IsOrderedMonoid R] but not requiring zero
--- but the reals are not
-theorem Finset.one_le_prod''' {R ι : Type*}
-    [CommMonoidWithZero R] [PartialOrder R] [ZeroLEOneClass R] [PosMulMono R] {f : ι → R} {s : Finset ι}
-    (h : ∀ i ∈ s, 1 ≤ f i) :
-    1 ≤ ∏ i ∈ s, f i := by
-  apply le_trans (le_of_eq prod_const_one.symm)
-  gcongr with i hh
-  exact fun _ _ ↦ zero_le_one' R
-  exact h i hh
 
 ----------------------------------------------------------------------------------------------------
 -- special function lemma

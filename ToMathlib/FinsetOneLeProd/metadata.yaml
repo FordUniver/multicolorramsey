@@ -1,0 +1,17 @@
+name: Finset.one_le_prod for CommMonoidWithZero
+status: tentative
+pr_number: null
+pr_url: null
+target_file: Mathlib.Algebra.BigOperators.Order
+description: >
+  Product inequality lemma for CommMonoidWithZero: if all elements in a finset
+  are at least 1, then their product is at least 1. Fills a gap in Mathlib which
+  has a version for IsOrderedMonoid but not for types with zero like ℝ.
+merged_date: null
+contents:
+  - Finset.one_le_prod'''
+original_location: MulticolorRamsey/Basic.lean:212-219
+notes: >
+  Mathlib has Finset.one_le_prod' for ordered monoids, but this version works
+  for types like ℝ which have zero but aren't ordered monoids. Used in
+  coshsqrt calculations.
