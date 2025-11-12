@@ -26,3 +26,6 @@ rev = "version-bump"
 
 [[lean_lib]]
 name = "MulticolorRamsey"
+
+[[lean_lib]]
+name = "ToMathlib"

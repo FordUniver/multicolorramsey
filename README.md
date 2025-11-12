@@ -5,12 +5,8 @@
 [Blueprint Homepage](https://forduniver.github.io/multicolorramsey)
 
 
-# mathlib PRs
+# Mathlib Contributions
 
-## merged
-- https://github.com/leanprover-community/mathlib4/pull/23838
-- https://github.com/leanprover-community/mathlib4/pull/24074
+See the auto-generated overview on the project homepage: **https://forduniver.github.io/multicolorramsey**
 
-## open
-- https://github.com/leanprover-community/mathlib4/pull/25045
-## stale
+All contributions are tracked in the `ToMathlib/` directory with metadata files. The contribution list is automatically generated during Jekyll build by the plugin in `home_page/_plugins/mathlib_tracker.rb`.
