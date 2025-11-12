@@ -5,15 +5,7 @@ import Mathlib.Data.ENNReal.Basic
 /-!
 # Sum and expectation bound lemmas
 
-This file provides lemmas about finding elements that bound sums and expectations.
-
-## Main results
-
-- `Fintype.exists_mul_of_sum_bound`: For a sum over a fintype, there exists an element
-  such that the sum is bounded by the cardinality times that element's value
-- `Finset.exists_mul_of_sum_bound`: Finset version of the above
-- `Finset.exists_le_expect`: There exists an element at least as large as the expectation
-- `Fin.exists_mul_of_sum_bound`: Specialized version for `Fin r` with `ℝ≥0∞`
+Lemmas about finding elements that bound sums and expectations.
 -/
 
 open Finset
@@ -22,8 +14,7 @@ variable {X Y : Type*}
 
 namespace Fintype
 
-/-- For any sum over a nonempty fintype, there exists an element such that the sum
-is bounded by the cardinality times that element's value. -/
+/-- There exists an element such that the sum is bounded by the cardinality times that element. -/
 lemma exists_mul_of_sum_bound [Nonempty X] [Fintype X] [AddCommMonoid Y] [LinearOrder Y]
     [IsOrderedAddMonoid Y] (g : X → Y) :
     ∃ j, ∑ i, g i ≤ (Fintype.card X) • g j := by
@@ -36,8 +27,7 @@ end Fintype
 
 namespace Finset
 
-/-- For any sum over a nonempty finset, there exists an element in the finset such that
-the sum is bounded by the cardinality times that element's value. -/
+/-- There exists an element in the finset such that the sum is bounded by the cardinality times that element. -/
 lemma exists_mul_of_sum_bound [Nonempty X] [Fintype X] [AddCommMonoid Y] [LinearOrder Y]
     [IsOrderedAddMonoid Y] (s : Finset X) (g : X → Y) (ns : s.Nonempty) :
     ∃ j ∈ s, ∑ i ∈ s, g i ≤ (#s) • g j := by
@@ -46,8 +36,7 @@ lemma exists_mul_of_sum_bound [Nonempty X] [Fintype X] [AddCommMonoid Y] [Linear
   use js
   exact sum_le_card_nsmul s g (g j) (fun x a ↦ p x a)
 
-/-- For any nonempty finset, there exists an element whose value is at least
-the expectation. -/
+/-- There exists an element whose value is at least the expectation. -/
 lemma exists_le_expect {ι : Type*} {α : Type*} [AddCommMonoid α] [LinearOrder α]
     [IsOrderedAddMonoid α] [Module ℚ≥0 α] [PosSMulMono ℚ≥0 α] {s : Finset ι} {f : ι → α}
     (hs : s.Nonempty) :
@@ -64,8 +53,7 @@ namespace Fin
 
 open scoped ENNReal
 
-/-- For a sum over `Fin r` with values in `ℝ≥0∞`, there exists an index such that
-the sum is bounded by `r` times that element's value. -/
+/-- There exists an index such that the sum is bounded by `r` times that element. -/
 lemma exists_mul_of_sum_bound {r : ℕ} [Nonempty (Fin r)] (g : Fin r → ℝ≥0∞) :
     ∃ j, ∑ i, g i ≤ r * g j := by
   have := Fintype.exists_mul_of_sum_bound g
