@@ -30,17 +30,18 @@ This project has contributed **{{ total_merged }}** merged PRs to Mathlib{% if i
 <table>
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Stage</th>
-      <th>Target File</th>
-      <th>PR/Details</th>
+      <th>Contribution</th>
+      <th>Status & PR</th>
     </tr>
   </thead>
   <tbody>
 {% for contrib in contributions %}
     <tr>
-      <td><strong>{{ contrib.name }}</strong><br/>
-          <small style="color: #666;">{{ contrib.description | strip | truncatewords: 20 }}</small></td>
+      <td>
+        <strong>{{ contrib.name }}</strong><br/>
+        <small style="color: #666;">{{ contrib.description | strip | truncatewords: 20 }}</small><br/>
+        <small><code style="font-size: 0.85em;">{{ contrib.target_file }}</code></small>
+      </td>
       <td>
         {% if contrib.status == "cleaned" %}
           <span style="color: #888;">✓ Cleaned</span>
@@ -57,16 +58,11 @@ This project has contributed **{{ total_merged }}** merged PRs to Mathlib{% if i
         {% else %}
           <span>{{ contrib.status }}</span>
         {% endif %}
-      </td>
-      <td><code style="font-size: 0.85em;">{{ contrib.target_file }}</code></td>
-      <td>
         {% if contrib.pr_number %}
-          <a href="{{ contrib.pr_url }}">#{{ contrib.pr_number }}</a>
+          <br/><a href="{{ contrib.pr_url }}">#{{ contrib.pr_number }}</a>
           {% if contrib.merged_date %}<br/><small>{{ contrib.merged_date }}</small>{% endif %}
         {% elsif contrib.branch_name %}
-          <small>Branch: <code>{{ contrib.branch_name }}</code></small>
-        {% else %}
-          <small style="color: #666;">—</small>
+          <br/><small>Branch: <code>{{ contrib.branch_name }}</code></small>
         {% endif %}
       </td>
     </tr>
@@ -74,10 +70,6 @@ This project has contributed **{{ total_merged }}** merged PRs to Mathlib{% if i
   </tbody>
 </table>
 
-### Stage Legend
-- **○ Tentative**: Code moved to ToMathlib folder
-- **◐ Branch**: Isolated on feature branch
-- **→ Ready**: Finalized and ready for submission
-- **⟳ Submitted**: PR created on mathlib
-- **✓ Merged**: PR merged to mathlib
-- **✓ Cleaned**: Code removed from this project
+<div style="text-align: right; font-size: 0.85em; color: #666; margin-top: 1em;">
+<strong>Legend:</strong> <span style="color: #959da5;">○ Tentative</span> · <span style="color: #f9826c;">◐ Branch</span> · <span style="color: #6f42c1;">→ Ready</span> · <span style="color: #0366d6;">⟳ Submitted</span> · <span style="color: #28a745;">✓ Merged</span> · <span style="color: #888;">✓ Cleaned</span>
+</div>
