@@ -57,3 +57,6 @@ blueprint/lean_decls
 
 # GitHub CLI installation
 gh_*
+
+# Auto-generated from ToMathlib/*/metadata.yaml
+home_page/_data/mathlib_contributions.yaml

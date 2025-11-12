@@ -1,5 +1,5 @@
 name: Probability Classical scope cleanup
-status: merged
+status: cleaned
 pr_number: 24074
 pr_url: https://github.com/leanprover-community/mathlib4/pull/24074
 target_file: Mathlib.Probability.Distributions.Uniform
@@ -10,6 +10,5 @@ merged_date: 2025-04-21
 contents:
   - toOuterMeasure_uniformOfFintype_apply cleanup
   - toMeasure_uniformOfFintype_apply cleanup
-original_location: N/A (cleanup of existing Mathlib code)
 notes: >
   Chore PR cleaning up classical scope usage in probability distributions.

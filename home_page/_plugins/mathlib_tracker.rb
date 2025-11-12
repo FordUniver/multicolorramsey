@@ -21,25 +21,28 @@ module Jekyll
 
       contributions = collect_contributions(tomathlib_path)
 
-      # Sort contributions: merged first (most recent first), then others
-      status_order = { 'merged' => 0, 'open' => 1, 'draft' => 2, 'not_started' => 3 }
+      # Sort contributions by status and date
+      # Order: cleaned (oldest first), merged (oldest first), submitted, ready_to_submit, branch_created, tentative
+      status_order = {
+        'cleaned' => 0,
+        'merged' => 1,
+        'submitted' => 2,
+        'ready_to_submit' => 3,
+        'branch_created' => 4,
+        'tentative' => 5
+      }
       contributions.sort_by! do |c|
+        status = c['status'] || 'tentative'
+        date = c['merged_date']&.to_s || c['created_date']&.to_s || ''
         [
-          status_order.fetch(c['status'] || 'not_started', 99),
-          -(c['merged_date']&.to_s || c['pr_number']&.to_s || c['name'] || '').hash
+          status_order.fetch(status, 99),
+          date  # Ascending order (oldest first for cleaned/merged)
         ]
       end
 
-      # Calculate summary
-      summary = contributions.each_with_object(Hash.new(0)) do |contrib, counts|
-        counts[contrib['status'] || 'not_started'] += 1
-      end
-
-      # Create data structure
+      # Create data structure (no summary needed, calculated in template)
       data = {
-        'generated_at' => Time.now.utc.iso8601,
-        'contributions' => contributions,
-        'summary' => summary
+        'contributions' => contributions
       }
 
       # Write to _data directory
@@ -51,9 +54,6 @@ module Jekyll
 
       Jekyll.logger.info 'MathlibTracker:', "Generated #{data_file}"
       Jekyll.logger.info 'MathlibTracker:', "Total contributions: #{contributions.size}"
-      summary.each do |status, count|
-        Jekyll.logger.info 'MathlibTracker:', "  #{status}: #{count}"
-      end
     end
 
     private
