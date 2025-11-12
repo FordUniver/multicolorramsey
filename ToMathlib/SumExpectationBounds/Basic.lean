@@ -20,7 +20,7 @@ lemma exists_mul_of_sum_bound [Nonempty X] [Fintype X] [AddCommMonoid Y] [Linear
     ∃ j, ∑ i, g i ≤ (Fintype.card X) • g j := by
   obtain ⟨j, p⟩ : ∃ j, ∀ i, g i ≤ g j := Finite.exists_max g
   use j
-  calc ∑ i : X, g i ≤ ∑ i : X, g j           := by exact sum_le_sum fun i a ↦ p i
+  calc ∑ i : X, g i ≤ ∑ i : X, g j           := by exact sum_le_sum fun i _ ↦ p i
                   _ = (Fintype.card X) • g j := by simp only [sum_const, card_univ]
 
 end Fintype
@@ -32,9 +32,8 @@ lemma exists_mul_of_sum_bound [Nonempty X] [Fintype X] [AddCommMonoid Y] [Linear
     [IsOrderedAddMonoid Y] (s : Finset X) (g : X → Y) (ns : s.Nonempty) :
     ∃ j ∈ s, ∑ i ∈ s, g i ≤ (#s) • g j := by
   obtain ⟨j, ⟨js, p⟩⟩ := exists_max_image s g ns
-  use j
-  use js
-  exact sum_le_card_nsmul s g (g j) (fun x a ↦ p x a)
+  use j, js
+  exact sum_le_card_nsmul s g (g j) p
 
 /-- There exists an element whose value is at least the expectation. -/
 lemma exists_le_expect {ι : Type*} {α : Type*} [AddCommMonoid α] [LinearOrder α]
