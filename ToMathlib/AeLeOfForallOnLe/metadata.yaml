@@ -1,4 +1,4 @@
-name: ae_le_of_forallOn_le
+name: ae_le_of_forall_on_le
 status: tentative
 pr_number: null
 pr_url: null
@@ -9,7 +9,7 @@ description: >
   theory proofs involving integrability.
 merged_date: null
 contents:
-  - ae_le_of_forallOn_le
+  - ae_le_of_forall_on_le
 original_location: MulticolorRamsey/Integrals.lean:15-17
 notes: >
   Clean one-liner that simplifies a common pattern in measure theory.
