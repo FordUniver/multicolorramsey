@@ -289,7 +289,7 @@ lemma specialFunctionEc (rpos : 0 < r) (x : Fin r → ℝ) (h : ∃ i, x i < -3 
     · linarith
 
   have t4 : 1 ≤ ∏ i, (2 + coshsqrt (x i)) := by
-    refine Finset.one_le_prod''' ?_
+    refine Finset.one_le_prod_of_one_le ?_
     intros i _; expose_names; exact one_le_coshsqrt (x i)
 
   simp only [f, mul_comm _  (∏ i, (2 + coshsqrt (x i))), ← Finset.mul_sum]

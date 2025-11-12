@@ -9,7 +9,7 @@ description: >
   has a version for IsOrderedMonoid but not for types with zero like ℝ.
 merged_date: null
 contents:
-  - Finset.one_le_prod'''
+  - Finset.one_le_prod_of_one_le
 original_location: MulticolorRamsey/Basic.lean:212-219
 notes: >
   Mathlib has Finset.one_le_prod' for ordered monoids, but this version works
