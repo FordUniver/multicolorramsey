@@ -5,7 +5,7 @@ import Mathlib.Data.Fintype.Card
 -/
 
 /-- Composing `Equiv.swap c d` with an if-then-else function swaps the test condition. -/
-theorem swap_ite_eq {K L : Type} [DecidableEq K] (c d : K) (t k : L) :
+theorem swap_ite_eq {α β : Type} [DecidableEq α] (c d : α) (t k : β) :
   (fun x ↦ if x = d then t else k) ∘ (Equiv.swap c d) = (fun x ↦ if x = c then t else k) := by
   ext x
   wlog hcd : (c = d)
