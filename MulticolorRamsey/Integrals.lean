@@ -5,16 +5,13 @@ import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.MeasureTheory.Integral.IntegrableOn
 import Mathlib.MeasureTheory.Integral.ExpDecay
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import ToMathlib.AeLeOfForallOnLe.Basic
 
 
 section
 
 open MeasureTheory ProbabilityTheory Real ENNReal Set
 
-
-theorem ae_le_of_forallOn_le {f : α → ℝ} {s : Set α}  [MeasurableSpace α] {μ : Measure α} (ms : MeasurableSet s) (h₁ : ∀ x ∈ s, g x ≤ f x) :
-    g ≤ᶠ[ae (μ.restrict s)] f := by
-      filter_upwards [ae_restrict_mem ms] with x hx using h₁ x hx
 
 -- maybe mathlib
 lemma indicator_one_mul {x : X} [MulZeroOneClass Y] (f : X → Y) [MeasurableSpace X] (E : Set X) :
