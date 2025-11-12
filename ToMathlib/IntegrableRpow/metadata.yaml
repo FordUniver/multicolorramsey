@@ -1,5 +1,5 @@
 name: Integrability of shifted power function
-status: merged
+status: cleaned
 pr_number: 25045
 pr_url: https://github.com/leanprover-community/mathlib4/pull/25045
 target_file: Mathlib.Analysis.SpecialFunctions.Integrals
@@ -9,7 +9,6 @@ description: >
 merged_date: 2025-05-30
 contents:
   - integrableOn_add_rpow_Ioi_of_lt
-original_location: MulticolorRamsey/Integrals.lean (likely)
 notes: >
   Generalization of integrability result needed for the integral calculations
   in the multicolor Ramsey proof.

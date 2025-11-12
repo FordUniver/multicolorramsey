@@ -103,6 +103,9 @@ jobs:
           find home_page/docs -name "*.trace" -delete
           find home_page/docs -name "*.hash" -delete
 
+      - name: Generate Mathlib contributions data
+        run: python3 scripts/generate_mathlib_data.py
+
       - name: Bundle dependencies
         uses: ruby/setup-ruby@v1
         with:
