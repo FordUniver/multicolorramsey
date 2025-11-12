@@ -39,7 +39,7 @@ Each potential Mathlib contribution lives in `ToMathlib/ContributionName/` with:
 - `Basic.lean`: The Lean code
 - `metadata.yaml`: Tracking info (status, PR number, target file, etc.)
 
-The Jekyll plugin (`home_page/_plugins/mathlib_tracker.rb`) automatically aggregates all `metadata.yaml` files into `home_page/_data/mathlib_contributions.yaml` for display on the homepage.
+Run `python3 scripts/generate_mathlib_data.py` to aggregate all `metadata.yaml` files into `home_page/_data/mathlib_contributions.yaml` for display on the homepage. This is run automatically in CI.
 
 Status values: `tentative`, `branch_created`, `ready_to_submit`, `submitted`, `merged`, `cleaned`
 

@@ -2,6 +2,7 @@
 /venv
 /.venv
 __pycache__
+_vendor
 
 bpvenv
 
@@ -58,5 +59,6 @@ blueprint/lean_decls
 # GitHub CLI installation
 gh_*
 
-# Auto-generated from ToMathlib/*/metadata.yaml
-home_page/_data/mathlib_contributions.yaml
+# Jekyll build artifacts
+home_page/_site/
+home_page/_data/
