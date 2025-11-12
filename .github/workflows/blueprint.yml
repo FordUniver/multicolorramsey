@@ -88,6 +88,9 @@ jobs:
             leanblueprint web
             cp -r blueprint/web home_page/blueprint
 
+      - name: Build ToMathlib
+        run: ~/.elan/bin/lake build ToMathlib
+
       - name: Check declarations mentioned in the blueprint exist in Lean code
         run: |
             ~/.elan/bin/lake exe checkdecls blueprint/lean_decls
