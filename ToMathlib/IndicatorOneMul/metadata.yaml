@@ -1,5 +1,5 @@
 name: Indicator function multiplication identity
-status: to_submit
+status: branch_created
 pr_number: null
 pr_url: null
 target_file: Mathlib.MeasureTheory.Function.Indicator
@@ -9,7 +9,7 @@ description: >
 merged_date: null
 contents:
   - indicator_one_mul
-original_location: MulticolorRamsey/Integrals.lean:20-22
 notes: >
   Simple but useful lemma for manipulating indicator functions. Completely proven
   with a trivial case split. Very general - works for any MulZeroOneClass.
+branch_name: tomathlib/indicator-one-mul
