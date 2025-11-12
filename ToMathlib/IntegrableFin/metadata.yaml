@@ -1,4 +1,4 @@
-name: IntegrableFin
+name: integrable_of_fintype
 status: tentative
 pr_number: null
 pr_url: null
@@ -9,7 +9,7 @@ description: >
   in finite measure spaces.
 merged_date: null
 contents:
-  - IntegrableFin
+  - integrable_of_fintype
 original_location: MulticolorRamsey/Integrals.lean:24-25
 notes: >
   Clean one-line lemma. Could alternatively go in Mathlib.MeasureTheory.Measure.FiniteMeasure.
