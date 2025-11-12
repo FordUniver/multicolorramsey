@@ -1,0 +1,14 @@
+name: Integrability of shifted power function
+status: cleaned
+pr_number: 25045
+pr_url: https://github.com/leanprover-community/mathlib4/pull/25045
+target_file: Mathlib.Analysis.SpecialFunctions.Integrals
+description: >
+  Proves that (fun t : ℝ ↦ (t + m) ^ a) is integrable on (c, ∞)
+  for 0 ≤ m, a < -1, and 0 < c. Needed for change of variables applications.
+merged_date: 2025-05-30
+contents:
+  - integrableOn_add_rpow_Ioi_of_lt
+notes: >
+  Generalization of integrability result needed for the integral calculations
+  in the multicolor Ramsey proof.

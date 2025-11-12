@@ -88,6 +88,9 @@ jobs:
             leanblueprint web
             cp -r blueprint/web home_page/blueprint
 
+      - name: Build ToMathlib
+        run: ~/.elan/bin/lake build ToMathlib
+
       - name: Check declarations mentioned in the blueprint exist in Lean code
         run: |
             ~/.elan/bin/lake exe checkdecls blueprint/lean_decls
@@ -99,6 +102,9 @@ jobs:
         run: |
           find home_page/docs -name "*.trace" -delete
           find home_page/docs -name "*.hash" -delete
+
+      - name: Generate Mathlib contributions data
+        run: python3 scripts/generate_mathlib_data.py
 
       - name: Bundle dependencies
         uses: ruby/setup-ruby@v1
