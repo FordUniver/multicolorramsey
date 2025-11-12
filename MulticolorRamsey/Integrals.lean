@@ -5,16 +5,13 @@ import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.MeasureTheory.Integral.IntegrableOn
 import Mathlib.MeasureTheory.Integral.ExpDecay
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import ToMathlib.AeLeOfForallOnLe.Basic
 
 
 section
 
 open MeasureTheory ProbabilityTheory Real ENNReal Set
 
-
-theorem ae_le_of_forallOn_le {f : α → ℝ} {s : Set α}  [MeasurableSpace α] {μ : Measure α} (ms : MeasurableSet s) (h₁ : ∀ x ∈ s, g x ≤ f x) :
-    g ≤ᶠ[ae (μ.restrict s)] f := by
-      filter_upwards [ae_restrict_mem ms] with x hx using h₁ x hx
 
 -- maybe mathlib
 lemma indicator_one_mul {x : X} [MulZeroOneClass Y] (f : X → Y) [MeasurableSpace X] (E : Set X) :
@@ -30,7 +27,7 @@ lemma IntegrableFin {X : Type} [Fintype X] [MeasurableSpace X] [MeasurableSingle
 
 lemma bounded_thingy_on_s {f g h : ℝ → ℝ} (ms : MeasurableSet s) (Ih : IntegrableOn h s) (Ig : IntegrableOn g s)
     (dh : ∀ x ∈ s, h x ≤ f x) (dg : ∀ x ∈ s, f x ≤ g x) (mf : Measurable f) : IntegrableOn f s :=
-  integrable_of_le_of_le (mf.aestronglyMeasurable) (ae_le_of_forallOn_le ms dh) (ae_le_of_forallOn_le ms dg) Ih Ig
+  integrable_of_le_of_le (mf.aestronglyMeasurable) (ae_le_of_forall_on_le ms dh) (ae_le_of_forall_on_le ms dg) Ih Ig
 
 lemma integrableOn_one_div_two_mul_sqrt_plus (m : ℝ) (c : ℝ) : IntegrableOn (fun x ↦ 1 / (2 * √(x + c))) (Icc (-c) m) := by
   have : (∀ x ∈ Ioo (-c) m, HasDerivAt (fun x ↦ √(x + c)) ((fun x ↦ 1 / (2 * √(x + c))) x) x) := by
@@ -261,7 +258,7 @@ theorem integral_ecsq' (c m : ℝ) (mp : -1 ≤ m) (cpos : 0 < c):
       have : 0 < √(m + 1) := by linarith [sqrt_pos_of_pos (neg_lt_iff_pos_add.mp this)]
       have : 1 < rexp (c * √(m + 1)) := by exact one_lt_exp_iff.mpr (by positivity)
       nlinarith
-  · refine ae_le_of_forallOn_le measurableSet_Ioc ?_
+  · refine ae_le_of_forall_on_le measurableSet_Ioc ?_
     intros; positivity
 
 
