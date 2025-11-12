@@ -31,7 +31,7 @@ This project has contributed **{{ total_merged }}** merged PRs to Mathlib{% if i
   <thead>
     <tr>
       <th>Contribution</th>
-      <th>Status & PR</th>
+      <th style="width: 200px;">Status & PR</th>
     </tr>
   </thead>
   <tbody>
