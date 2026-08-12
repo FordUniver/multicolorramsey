@@ -1,0 +1,16 @@
+name: ae_le_of_forall_on_le
+status: tentative
+pr_number: null
+pr_url: null
+target_file: Mathlib.MeasureTheory.Measure.AEMeasurable
+description: >
+  Converts a pointwise inequality on a measurable set to an almost-everywhere
+  inequality with respect to the restricted measure. Useful helper for measure
+  theory proofs involving integrability.
+merged_date: null
+contents:
+  - ae_le_of_forall_on_le
+original_location: MulticolorRamsey/Integrals.lean:15-17
+notes: >
+  Clean one-liner that simplifies a common pattern in measure theory.
+  Could alternatively go in Mathlib.MeasureTheory.Measure.Restrict.
