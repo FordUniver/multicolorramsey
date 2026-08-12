@@ -1,0 +1,18 @@
+name: Equivalence between even naturals and naturals with tsum transformation
+status: to_submit
+pr_number: null
+pr_url: null
+target_file: Mathlib.Topology.Algebra.InfiniteSum.Basic
+description: >
+  Provides an equivalence between {n : ℕ // Even n} and ℕ via n ↦ n/2,
+  and uses this to transform infinite sums over even indices into sums
+  over all naturals: ∑' x, f (2*x) = ∑' x : {n | Even n}, f x
+merged_date: null
+contents:
+  - evenEquivNat
+  - tsum_double_eq_tsum_even
+original_location: MulticolorRamsey/Basic.lean:108-116
+notes: >
+  Simple but useful for working with series indexed by even numbers.
+  Completely proven, very general (works for any AddCommMonoid with topology).
+  Could alternatively go in Mathlib.Algebra.BigOperators.Equiv.

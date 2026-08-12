@@ -11,6 +11,8 @@ import ExponentialRamsey.Prereq.Ramsey
 import Mathlib.Data.Finset.SDiff
 import Mathlib.Data.Finset.Insert
 
+import ToMathlib.EvenEquivNat.Basic
+
 ----------------------------------------------------------------------------------------------------
 --  edge colorings
 
@@ -101,19 +103,6 @@ lemma moments (X : Type) [Fintype X] [Nonempty X] [MeasurableSpace X] [Fintype V
 
 end
 
-
-----------------------------------------------------------------------------------------------------
---idk mathlib?
-
-def evenEquivNat : {n : ℕ // Even n} ≃ ℕ where
-  toFun := fun ⟨n, _⟩ => n / 2
-  invFun n := ⟨2 * n, even_two_mul n⟩
-  left_inv := fun ⟨_, en⟩ => by simp [Nat.mul_div_cancel' en.two_dvd]
-  right_inv n := by simp
-
-theorem tsum_double_eq_tsum_even [AddCommMonoid T] [TopologicalSpace T] (f : ℕ → T) :
-    ∑' x : ℕ, f (2 * x) = ∑' x : {n : ℕ | Even n}, f x :=
-  evenEquivNat.symm.tsum_eq <| f ∘ (↑)
 
 ----------------------------------------------------------------------------------------------------
 -- coshsqrt0
