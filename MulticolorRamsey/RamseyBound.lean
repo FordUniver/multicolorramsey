@@ -2,6 +2,7 @@ import MulticolorRamsey.Book
 
 import Mathlib.Algebra.Order.Floor.Semiring
 import Mathlib.Data.Fintype.Card
+import ToMathlib.SwapIteEq.Basic
 
 variable {V : Type} {r : ℕ} [Fintype V] [DecidableEq V] [Nonempty V] [Nonempty (Fin r)]
 
@@ -152,21 +153,6 @@ theorem lemma53r {r k : ℕ} (kge : 2 ≤ k) (rge : 2 ≤ r) {ε : ℝ} (εin : 
       apply Real.rpow_le_rpow_of_exponent_le _ sbound
       simp; exact le_of_lt (Set.mem_Ioo.mp εin).1
 
--- TODO mathlib?
-theorem swap_ite_eq {K L : Type} [DecidableEq K] (c d : K) (t k : L) :
-  (fun x ↦ if x = d then t else k) ∘ (Equiv.swap c d) = (fun x ↦ if x = c then t else k) := by
-  ext x
-  wlog hcd : (c = d)
-  · push_neg at hcd
-    simp only [Function.comp_apply]
-    by_cases h1 : x = c
-    · simp [h1, Equiv.swap_apply_left]
-    · by_cases h2 : x = d
-      · simp only [h2, Equiv.swap_apply_right, hcd.symm, ↓reduceIte, ite_eq_right_iff]
-        intro; contradiction
-      · simp only [Equiv.swap_apply_of_ne_of_ne h1 h2, h2, ↓reduceIte, right_eq_ite_iff]
-        intro; contradiction
-  · simp [hcd]
 
 
 ----------------------------------------------------------------------------------------------------

@@ -1,0 +1,16 @@
+name: swap_ite_eq
+status: tentative
+pr_number: null
+pr_url: null
+target_file: Mathlib.Logic.Equiv.Basic
+description: >
+  Composing Equiv.swap with an if-then-else function swaps the test condition.
+  Shows that (fun x ↦ if x = d then t else k) ∘ (Equiv.swap c d) equals
+  (fun x ↦ if x = c then t else k).
+merged_date: null
+contents:
+  - swap_ite_eq
+original_location: MulticolorRamsey/RamseyBound.lean:156-169
+notes: >
+  General-purpose lemma for working with permutations and conditionals.
+  Could be useful in combinatorics and group theory contexts.
