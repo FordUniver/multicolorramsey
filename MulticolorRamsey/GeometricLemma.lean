@@ -30,11 +30,11 @@ lemma exp_ineq_ENN (rpos : 0 < r) (Z : Fin r → X × X → ℝ) (exPos : 0 ≤ 
       intros x xinEc
       simp only [E, mem_compl_iff, mem_setOf_eq, not_forall, not_le] at xinEc
       exact specialFunctionEc rpos (fun i ↦ Z i x) xinEc
-    exact setIntegral_mono_on IntegrableFin.integrableOn (by simp) (MeasurableSet.compl_iff.mpr measE) this
+    exact setIntegral_mono_on integrable_of_fintype.integrableOn (by simp) (MeasurableSet.compl_iff.mpr measE) this
 
   have Eb : ∫ x in E, f fun i ↦ Z i x ∂ℙᵤ ≤ 𝔼exp :=
     setIntegral_mono_on
-      IntegrableFin.integrableOn IntegrableFin measE
+      integrable_of_fintype.integrableOn integrable_of_fintype measE
       (fun x _ => specialFunctionE (fun i ↦ Z i x))
 
   have : ∫ x in Eᶜ, -1 ∂ℙᵤ = - 1 + (ℙᵤ E).toReal := by
@@ -44,7 +44,7 @@ lemma exp_ineq_ENN (rpos : 0 < r) (Z : Fin r → X × X → ℝ) (exPos : 0 ≤ 
 
   rw [this] at Ecb
 
-  rw [← integral_add_compl measE IntegrableFin] at exPos
+  rw [← integral_add_compl measE integrable_of_fintype] at exPos
 
   have : 0 ≤ 𝔼exp + (- 1 + (ℙᵤ E).toReal) :=
     le_trans (le_trans exPos (add_le_add_right Eb _)) (add_le_add_left Ecb _)
